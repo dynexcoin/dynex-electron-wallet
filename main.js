@@ -240,38 +240,6 @@ function storeNodeList(pnodes){
     }
     if(validNodes.length) settings.set('pubnodes_data', validNodes);
 }
-
-function doNodeListUpdate(){
-    try{
-        https.get(config.remoteNodeListUpdateUrl, (res) => {
-            var result = '';
-            res.setEncoding('utf8');
-
-            res.on('data', (chunk) => {
-                result += chunk;
-            });
-
-            res.on('end', () => {
-                try{
-                    var pnodes = JSON.parse(result);
-                    let today = new Date();
-                    storeNodeList(pnodes);
-                    log.debug('Public node list has been updated');
-                    let mo = (today.getMonth()+1);
-                    settings.set('pubnodes_date', `${today.getFullYear()}-${mo}-${today.getDate()}`);
-                }catch(e){
-                    log.debug(`Failed to update public node list: ${e.message}`);
-                    storeNodeList();
-                }
-            });
-        }).on('error', (e) => {
-            log.debug(`Failed to update public-node list: ${e.message}`);
-        });
-    }catch(e){
-        log.error(`Failed to update public-node list: ${e.code} - ${e.message}`);
-    }
-}
-
 function serviceConfigFormatCheck(){
     let serviceBin = settings.get('service_bin', false);
     let semver = require('semver');
@@ -361,24 +329,8 @@ app.on('ready', () => {
     initSettings();
 
     if(IS_DEV || IS_DEBUG) log.warn(`Running in ${IS_DEV ? 'dev' : 'debug'} mode`);
-
-    global.wsession = {
-        debug: IS_DEBUG
-    };
-
-    if(config.remoteNodeListUpdateUrl){
-        let today = new Date();
-        let last_checked = new Date(settings.get('pubnodes_date'));
-        let diff_d = parseInt((today-last_checked)/(1000*60*60*24),10);
-        if(diff_d >= 1){
-            log.info('Performing daily public-node list update.');
-            doNodeListUpdate();
-        }else{
-            log.info('Public node list up to date, skipping update');
-            storeNodeList(false); // from local cache
-        }
-    }
-    
+    global.wsession = { debug: IS_DEBUG };
+	
     createWindow();
     // try to target center pos of primary display
     let eScreen = require('electron').screen;

@@ -20,7 +20,7 @@ const wsession = new WalletShellSession();
 const settings = new Store({ name: 'Settings' });
 const abook = new Store({
 	name: 'AddressBook',
-	encryptionKey: config.addressBookObfuscateEntries ? config.addressBookObfuscationKey : null
+	encryptionKey: config.addressBookObfuscationKey
 });
 
 const win = remote.getCurrentWindow();
@@ -1095,22 +1095,6 @@ function formMessageSet(target, status, txt){
 	}
 }
 
-// sample address book, only on first use
-function insertSampleAddresses(){
-	let flag = 'addressBookFirstUse';
-	if (!settings.get(flag, true)) return;
-	const sampleData = config.addressBookSampleEntries;
-	if(sampleData && Array.isArray(sampleData)){
-		sampleData.forEach((item) => {
-			let ahash = wsutil.b2sSum(item.address + item.paymentId);
-			let aqr = wsutil.genQrDataUrl(item.address);
-			item.qrCode = aqr;
-			abook.set(ahash, item);
-		});
-	}
-	settings.set(flag, false);
-	initAddressCompletion();
-}
 // utility: blank tx filler
 function setTxFiller(show){
 	show = show || false;
@@ -1261,7 +1245,6 @@ function listenToAddressBookEvents() {
 function listAddressBook(force, sortBy){
 	force = force || false;
 	sortBy = sortBy || '';
-	insertSampleAddresses();
 	let currentLength = document.querySelectorAll('.div-addressbook-item').length;
 	let abookLength = abook.size;
 
