@@ -33,6 +33,7 @@ let WALLET_OPEN_IN_PROGRESS = false;
 let TXLIST_OBJ = null;
 let COMPLETION_PUBNODES;
 let COMPLETION_ADDRBOOK;
+let isHandlingMempool = false; // Flag to prevent overlapping function calls
 
 /*  dom elements vars; */
 // body
@@ -2111,6 +2112,8 @@ function handleTransactions(){
 		let txTypeBtn = tx.dataset.txtype == 'in' ? `<a class="tx-type-btn tx-type-in">Received<img src="../assets/transactions/right-blue-arrow.png" /></a>` : `<a class="tx-type-btn tx-type-out">Sent<img src="../assets/transactions/arrow-up-red.png" /></a>`;
 		let address = tx.dataset.txtype == 'in' ? wsession.get('loadedWalletAddress') : tx.dataset.destinationaddress;
 		var extraDataDecoded = await getNonPrivacyInformation(tx.dataset.rawhash);
+		var confirmationNumber = tx.dataset.confirmations;
+		if (tx.dataset.confirmations > 8) { confirmationNumber = '<span class="cyan">Confirmed</span>'; }
 		
 		let dialogTpl = `
 				<div class="div-transactions-panel">
@@ -2141,7 +2144,7 @@ function handleTransactions(){
 								</tr>
 								<tr>
 									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" /><span class="opa50">Confirmations</span></th>
-									<td><span class="opa50">${tx.dataset.confirmations}</span></td>
+									<td><span class="opa50">${confirmationNumber}</span></td>
 								</tr>								
 								<tr>
 									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" />Total Amount</th>
@@ -2424,16 +2427,64 @@ function handleTransactions(){
 	});
 }
 
-function handleMempool() {
-	if (wsession.get('loadedWalletAddress') !== '') {
-		let walletAddr = wsession.get('loadedWalletAddress');
-		wsmanager.loadMempool(walletAddr).then((result) => {
-			console.log(result);
-			
-		}).catch((err) => {
-			log.debug("[dnx-mempool] Error: ", err);
-		});
-	}
+async function handleMempool() {
+    if (isHandlingMempool) { return; } // handleMempool is already running, skipping this call
+    isHandlingMempool = true; // Set the flag to true to indicate the function is running
+    log.debug("[dnx-mempool] checking mempool for new pending transactions");
+    try {
+        if (wsession.get('loadedWalletAddress') !== '') {
+            let walletAddr = wsession.get('loadedWalletAddress');           
+            // Wait for the mempool data
+            let result = await wsmanager.loadMempool(walletAddr);
+			// Setup of the mempool table
+            let mempoolTable = document.getElementById('transaction-list-table2');
+            let mempoolTableTbody = document.getElementById('mempoolTbody');
+            let tbody = mempoolTable.querySelector('tbody');           
+            // Clear all Entries to make sure no duplications
+            if (tbody) { tbody.innerHTML = ''; }
+            // Deduplicate the transactionHashes array
+            let uniqueTransactionHashes = [...new Set(result.transactionHashes)];
+            // Process each transaction hash
+            for (let index = 0; index < uniqueTransactionHashes.length; ++index) {
+                let mempoolTx = uniqueTransactionHashes[index];
+                let extraDataDecoded = await getNonPrivacyInformation(mempoolTx);
+				// Work out Total Amount
+                let amountTotal = 0;
+                for (let index2 = 0; index2 < extraDataDecoded['transaction']['amount'].length; ++index2) {
+                    let binaryDecimal = hexToBinaryAndDecimal(extraDataDecoded['transaction']['amount'][index2]);
+                    amountTotal += binaryDecimal.dnx;
+                }
+				// Being Sent or Received?
+                let inOut = '<span class="rcv">Received</span>&nbsp;&nbsp;<img src="../assets/transactions/arrow-down-green.png">';
+                if (extraDataDecoded['transaction']['address_from'] === walletAddr) {
+                    inOut = '<span class="snt">Sent</span>&nbsp;&nbsp;<img src="../assets/transactions/arrow-up-red.png">';
+                }
+                // Create a new table row
+                let newRow = document.createElement('tr');
+                let txCell = document.createElement('td');
+                txCell.style.width = '50%';
+                txCell.innerHTML = mempoolTx.substring(0, 10) + '...' + mempoolTx.slice(-10);
+                // Setup the table row cells
+                let amountCell = document.createElement('td');
+                amountCell.innerHTML = amountTotal + ' DNX';              
+                let feeCell = document.createElement('td');
+                feeCell.innerHTML = parseFloat(extraDataDecoded['transaction']['fee'] / 1000000000) + ' DNX';
+                let inOutCell = document.createElement('td');
+                inOutCell.innerHTML = inOut;
+                // Append the cells to the new row
+                newRow.appendChild(txCell);
+                newRow.appendChild(amountCell);
+                newRow.appendChild(feeCell);
+                newRow.appendChild(inOutCell);
+                // Append the new row to the table body
+                if (tbody) { tbody.appendChild(newRow); }
+            }
+        }
+    } catch (err) {
+        log.debug("[dnx-mempool] Error: ", err);
+    } finally {
+        isHandlingMempool = false; // Reset the flag when the function finishes
+    }
 }
 
 function handleNetworkChange(){
@@ -2531,11 +2582,6 @@ function initHandlers(){
 		dialog.showModal();
 	});
 
-	//genpaymentid+integAddress
-	// overviewPaymentIdGen.addEventListener('click', ()=>{
-		// genPaymentId(false);
-	// });
-
 	wsutil.liveEvent('#makePaymentId', 'click', () => {
 		let payId = genPaymentId(true);
 		let iaf = document.getElementById('genOutputIntegratedAddress');
@@ -2543,8 +2589,6 @@ function initHandlers(){
 		iaf.value = '';
 	});
 
-	//overviewIntegratedAddressGen.addEventListener('click', showIntegratedAddressForm);
-	
 	wsutil.liveEvent('#doGenIntegratedAddr', 'click', () => {
 		formMessageReset();
 		let genInputAddress = document.getElementById('genInputAddress');
