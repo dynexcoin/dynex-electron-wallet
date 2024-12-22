@@ -21,11 +21,14 @@ log.transports.file.level = LOG_LEVEL;
 log.transports.file.maxSize = 5 * 1024 * 1024;
 
 const WALLETSHELL_VERSION = app.getVersion() || '0.3.x';
-const SERVICE_FILENAME =  (platform === 'win32' ? `${config.walletServiceBinaryFilename}.exe` : config.walletServiceBinaryFilename );
-const SERVICE_OSDIR = (platform === 'win32' ? 'win' : (platform === 'darwin' ? 'osx' : 'lin'));
-const DEFAULT_SERVICE_BIN = path.join(process.resourcesPath,'bin', SERVICE_OSDIR, SERVICE_FILENAME);
+const SERVICE_FILENAME =  ( platform === 'win32' ? `${config.walletServiceBinaryFilename}.exe` : config.walletServiceBinaryFilename );
+const NODE_FILENAME =  ( platform === 'win32' ? `${config.walletNodeBinaryFilename}.exe` : config.walletNodeBinaryFilename );
+const DEFAULT_SERVICE_BIN = path.join(__dirname, 'dnx', SERVICE_FILENAME);
+const DEFAULT_NODE_BIN = path.join(__dirname, 'dnx', NODE_FILENAME);
+
 const DEFAULT_SETTINGS = {
     service_bin: DEFAULT_SERVICE_BIN,
+    node_bin: DEFAULT_NODE_BIN,
     service_host: config.remoteNodeDefaultHost,
     service_port: config.walletServiceRpcPort,
     service_password: crypto.randomBytes(32).toString('hex'),

@@ -30,7 +30,6 @@ const WS_VERSION = settings.get('version', 'unknown');
 const DEFAULT_WALLET_PATH = remote.app.getPath('documents');
 
 let WALLET_OPEN_IN_PROGRESS = false;
-//let FUSION_IN_PROGRESS = false;
 let TXLIST_OBJ = null;
 let COMPLETION_PUBNODES;
 let COMPLETION_ADDRBOOK;
