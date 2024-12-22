@@ -37,7 +37,6 @@ class WalletShellApi {
                 json: true,
                 timeout: timeout
             }).then((res) => {
-				// console.log(res);
                 if (!res) return resolve(true);
                 if (!res.error) {
                     if (res.result) return resolve(res.result);
@@ -46,7 +45,6 @@ class WalletShellApi {
                     return reject(res.error.message);
                 }
             }).catch((err) => {
-				console.log(err);
                 return reject(err);
             });
         });
@@ -157,8 +155,8 @@ class WalletShellApi {
                     backupKeys.mnemonicSeed = mres.mnemonicSeed;
                     return resolve(backupKeys);
                 }).catch((err) => {
-					if (err == "Keys not deterministic") {
-						backupKeys.mnemonicSeed = "not available";
+					if (err == "Keys are non-deterministic") {
+						backupKeys.mnemonicSeed = "not available for this wallet";
 						return resolve(backupKeys);
 					}
                     return reject(err);

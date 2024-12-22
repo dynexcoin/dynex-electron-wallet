@@ -1770,7 +1770,7 @@ function handleWalletExport(){
 			showkeyInputViewKey.value = keys.viewSecretKey;
 			showkeyInputSpendKey.value = keys.spendSecretKey;
 			showkeyInputSeed.value = keys.mnemonicSeed;
-		}).catch(() => {
+		}).catch((err) => {
 			formMessageSet('secret','error', "Failed to get key, please try again in a few seconds");
 		});
 	});

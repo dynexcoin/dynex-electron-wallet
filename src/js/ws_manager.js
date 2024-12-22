@@ -514,7 +514,7 @@ WalletShellManager.prototype.createWallet = function(walletFile, password){
     return new Promise((resolve, reject) => {
         let serviceArgs = wsm.serviceArgsDefault.concat(
             [
-                '-g', '-w', walletFile, '-p', password,
+                '-g', '--deterministic', '-w', walletFile, '-p', password,
 				'--daemon-address', '127.0.0.1',
 				'--daemon-port', '18333',				
                 '--log-level', 0, 		
@@ -618,7 +618,6 @@ WalletShellManager.prototype.getSecretKeys = function(address){
         wsm.serviceApi.getBackupKeys({address: address}).then((result) => {
             return resolve(result);
         }).catch((err) => {
-            log.debug(`Failed to get keys: ${err.message}`);
             return reject(err);
         });
     });
