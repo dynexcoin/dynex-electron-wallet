@@ -30,7 +30,10 @@ This wallet contains the basic functions required to manage your Dynex (DNX):
   * Provides internal node and wallet services
   * Option to use system tray (on closing/minimizing wallet)
   * Keyboard shortcuts for ease of use
-
+* Dynex Ecosystem Tools
+  * DHIP (Opt in for Native L1 Chain)
+  * Bridge (Ability to bridge L1 DNX to L2 0xDNX)
+  * QNODES (Ability to monitor Dynex Quantum Nodes)
 
 ### Notes
 Dynex Electron Wallet relies on `DNX-service` and `DNX-node` to manage wallet container &amp; rpc communication.
