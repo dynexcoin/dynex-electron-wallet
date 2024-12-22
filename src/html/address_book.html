@@ -1,0 +1,43 @@
+<template>
+	<section class="section" id="section-addressbook">
+		<div class="title-container">
+			<div class="title-left">
+				<div class="div-title clearfix">
+					<img src="../assets/addressbook/title.png" />
+					<h2 class="title">Address Book</h2>
+					<div class="subtitle">Contacts</div>
+				</div>
+			</div>
+			<div class="title-right">
+				<select id="button-addressbook-order">
+					<option disabled>Sort the contact</option>
+					<option value="name">Label</option>
+					<option value="address">Wallet Address</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="div-addressbook-outer" id="addressbook-container"> </div>
+		<div class="div-addressbook-form-outer">
+			<div class="div-addressbook-form">
+				<input type="hidden" value="" id="input-addressbook-update" />
+				<div class="wallet">
+					<input required="required" class="text-block" id="input-addressbook-wallet" placeholder="Address of contact" />
+				</div>
+				<div class="paymentid">
+					<input required="required" class="text-block" id="input-addressbook-paymentid" placeholder="Payment Id" />
+				</div>
+				<div class="label">
+					<input required="required" class="text-block" id="input-addressbook-name" placeholder="Label" />
+				</div>
+				<div class="submit">
+					<button type="button" class="form-bt button-blue" id="button-addressbook-save">Save contact</button>
+				</div>
+			</div>
+		</div>
+		<div class="input-wrap">
+			<span class="form-ew form-msg text-spaced-error" id="text-addressbook-error"></span>
+			<span class="form-ew form-msg text-spaced-success" id="text-addressbook-success"></span>
+		</div>
+    </section>
+</template>

@@ -1,0 +1,89 @@
+<template>
+    <section class="section" id="section-overview">
+		<div class="div-overview-balance" style="margin-bottom: 10px;">
+			<div class="overview-balance">
+				<div class="title-balance-available title-with-icon">
+					<img src="../assets/overview/balance-icon.png" />
+					<div class="title-underline">Balance</div>
+				</div>
+				<div id="balance-available" title="Available Balance">
+					<div class="blue">Available:</div> <span data-cplabel="Balance" class="tctcl">0.0000</span> <u>DNX</u>
+				</div>
+				<div id="balance-locked" title="Unconfirmed/Locked Balance">
+					<div class="blue">Unconfirmed:</div> <span data-cplabel="Locked balance" class="tctcl">0.0000</span> <u>DNX</u>
+				</div>
+			</div>
+			<div class="overview-optimization">
+				<button tabindex="0" type="button" class="form-bt button-blue" style="width: 100%;" title="When possible, perform wallet input/output optimization by creating fusion transactions. Try this if you get error when sending big transaction." id="button-send-optimize">Fusion Wallet TXs</button>
+				<div id="fusion-progress" class="fusion-progress hidden">
+					Wallet Fusion<br />in progress<br /><i class="fas fa-cog fa-spin fa-lg"></i>
+				</div>
+			</div>
+		</div>
+
+		<div class="div-overview-connection">
+			<div class="overview-connection-info clearfix">
+				<div class="c100" id="circle-progress-percent">
+					<span id="circle-progress-text">0%</span>
+					<div class="slice">
+						<div class="bar"></div>
+						<div class="fill"></div>
+					</div>
+				</div>
+				<div class="title-underline">Blockchain Sync Status</div>
+				<div class="value" id="conn-info">N/A</div>
+			</div>
+			<div class="overview-connection-node-address clearfix">
+				<img src="../assets/overview/dhip.png" style="max-width: 45px;" />
+				<div class="title-underline">DHIP Status</div>
+				<div class="value" id="node-address">N/A</div>
+			</div>
+		</div>
+
+		<div class="div-overview-address">
+			<div class="overview-wallet-address clearfix">
+				<div class="overview-copy-address">
+					<button type="button" id="copy-wallet-address">Copy Address</button>
+				</div>
+				<div class="title-with-icon">
+					<img src="../assets/overview/wallet-address-icon.png" />
+					<div class="title-underline">Your Wallet Address</div>
+				</div>
+				<textarea tabindex="-1" data-noclear="1" class="overview-input" id="wallet-address" readonly="readonly" rows="2"></textarea>
+				<span id="form-help-wallet-address" class="form-help"></span>
+			</div>
+			<div class="overview-wallet-qrcode clearfix" id="div-w-qr">
+				<div class="title-with-icon">
+					<img src="../assets/overview/qrcode-icon.png" />
+					<div class="title-underline">QR Code</div>
+				</div>
+				<div class="text">
+					<span>Scan to share your address.</span>
+					<button type="button" id="zoom-qr-code">Zoom</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="div-markets">
+			<div class="img">
+				<img src="../assets/general/markets-icon.png" />
+			</div>
+			<div class="box">
+				<div class="title">Dynex Price</div>
+				<div class="price" id="dnx-price-usd">$ 0.00 USD</div>
+				<div class="price" id="dnx-price-btc">0.00000000 BTC</div>
+			</div>
+			<div class="box">
+				<div class="title">24 hrs Trading Volume</div>
+				<div class="price" id="trading-volume-usd">$ 0.00 USD</div>
+				<div class="price" id="trading-volume-btc">0.00000000 BTC</div>
+			</div>
+			<div class="box">
+				<div class="title">Market Cap</div>
+				<div class="price" id="market-cap-usd">$ 0.00 USD</div>
+				<div class="price" id="market-cap-btc">0.00000000 BTC</div>
+			</div>
+		</div>
+		<button tabindex="0" type="button" class="form-bt button-green hidden" id="button-overview-closewallet">Close Wallet</button>
+    </section>
+</template>

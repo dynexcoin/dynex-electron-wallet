@@ -1,0 +1,76 @@
+<template>
+    <section class="section" id="section-qnode">
+		<div class="title-container">
+			<div class="title-left">
+				<div class="div-title clearfix">
+					<img src="../assets/qnodes/title.png" />
+					<h2 class="title">QNodes</h2>
+					<div class="subtitle" id="qnodeSubGrpName">Quantum node overview</div>
+				</div>
+			</div>	
+			<div class="title-right overview-balance2">
+				<div id="balance-available2" title="Send Collateral">
+					<span data-cplabel="Balance2" class="tctcl">
+						<button type="button" class="form-bt button-blue">Send Collateral</button>
+					</span>
+				</div>
+			</div>					
+		</div>
+		<div class="div-markets">
+			<div class="img">
+				<img src="../assets/qnodes/markets-icon.png" />
+			</div>
+			<div class="box">
+				<div class="title">Quantum Nodes</div>
+				<div class="price" id="qnodes-locked">0 DNX Collateral</div>
+				<div class="price" id="qnodes-online">0 Online</div>
+				<div class="price" id="qnodes-offline">0 Offline</div>
+			</div>
+			<div class="box">
+				<div class="title">GPU Overview</div>
+				<div class="price" id="gpu-working">0 Working</div>
+				<div class="price" id="gpu-mining">0 Mining</div>
+				<div class="price" id="gpu-offline">0 Offline</div>
+			</div>
+			<div class="box">
+				<div class="title">Stats</div>
+				<div class="price" id="stats-totalnodes">0 Nodes</div>
+				<div class="price" id="stats-power">Power: 0.00kW</div>
+				<div class="price" id="stats-lastupdate">Last Update: 0000-00-00 00:00</div>
+			</div>
+		</div>
+
+		<div class="transactions-div-transaction-lists" style="margin-left: 45px; margin-right: 55px; margin-top: 35px;">
+			<div id="transaction-lists" class="list-tables">
+				<div class="tx-tools">
+					<div class="tx-search">
+					<input tabindex="0" id="tx-search" class="text-block search noenter" placeholder="Search by anything..." />
+					</div>
+					<div class="tx-sort">
+						Sort by:
+						<span tabindex="0" class="csort" data-dir="0" id="nodeSortUptime">Uptime</span>
+						<span tabindex="0" class="csort" data-dir="1" id="nodeSortPower">Power</span>
+						<span tabindex="0" class="csort" data-dir="2" id="nodeSortGpus">GPUs</span>
+						<span tabindex="0" class="csort" data-dir="3" id="nodeSortStatus">Status</span>
+					</div>
+				</div>
+				<table class="custom-table transaction-list-table" id="qnodes-list-table">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th style="width: 10%;">GPUs</th>
+							<th style="width: 15%;">Uptime</th>
+							<th style="width: 10%;">LA</th>
+							<th style="width: 10%;">Power</th>
+							<th style="width: 10%;">Geo</th>
+							<th style="width: 10%;">Status</th>
+						</tr>
+					</thead>
+					<tbody class="list" id="qnodeList"></tbody>
+				</table>
+				<ul class="pagination"></ul>
+			</div>
+		</div>	
+
+    </section>
+</template>

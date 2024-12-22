@@ -1,0 +1,26 @@
+<template>
+	<section class="section" id="section-welcome">
+		<div class="section-contents">
+			<div class="div-welcome-top">
+				<img src="../assets/welcome/dynex.png" width="130" height="150" />
+				<h2 class="welcome-intro-title">Welcome to your</h2>
+				<p class="welcome-intro">DYNEX WALLET</p>
+			</div>
+			<div class="welcome-buttons">
+				<button tabindex="0" type="button" class="form-bt button-blue" data-section="section-overview-create" id="button-welcome-createwallet">Create New Wallet</button>
+				<button tabindex="0" type="button" class="form-bt button-blue" data-section="section-overview-load" id="button-welcome-openwallet">Open Wallet</button>
+			</div>
+			<div class="welcome-buttons">
+				<button tabindex="0" type="button" class="form-bt button-blue" data-section="section-overview-import-key" id="button-welcome-import-key">Import Private Keys</button>
+				<button tabindex="0" type="button" class="form-bt button-blue" data-section="section-overview-import-seed" id="button-welcome-import-seed">Import Mnemonic Seed</button>
+			</div>
+			<p class="welcome-wiki"><a href="" class="external" id="bloc-wiki-link-welcome"></a></p>
+			<div id="welcome-bottom"></div>
+		</div>
+		<script>
+		let appVersion = "1.0.0";
+		let html = `Version - ${appVersion}`;
+		document.getElementById('welcome-bottom').innerHTML = html;
+		</script>
+	</section>
+</template>

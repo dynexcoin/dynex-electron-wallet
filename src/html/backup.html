@@ -1,0 +1,79 @@
+<template>
+	<section class="section" id="section-backup">
+		<div class="title-container">
+			<div class="title-left">
+				<div class="div-title clearfix">
+					<img src="../assets/backup/title.png" />
+					<h2 class="title">Backup</h2>
+					<div class="subtitle">Save your keys</div>
+				</div>
+			</div>
+			<div class="title-right">
+				<button type="button" class="external form-bt button-blue" id="button-show-reveal">Reveal the Keys and Mnemonic Seed</button>
+				<button type="button" class="external form-bt button-blue" id="button-show-export">Export to File</button>
+			</div>
+		</div>
+		<div class="overview-show-div-content">
+			<p>
+				Backup your key is one of the most important step to keep your Dynex safe. The private keys below can restore your wallet using the Dynex Electron Wallet. 
+				You must understand that this private key is very sensitive. <b class="red">NEVER SHARE</b> this key with anyone. With this key you can recover and install your wallet 
+				on any computer. So if someone is able to find/see it, they can recover your wallet and move the funds however they see fit. The best way to save your wallet is to print on paper 
+				two copies of this key and hide them in two different safe places. If you loose this key and you have deleted the wallet file you will never be able to recover your funds. 
+				Your funds will be lost forever.
+			</p>
+			<p class="red">
+				<b>This key is essential to save your wallet and funds from being lost forever.</b>
+			</p>
+			<p class="blue">
+				Do not store it on your smartphone, tablet or computer. You are the solely responsible for the security of your keys.
+			</p>
+
+			<div class="box">
+				<div class="title">YOUR PRIVATE VIEW KEY</div>
+				<div class="subtitle">Note : the key does not contain space characters</div>
+				<input placeholder="Click the Reveal button to see it" type="text" class="text-block ctcl" id="key-show-view" readonly="readonly" />
+			</div>
+			<div class="box">
+				<div class="title">YOUR PRIVATE SPEND KEY</div>
+				<div class="subtitle">Note : the key does not contain space characters</div>
+				<input placeholder="Click the Reveal button to see it" type="text" class="text-block  ctcl" id="key-show-spend" readonly="readonly" />
+			</div>
+			<div class="box">
+				<div class="title">YOUR PRIVATE MENMONIC SEED</div>
+				<div class="subtitle">Note : the mnemonic seed is always 25 words</div>
+				<textarea placeholder="Click the Reveal button to see it" class="default-textarea  ctcl" id="seed-show" readonly="readonly" rows="2"></textarea>
+			</div>
+
+			<span class="form-ew form-msg text-spaced-error text-center" id="text-secret-error"></span>
+			<span class="form-ew form-msg text-spaced-success text-center" id="text-secret-success"></span>
+		</div>
+
+		<div class="section-contents hidden">
+			<div class="div-title">
+				<h2 class="title">Private Keys &amp; Mnemonic Seed</h2>
+			</div>
+			<div class="div-input">
+				<div class="input-wrap">
+					<span class="form-msg text-spaced-info">
+						Please make a backup &amp; keep these keys secret. You can use these keys to restore your wallet.
+						Anyone who knows them can access your wallet.
+					</span>
+				</div>
+				<div class="input-wrap" title="click to copy">
+					<h4 class="text-spaced">Your View Key:</h4>		
+					<input placeholder="Click the Reveal button to see it" type="text" class="text-block ctcl" id="key-show-view2" readonly="readonly" />
+				</div>
+
+				<div class="input-wrap" title="click to copy">
+					<h4 class="text-spaced">Your Spend Key:</h4>
+					<input placeholder="Click the Reveal button to see it" type="text" class="text-block  ctcl" id="key-show-spend2" readonly="readonly" />
+				</div>
+
+				<div class="input-wrap" title="click to copy">
+					<h4>Mnemonic Seed</h4>
+					<textarea  placeholder="Click the Reveal button to see it" class="default-textarea  ctcl" id="seed-show2" readonly="readonly" rows="3"></textarea>
+				</div>
+			</div>
+		</div>
+	</section>
+</template>

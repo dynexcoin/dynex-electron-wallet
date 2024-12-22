@@ -1,0 +1,77 @@
+<template>
+	<section class="section" id="section-transactions">
+		<div class="title-container">
+			<div class="title-left">
+				<div class="div-title clearfix">
+					<img src="../assets/transactions/title.png" />
+					<h2 class="title">Transactions</h2>
+					<div class="subtitle">History</div>
+				</div>
+			</div>	
+			<div class="title-right overview-balance2 transactions-div-export hidden">
+				<div id="balance-available2" title="Export as CSV">
+					<span data-cplabel="Balance2" class="tctcl">
+						<button type="button" class="form-bt button-blue" id="transaction-export">Export as CSV</button>
+					</span>
+				</div>
+			</div>			
+		</div>
+
+		<div class="transactions-div-transaction-lists">
+			<div id="transaction-lists" class="list-tables hidden">
+				<div class="tx-tools">
+					<div class="tx-search">
+					<input tabindex="0" id="tx-search" class="text-block search noenter" placeholder="Search by anything..." />
+					</div>
+					<div class="tx-sort">
+						Sort by:
+						<span tabindex="0" class="csort" data-dir="0" id="txSortAmount">Amount</span>
+						<span tabindex="0" class="csort" data-dir="0" id="txSortTime">Date</span>
+						<span tabindex="0" class="csort" data-dir="0" id="txSortStatus">Status</span>
+					</div>
+				</div>
+				<table class="custom-table transaction-list-table" id="transaction-list-table">
+					<thead>
+						<tr>
+							<th>Date</th>
+							<th>Transaction hash</th>
+							<th>Payment ID</th>
+							<th>Amount</th>
+							<th>Status</th>
+						</tr>
+					</thead>
+					<tbody class="list"></tbody>
+				</table>
+				<ul class="pagination"></ul>
+			</div>
+		</div>
+
+		<div class="transactions-div-no-transactions">
+			<div id="txfiller" class="list-tables">
+				<p>Transaction data not available.<br>Either you haven't made any transaction or your wallet still being synchronized.</p>
+			</div>
+		</div>
+
+		<div class="transactions-div-transaction-lists">
+			<h2>Mempool</h2>
+			<div id="mempool-lists" class="list-tables">
+				<table class="custom-table transaction-list-table" id="transaction-list-table2">
+					<thead>
+						<tr>
+							<th>Date</th>
+							<th>Transaction hash</th>
+							<th>Amount</th>
+						</tr>
+					</thead>
+					<tbody class="list"></tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="input-wrap button-wrap" style="padding: 0;margin-top: 1rem;">
+			<input type="hidden" id="transaction-updated" value="0" />
+			<input type="hidden" id="transaction-notify" value="0" />
+			<button tabindex="-1" type="button" class="hidden button-green small" id="button-transactions-refresh">Refresh</button>
+		</div>
+	</section>
+</template>

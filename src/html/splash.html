@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; img-src 'self' file: data:; style-src 'self' 'unsafe-inline'; media-src 'self'">
+	<link rel="stylesheet" href="../css/font-roboto-condensed.css">
+	<style>
+	* {
+		box-sizing: border-box;
+	}
+	@keyframes geboy {
+		0%{opacity: 1;}
+		50%{opacity: 0.4;}
+		100%{opacity: 1;}
+	}
+	html, body {
+		margin: 0;
+		padding: 0;
+	}
+	body {
+		width: 728px;
+		height: 446px;
+		background: #00012a url(../assets/splash/background.png) 50% 50% no-repeat;
+		text-align: center;
+		margin: 0 auto;
+		position: relative;
+		font-family: 'Roboto Condensed', sans-serif;
+		font-weight: 400;
+	}
+	#wsVersion {
+		position: absolute;
+		bottom: 35px;
+		left: 0;
+		right: 0;
+		text-align: center;
+		color: #fff;
+		font-size: 13px;
+		text-shadow: 1px 1px 1px #888;
+		opacity: 0.5;
+	}
+	img {
+		opacity: 1;
+		transition: all 0.5s ease-in-out;
+		animation: geboy normal 4s infinite ease-in-out;
+		animation-delay: 0.5s;
+		width: 263px;
+		height: 240px;
+		position: relative;
+		left: 0;
+		top: 68px;
+		image-rendering: optimizeQuality;
+	}
+	</style>
+</head>
+<body>
+
+	<span id="wsVersion"></span>
+
+	<script>
+	let appVersion = "1.0.0";
+	let html = `Version<br />${appVersion}`;
+	document.getElementById('wsVersion').innerHTML = html;
+	</script>
+</body>
+</html>

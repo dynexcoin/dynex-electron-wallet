@@ -1,0 +1,65 @@
+<template>
+    <section class="section" id="section-dhip">
+		<div class="title-container">
+			<div class="title-left">
+				<div class="div-title clearfix">
+					<img src="../assets/dhip/title.png" />
+					<h2 class="title">Dynex Holders</h2>
+					<div class="subtitle">Incentive program (DHIP)</div>
+				</div>
+			</div>
+			<div class="title-right overview-balance2">
+				<div id="balance-available2" title="Opt in to DHIP">
+					<span data-cplabel="Balance2" class="tctcl">
+						<button type="button" class="form-bt button-blue" style="width: 150px;">Opt-In</button>
+					</span>
+				</div>
+			</div>			
+		</div>
+		<div class="div-markets">
+			<div class="img">
+				<img src="../assets/dhip/markets-icon.png" />
+			</div>
+			<div class="box">
+				<div class="title">Total Value Locked</div>
+				<div class="price" id="tvl-dnx">0.000000000 DNX</div>
+				<div class="price" id="tvl-0xdnx">0.000000000 0xDNX</div>
+			</div>
+			<div class="box">
+				<div class="title">Total Claimed This Month</div>
+				<div class="price" id="claimed-dnx">0.000000000 DNX</div>
+				<div class="price" id="claimed-0xdnx">0.000000000 0xDNX</div>
+			</div>
+			<div class="box">
+				<div class="title">Rebate</div>
+				<div class="price" id="dhip-rebate-percent" style="font-size: 24px;">0.00 %</div>
+			</div>
+		</div>
+		
+		<div class="transactions-div-transaction-lists" style="margin-left: 45px; margin-right: 55px; margin-top: 35px;">
+			<div id="transaction-lists" class="list-tables">
+				<div class="tx-tools">
+					<div class="tx-search">
+					<input tabindex="0" id="tx-search" class="text-block search noenter" placeholder="Search by anything..." />
+					</div>
+					<div class="tx-sort">
+						Sort by:
+						<span tabindex="0" class="csort" data-dir="0" id="dhipSortAmount">Amount</span>
+						<span tabindex="0" class="csort" data-dir="0" id="dhipSortTime">Date</span>
+					</div>
+				</div>
+				<table class="custom-table transaction-list-table" id="dhip-list-table">
+					<thead>
+						<tr>
+							<th style="width: 25%;">Date</th>
+							<th>Transaction hash</th>
+							<th style="width: 20%;">Amount</th>
+						</tr>
+					</thead>
+					<tbody class="list" id="dhipList"></tbody>
+				</table>
+				<ul class="pagination"></ul>
+			</div>
+		</div>		
+    </section>
+</template>

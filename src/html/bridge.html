@@ -1,0 +1,42 @@
+<template>
+    <section class="section" id="section-bridge">	
+		<div class="title-container">
+			<div class="title-left">
+				<div class="div-title clearfix">
+					<img src="../assets/bridge/title.png" />
+					<h2 class="title">Dynex Bridge</h2>
+					<div class="subtitle">Bridge over to other chains</div>
+				</div>
+			</div>
+			<div class="title-right overview-balance2">
+				<div id="balance-available2" title="Available Balance">
+					<div class="blue">Wrapped DNX</div> 
+					<span data-cplabel="Balance2" class="tctcl" id="balanceWrapped">0.000000000</span> 0xDNX (ETH)
+				</div>
+			</div>			
+		</div>
+		<div class="div-input">
+			<div class="input-wrap">
+				<h4 class="text-spaced input-required">Chain</h4>
+				<select class="text-block" id="input-send-bridge-chain" style="width: 100%;" required="required">
+					<option value="ETH">Ethereum (ETH)</option>
+				</select>
+				<span class="form-help info blue">Please choose the chain you would like to bridge to.</span>
+			</div>
+			<div class="input-wrap">
+				<h4 class="text-spaced input-required">Chain Wallet ID</h4>
+				<input tabindex="0" title="Required, where you would like your wrapped Dynex sent to?..." required="required" type="text" class="text-block" id="input-send-bridge-to" />
+				<span class="form-help info blue">Please supply a wallet address for where you wish your wrapped Dynex to be sent to.</span>
+			</div>				
+			<div class="input-wrap">
+				<h4 class="text-spaced input-required">Amount</h4>
+				<input tabindex="0" title="Required, amount of DNX you want to send to bridge..." required="required" type="number" step="0.01" min="0.01" max="10000000.00" class="text-block" id="input-send-bridge" placeholder="1.00" />
+				<span class="form-help info blue">Amount of DNX you wish to send to the bridge to be wrapped to 0xDNX.</span>
+				<span tabindex="0" id="sendMaxAmount2" class="hidden">send all</span>
+			</div>
+			<div class="input-wrap">
+			   <button type="button" class="form-bt button-blue" id="button-send-send2">Send Bridge Payment</button>
+			</div>			
+		</div>
+    </section>
+</template>
