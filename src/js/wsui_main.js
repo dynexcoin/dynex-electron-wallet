@@ -538,7 +538,9 @@ function lookupBridge() {
 			var b = document.getElementById('bridge-24hr-volume');
 			b.innerHTML = formatNumber(parseFloat(res.volume_24_h / 1000000000), 2) + " DNX";
 			var c = document.getElementById('bridge-total-transactions');
-			c.innerHTML = res.transactions;			
+			c.innerHTML = res.transactions;		
+			var d = document.getElementById('bridge-fee-amount');
+			d.innerHTML = (res.dnx_bridge_fee / 1000000000);					
 		}
 	}).catch((err) => {
 		log.debug("[dnx-bridge]", "error fetching from api");
