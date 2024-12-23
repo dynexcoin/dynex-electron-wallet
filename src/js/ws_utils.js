@@ -9,6 +9,8 @@ const config = require('./ws_config');
 // const ADDRESS_REGEX_STR = `^${config.addressPrefix}(?=[aA-zZ0-9]*$)(?:.{${config.addressLength-config.addressPrefix.length}}|.{${config.integratedAddressLength-config.addressPrefix.length}})$`;
 const ADDRESS_REGEX_STR = `^[${config.addressPrefix}]{1}[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{${config.addressLength}}$`;
 const ADDRESS_REGEX = new RegExp(ADDRESS_REGEX_STR);
+const ADDRESS_ETH_REGEX_STR = /^0x[a-fA-F0-9]{40}$/;
+const ADDRESS_ETH_REGEX = new RegExp(ADDRESS_ETH_REGEX_STR);
 const PAYMENT_ID_REGEX = new RegExp(/^([aA-zZ0-9]{64})$/);
 const SECRET_KEY_REGEX = new RegExp(/^[aA-zZ0-9]{64}$/);
 const MNEMONIC_SEED_REGEX = new RegExp(/^[aA-zZ]+(?!.*  )[a-zA-Z0-9 ]*$/);
@@ -158,6 +160,9 @@ let decimalAdjust = (type, value, exp) => {
 
 exports.validateAddress = (address) => {
     return ADDRESS_REGEX.test(address);
+};
+exports.validateEthAddress = (address) => {
+    return ADDRESS_ETH_REGEX.test(address);
 };
 
 exports.validatePaymentId = (paymentId) => {

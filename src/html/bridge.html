@@ -10,7 +10,7 @@
 			</div>
 			<div class="title-right overview-balance2">
 				<div id="balance-available2" title="Available Balance">
-					<div class="blue">Wrapped DNX</div> 
+					<div class="blue">Your Wrapped DNX</div> 
 					<span data-cplabel="Balance2" class="tctcl" id="balanceWrapped">0.000000000</span> 0xDNX (ETH)
 				</div>
 			</div>			
@@ -19,7 +19,7 @@
 			<div class="input-wrap">
 				<h4 class="text-spaced input-required">Chain</h4>
 				<select class="text-block" id="input-send-bridge-chain" style="width: 100%;" required="required">
-					<option value="ETH">Ethereum (ETH)</option>
+					<option value="1">Ethereum (ETH)</option>
 				</select>
 				<span class="form-help info blue">Please choose the chain you would like to bridge to.</span>
 			</div>
@@ -30,13 +30,19 @@
 			</div>				
 			<div class="input-wrap">
 				<h4 class="text-spaced input-required">Amount</h4>
-				<input tabindex="0" title="Required, amount of DNX you want to send to bridge..." required="required" type="number" step="0.01" min="0.01" max="10000000.00" class="text-block" id="input-send-bridge" placeholder="1.00" />
+				<input tabindex="0" title="Required, amount of DNX you want to send to bridge..." required="required" type="number" step="0.01" min="0.01" max="10000000.00" class="text-block" id="input-send-bridge-amount" placeholder="1.00" />
 				<span class="form-help info blue">Amount of DNX you wish to send to the bridge to be wrapped to 0xDNX.</span>
-				<span tabindex="0" id="sendMaxAmount2" class="hidden">send all</span>
 			</div>
 			<div class="input-wrap">
-			   <button type="button" class="form-bt button-blue" id="button-send-send2">Send Bridge Payment</button>
-			</div>			
+			   <button type="button" class="form-bt button-blue" id="button-send-bridge">Send Bridge Payment</button>
+			</div>		
+
+			<div class="input-wrap">
+				<span class="form-ew form-msg text-spaced-error text-center" id="text-send-error2"></span>
+				<span class="form-ew form-msg text-spaced-warning text-center" id="text-send-warning2"></span>
+				<span class="form-ew form-msg text-spaced-success text-center" id="text-send-success2"></span>
+			</div>
+			
 		</div>
     </section>
 </template>

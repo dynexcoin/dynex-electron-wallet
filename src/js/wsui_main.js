@@ -91,6 +91,11 @@ let sendInputFee;
 let sendButtonSend;
 let sendMaxAmount;
 let sendOptimize;
+// bridge page
+let bridgeInputChainID;
+let bridgeInputToAddr;
+let bridgeInputAmount;
+let bridgeButtonSend;	
 // create wallet
 let overviewButtonCreate;
 let zoomQrCode;
@@ -223,6 +228,11 @@ function populateElementVars(){
 	txInputUpdated = document.getElementById('transaction-updated');
 	txInputNotify = document.getElementById('transaction-notify');
 	txButtonExport = document.getElementById('transaction-export');
+	// bridge page
+	bridgeInputChainID = document.getElementById('input-send-bridge-chain');
+	bridgeInputToAddr = document.getElementById('input-send-bridge-to');
+	bridgeInputAmount = document.getElementById('input-send-bridge-amount');
+	bridgeButtonSend = document.getElementById('button-send-bridge');	
 }
 
 // crude/junk template
@@ -1080,7 +1090,6 @@ function formMessageReset(){
 		wsutil.clearChild(genericFormMessage[i]);
 	}
 }
-
 function formMessageSet(target, status, txt){
 	// clear all msg
 	formMessageReset();
@@ -1811,7 +1820,6 @@ function handleSendTransfer(){
 		setPaymentIdState(addr);
 	});
 
-
 	sendButtonSend.addEventListener('click', () => {
 		formMessageReset();
 		function precision(a) {
@@ -1957,6 +1965,148 @@ function handleSendTransfer(){
 			wsutil.clearChild(md);
 		});
 	});
+	
+	bridgeButtonSend.addEventListener('click', () => {
+		formMessageReset();
+		function precision(a) {
+			if (!isFinite(a)) return 0;
+			let e = 1, p = 0;
+			while (Math.round(a * e) / e !== a) { e *= 10; p++; }
+			return p;
+		}
+
+		let bridgeChainID = bridgeInputChainID.value ? bridgeInputChainID.value.trim() : '';
+		if(!bridgeChainID.length){
+			formMessageSet('send','error2', 'Invalid Chain ID');
+			return;
+		}		
+		let recipientAddress = bridgeInputToAddr.value ? bridgeInputToAddr.value.trim() : '';
+		if(!recipientAddress.length || !wsutil.validateEthAddress(recipientAddress)){
+			formMessageSet('send','error2', 'Invalid ETH address');
+			return;
+		}
+		let amount = bridgeInputAmount.value ? parseFloat(bridgeInputAmount.value) : 0;
+		if (amount <= 0) {
+			formMessageSet('send','error2','Sorry, invalid amount');
+			return;
+		}
+		if (precision(amount) > config.decimalPlaces) {
+			formMessageSet('send','error2',`Amount can't have more than ${config.decimalPlaces} decimal places`);
+			return;
+		}		
+		amount = (amount * 1000000000)			// Make sure the Amount is always 9 Decimals
+
+		request({
+			uri: 'https://bridge.dynexcoin.org/api/bridge/payment_details?address=' + recipientAddress + '&chainID=' + bridgeChainID,
+			method: 'GET',
+			json: true,
+			timeout: 3000
+		}).then((res) => {
+			if (!res) return resolve(true);
+			if (!res.error) {
+				log.debug("[dnx-bridge] Send To:", recipientAddress);							
+				// Comes from Bridge API
+				let bridgeWalletAddr = res.bridge_dnx_address;
+				let paymentId = res.payment_id;
+				let bridgeFee = res.dnx_bridge_fee;
+
+				let total = 0;
+				total += amount;
+				total = parseFloat(total.toFixed(config.decimalPlaces));
+
+				total += bridgeFee;
+				total = parseFloat(total.toFixed(config.decimalPlaces));
+				
+				var formattedAmount = (amount / 1000000000)
+				var formattedTxFee = (bridgeFee / 1000000000)
+				var formattedTxTotal = (total / 1000000000)				
+				
+				const availableBalance = wsession.get('walletUnlockedBalance') || (0).toFixed(config.decimalPlaces);
+				if(parseFloat(total) > (parseFloat(wsession.get('walletUnlockedBalance')) * 1000000000)) {
+					formMessageSet(
+						'send',
+						'error2', 
+						`Sorry, you don't have enough funds to process this transfer. Transfer amount+fees: ${(formattedTxTotal)} DNX`
+					);
+					return;
+				}
+
+				const getNetworkName = (type) => {
+				  switch (type) {
+					case "1":
+					  return "Ethereum";
+					case "2":
+					  return "Base";
+					default:
+					  return "Unknown";
+				  }
+				};
+				let bridgeChainName = getNetworkName(bridgeChainID);
+				let tx = {
+					chain_id: bridgeChainID,
+					chain_name: bridgeChainName,
+					address: bridgeWalletAddr,
+					wrapped_address: recipientAddress,
+					paymentId: paymentId,
+					amount: amount,
+					fee: bridgeFee,
+					total: total
+				};
+
+				let tpl = `
+					<div class="div-transaction-panel">
+						<h4>Bridge Confirmation</h4>
+						<div class="transferDetail">
+							<p>Please confirm that you have everything entered correctly.</p>
+							<dl>
+								<dt class="dt-ib">Chain:</dt>
+								<dd class="dd-ib">${tx.chain_name}</dd>
+								<dt class="dt-ib">Chain Wallet ID:</dt>
+								<dd class="dd-ib">${tx.wrapped_address}</dd>
+								<dt class="dt-ib">Amount:</dt>
+								<dd class="dd-ib">${formattedAmount} ${config.assetTicker}</dd>
+								<dt class="dt-ib">Transaction Fee:</dt>
+								<dd class="dd-ib">${formattedTxFee} ${config.assetTicker}</dd>
+								<dt class="dt-ib">Total:</dt>
+								<dd class="dd-ib">${formattedTxTotal} ${config.assetTicker}</dd>
+							</dl>
+						</div>
+					</div>
+					<div class="div-panel-buttons">
+						<button data-target='#tf-dialog' type="button" class="form-bt button-gray dialog-close-default" id="button-send-bridge-ko">Cancel</button>
+						<button data-target='#tf-dialog' type="button" class="form-bt button-blue" id="button-send-bridge-ok">OK, Bridge it!</button>
+					</div>`;
+
+				let dialog = document.getElementById('tf-dialog');
+				wsutil.innerHTML(dialog, tpl);
+				dialog = document.getElementById('tf-dialog');
+				dialog.showModal();
+
+				let bridgeSendBtn = dialog.querySelector('#button-send-bridge-ok');
+				bridgeSendBtn.addEventListener('click', (event) => {
+					let md = document.querySelector(event.target.dataset.target);
+					md.close();
+					formMessageSet('send', 'warning2', 'Sending bridge transaction, please wait...<br><progress></progress>');
+					wsmanager.sendTransaction(tx).then((result) => {
+						console.log(result);
+						formMessageReset();
+						let txhashUrl = `<a class="external" title="view in block explorer" href="${config.blockExplorerTransactionUrl.replace('[[TX_HASH]]', result.transactionHash)}">${result.transactionHash}</a>`;
+						let okMsg = `Transaction sent!<br>Tx. hash: ${txhashUrl}.<br>Your balance may appear incorrect while transaction(s) not fully confirmed.`;
+						formMessageSet('send', 'success2', okMsg);
+						// After Bridge Succesful transaction - Reset the values to blank for next bridge transaction
+						bridgeInputChainID.value = 1;
+						bridgeInputToAddr.value = '';
+						bridgeInputAmount.value = '';
+					}).catch((err) => {
+						formMessageSet('send', 'error2', `Failed to send bridge transaction:<br><small>${err}</small>`);
+					});
+					wsutil.clearChild(md);
+				});
+			}
+		}).catch((err) => {
+			log.debug("[dnx-bridge]", "error fetching from api - " + err);
+		});	
+	});	
 
 	sendOptimize.addEventListener('click', () => {
 		if(!wsession.get('synchronized', false)){
@@ -2076,6 +2226,8 @@ function handleTransactions(){
 		})();
 		let status = item.txType == 'in' ? '<span class="rcv">Received</span><img src="../assets/transactions/arrow-down-green.png" />' : '<span class="snt">Sent</span><img src="../assets/transactions/arrow-up-red.png" />';
 		let hash = item.transactionHash.substring(0, 10) + '...' + item.transactionHash.slice(-10);
+		let paymentId = "";
+		if (item.paymentId != '-') { paymentId = item.paymentId.substring(0, 10) + '...' + item.paymentId.slice(-10); }
 		return `<tr title="click for detail..." class="txlist-item">
 			<td class="tx-date">
 				<img src="../assets/general/arrow-left-white.png" /><span>${tDate}</span>
@@ -2084,7 +2236,7 @@ function handleTransactions(){
 				<span>${hash}</span>
 			</td>
 			<td class="txinfo">
-				<p class="tx-ov-info"><span class="paymentId"></span></p>
+				<p class="tx-ov-info">${paymentId}</p>
 			</td>
 			<td class="txamount">
 				<span class="amount"></span> ${config.assetTicker}
@@ -2430,9 +2582,9 @@ function handleTransactions(){
 async function handleMempool() {
     if (isHandlingMempool) { return; } // handleMempool is already running, skipping this call
     isHandlingMempool = true; // Set the flag to true to indicate the function is running
-    log.debug("[dnx-mempool] checking mempool for new pending transactions");
     try {
         if (wsession.get('loadedWalletAddress') !== '') {
+			log.debug("[dnx-mempool] checking mempool for new pending transactions");
             let walletAddr = wsession.get('loadedWalletAddress');           
             // Wait for the mempool data
             let result = await wsmanager.loadMempool(walletAddr);
