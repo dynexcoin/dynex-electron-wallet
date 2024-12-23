@@ -1204,7 +1204,7 @@ body .tools-div-content .button-blue{
 	margin-top: 45px;
 }
 #section-backup .div-title {
-	margin-left: 65px;
+	margin-left: 45px;
 	margin-bottom: 15px;
 }
 #section-backup .div-title img {
@@ -1234,7 +1234,7 @@ body .tools-div-content .button-blue{
 	grid-column-start: 5;
 	grid-column-end: 13;
 	text-align: right;
-	margin-right: 65px;
+	margin-right: 50px;
 }
 #section-backup .title-right button{
 	margin-left: 13px;
@@ -1270,7 +1270,7 @@ body .tools-div-content .button-blue{
 .overview-show-div-content {
 	color: #c9c9c9;
 	font-size: 16px;
-	margin-left: 65px;
+	margin-left: 45px;
 	margin-right: 45px;
 }
 .blue {
@@ -1955,11 +1955,11 @@ input.path-input-button{
 	margin-top: 45px;
 }
 #section-bridge .input-wrap {
-	margin-right: 75px;
-	margin-left: 75px;
+	margin-right: 50px;
+    margin-left: 45px;
 }
 #section-bridge .div-title {
-	margin-left: 65px;
+	margin-left: 45px;
 	margin-bottom: 45px;
 }
 #section-bridge .div-title img {
@@ -1989,7 +1989,7 @@ input.path-input-button{
 	grid-column-start: 5;
 	grid-column-end: 13;
 	text-align: right;
-	margin-right: 65px;
+	margin-right: 50px;
 	padding-top: 15px;
 }
 #section-bridge .title-right select {
@@ -2019,7 +2019,7 @@ input.path-input-button{
 	margin-left: 75px;
 }
 #section-qnode .div-title {
-	margin-left: 65px;
+	margin-left: 45px;
 	margin-bottom: 45px;
 }
 #section-qnode .div-title img {
@@ -2049,7 +2049,7 @@ input.path-input-button{
 	grid-column-start: 5;
 	grid-column-end: 13;
 	text-align: right;
-	margin-right: 65px;
+	margin-right: 50px;
 	padding-top: 15px;
 }
 #section-qnode .title-right select {
@@ -2079,7 +2079,7 @@ input.path-input-button{
 	margin-left: 75px;
 }
 #section-dhip .div-title {
-	margin-left: 65px;
+	margin-left: 45px;
 	margin-bottom: 45px;
 }
 #section-dhip .div-title img {
@@ -2109,7 +2109,7 @@ input.path-input-button{
 	grid-column-start: 5;
 	grid-column-end: 13;
 	text-align: right;
-	margin-right: 65px;
+	margin-right: 50px;
 	padding-top: 15px;
 }
 #section-dhip .title-right select {
@@ -2139,7 +2139,7 @@ input.path-input-button{
 	margin-left: 75px;
 }
 #section-addressbook .div-title {
-	margin-left: 65px;
+	margin-left: 45px;
 	margin-bottom: 45px;
 }
 #section-addressbook .div-title img {
@@ -2169,7 +2169,7 @@ input.path-input-button{
 	grid-column-start: 5;
 	grid-column-end: 13;
 	text-align: right;
-	margin-right: 65px;
+	margin-right: 50px;
 	padding-top: 15px;
 }
 #section-addressbook .title-right select {
@@ -2192,8 +2192,8 @@ input.path-input-button{
 
 .div-addressbook-outer {
 	height: 410px;
-	margin-right: 75px;
-	margin-left: 75px;
+    margin-right: 50px;
+    margin-left: 50px;
 	margin-bottom: 45px;
 	overflow-x: hidden;
 	overflow-y: auto;
@@ -2273,8 +2273,8 @@ input.path-input-button{
 	padding: 20px;
 	background: #021136;
 	border-radius: 5px;
-	margin-right: 75px;
-	margin-left: 75px;
+	margin-right: 45px;
+    margin-left: 45px;
 }
 .div-addressbook-form {
 	display: grid;
@@ -2321,7 +2321,7 @@ input.path-input-button{
 	margin-left: 75px;
 }
 #section-transactions .div-title {
-	margin-left: 65px;
+	margin-left: 50px;
 	margin-bottom: 45px;
 }
 #section-transactions .div-title img {
@@ -2351,7 +2351,7 @@ input.path-input-button{
 	grid-column-start: 5;
 	grid-column-end: 13;
 	text-align: right;
-	margin-right: 65px;
+	margin-right: 50px;
 	padding-top: 15px;
 }
 #section-transactions .title-right select {
@@ -2372,8 +2372,8 @@ input.path-input-button{
 	border: 1px solid #5A97BA;
 }
 .transactions-div-transaction-lists {
-	margin-right: 65px;
-	margin-left: 65px;
+    margin-right: 50px;
+    margin-left: 50px;
 	margin-bottom: 30px;
 }
 .transactions-div-export {
@@ -2386,8 +2386,8 @@ input.path-input-button{
 	padding-bottom: 13px;
 }
 .transactions-div-no-transactions {
-	margin-right: 75px;
-	margin-left: 75px;
+	margin-right: 50px;
+	margin-left: 50px;
 	padding: 1rem;
 	background: rgba(0, 25, 15, 0.37);
 	border-radius: 6px;
@@ -3279,7 +3279,7 @@ body.wallet-opened #section-settings {
 	padding-top: 45px;
 }
 #section-settings .div-title {
-	margin-left: 65px;
+	margin-left: 50px;
 	margin-bottom: 45px;
 }
 #section-settings .div-title img {
@@ -3314,12 +3314,12 @@ body.wallet-opened #section-settings {
 	grid-column-end: 13;
 }
 
-/* send BLOC */
+/* send DNX */
 #section-send {
 	margin-top: 45px;
 }
 #section-send .div-title {
-	margin-left: 65px;
+	margin-left: 45px;
 	margin-bottom: 45px;
 }
 #section-send .div-title img {
@@ -3337,8 +3337,8 @@ body.wallet-opened #section-settings {
 	opacity: .5;
 }
 #section-send .div-input {
-	margin-left: 65px;
-	margin-right: 92px;
+	margin-left: 45px;
+    margin-right: 45px;
 }
 #section-send .form-help {
 	padding-left: 16px;

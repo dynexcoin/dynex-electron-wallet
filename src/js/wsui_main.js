@@ -524,6 +524,26 @@ function formatWatts(watts) {
     return `${kilowatts} kW`;
   }
 }
+function lookupBridge() {
+	request({
+		uri: 'https://bridge.dynexcoin.org/api/bridge/stats',
+		method: 'GET',
+		json: true,
+		timeout: 3000
+	}).then((res) => {
+		if (!res) return resolve(true);
+		if (!res.error) {
+			var a = document.getElementById('bridge-total-volume');
+			a.innerHTML = formatNumber(parseFloat(res.total_volume / 1000000000), 2) + " DNX";
+			var b = document.getElementById('bridge-24hr-volume');
+			b.innerHTML = formatNumber(parseFloat(res.volume_24_h / 1000000000), 2) + " DNX";
+			var c = document.getElementById('bridge-total-transactions');
+			c.innerHTML = res.transactions;			
+		}
+	}).catch((err) => {
+		log.debug("[dnx-bridge]", "error fetching from api");
+	});		
+}
 function lookupDHIP() {
 	request({
 		uri: 'https://api.dhip.dynexcoin.org/api/v1/dhip/stats',
@@ -824,34 +844,6 @@ function changeSection(sectionId, isSettingRedir) {
 		d.setAttribute('href', config.blocWikiUrl);
 	}
 	
-	if(targetSection === 'section-about'){
-		let a = document.getElementById('github-link');
-		a.setAttribute('href', config.appGitRepo);
-
-		let b = document.getElementById('app-version');
-		b.innerHTML = config.electronVersion;
-
-		let c = document.getElementById('wallet-version');
-		c.innerHTML = config.walletVersion;
-
-		let d = document.getElementById('service-version');
-		d.innerHTML = config.walletServiceBinaryVersion;
-
-		let e = document.getElementById('node-version');
-		e.innerHTML = config.walletServiceNodeVersion;
-
-		let f = document.getElementById('project-website');
-		f.setAttribute('href', config.appWebsite);
-		f.innerHTML = config.appWebsite;
-
-		let walletOpened = wsession.get('serviceReady') || false;
-		if (walletOpened) {
-			aboutButtonBack.classList.add('hidden');
-		} else {
-			aboutButtonBack.classList.remove('hidden');
-		}
-	}	
-	
 	// when settings is loaded, show the warning
 	if(targetSection === 'section-settings'){
 		let walletOpened = wsession.get('serviceReady') || false;
@@ -873,6 +865,7 @@ function changeSection(sectionId, isSettingRedir) {
 	}
 	// Bridge Functions
 	if(targetSection === 'section-bridge'){
+		lookupBridge();
 		if (settings.get('wrapped_addr') != '' && settings.get('wrapped_addr') != undefined) {
 			var myWrappedTokenAddr = settings.get('wrapped_addr');					// Users Stored 0xDNX WalletID
 			var wrappedToken = '0x9928a8600d14ac22c0be1e8d58909834d7ceaf13';		// 0xDNX Token ID
@@ -1110,14 +1103,17 @@ function setTxFiller(show){
 	show = show || false;
 	let fillerRow = document.getElementById('txfiller');
 	let txRow = document.getElementById('transaction-lists');
+	let mpRow = document.getElementById('mempool-lists');
 
 	if(!show && fillerRow){
 		fillerRow.parentNode.classList.add('hidden');
 		txRow.classList.remove('hidden');
+		mpRow.classList.remove('hidden');
 	}else{
 		let hasItemRow = document.querySelector('#transaction-list-table > tbody > tr.txlist-item');
 		if(!hasItemRow)  {
 			txRow.classList.add('hidden');
+			mpRow.classList.add('hidden');
 			fillerRow.parentNode.classList.remove('hidden');
 		}
 	}
@@ -1449,12 +1445,11 @@ function handleWalletOpen(){
 
 		function onError(err){
 			formMessageReset();
-			if (err.message.indexOf("ECONNREFUSED") !== -1) {
+			if (err == 'Failed to load your wallet, please check your password') {
 				formMessageSet('load','error', 'Unable to open the wallet.<br />The password you provided is incorrect!');
 			} else {
 				formMessageSet('load','error', err);
 			}
-			console.log('err', err);
 			WALLET_OPEN_IN_PROGRESS = false;
 			setOpenButtonsState(0);
 			return false;
@@ -1495,7 +1490,6 @@ function handleWalletOpen(){
 				formMessageSet('load','warning', "Starting wallet service...<br><progress></progress>");
 				setTimeout(() => {
 					formMessageSet('load','warning', "Opening wallet, please be patient...<br><progress></progress>");
-					// wsmanager.startNode();
 					wsmanager.startService(walletFile, walletPass, onError, onSuccess, onDelay);
 				},800);
 			}).catch((err) => {
