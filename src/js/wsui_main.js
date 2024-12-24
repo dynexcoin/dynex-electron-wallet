@@ -855,6 +855,32 @@ function changeSection(sectionId, isSettingRedir) {
 			settingsButtonBack.classList.remove('hidden');
 		}
 	}	
+	
+	// when about is loaded, add the links and the content
+	if(targetSection === 'section-about'){
+		let a = document.getElementById('github-link');
+		a.setAttribute('href', config.appGitRepo);
+
+		let b = document.getElementById('app-version');
+		b.innerHTML = config.electronVersion;
+
+		let c = document.getElementById('wallet-version');
+		c.innerHTML = config.walletVersion;
+
+		let d = document.getElementById('service-version');
+		d.innerHTML = config.walletServiceBinaryVersion;
+
+		let e = document.getElementById('node-version');
+		e.innerHTML = config.walletServiceNodeVersion;
+
+		let walletOpened = wsession.get('serviceReady') || false;
+		if (walletOpened) {
+			aboutButtonBack.classList.add('hidden');
+		} else {
+			aboutButtonBack.classList.remove('hidden');
+		}
+	}	
+	
 	// when overview is loaded, show the sidebar nav and fetch DNX stats
 	if(targetSection === 'section-overview'){
 		setCssWalletOpened();

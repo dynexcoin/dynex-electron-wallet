@@ -6,7 +6,7 @@ config.appDescription = 'Dynex Electron Wallet';
 config.appSlogan = 'DNX - The Quantum Currency';
 config.appId = 'dynex-electron-wallet';
 config.appWebsite = 'https://dynexcoin.org/';
-config.appGitRepo = 'https://github.com/dynexcoin/';
+config.appGitRepo = 'https://github.com/dynexcoin/dynex-electron-wallet';
 
 // default port number for your daemon (e.g. dynexd)
 config.daemonDefaultRpcPort = 18333;
