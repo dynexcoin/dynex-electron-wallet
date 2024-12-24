@@ -3273,7 +3273,7 @@ grid-column-start: 1;
 
 /* settings */
 #section-settings {
-	padding-top: 128px;
+	padding-top: 65px;
 }
 body.wallet-opened #section-settings {
 	padding-top: 45px;
