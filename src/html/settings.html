@@ -2,40 +2,58 @@
 	<section class="section" id="section-settings">
 		<div class="div-title clearfix">
 			<img src="../assets/settings/title.png" />
-			<h2 class="title">Settings</h2>
-			<div class="subtitle">Dynex Wallet</div>
+			<h2 class="title" data-i18n="settings-title">Settings</h2>
+			<div class="subtitle" data-i18n="settings-dynex-wallet">Dynex Wallet</div>
 		</div>
 		<div class="div-input">
 			<div class="input-wrap">
-				<h4 class="text-spaced input-required">Select path to DNX-service executable file</h4>
+				<h4 class="text-spaced input-required" data-i18n="settings-service-path">Select path to DNX-service executable file</h4>
 				<input tabindex="0" required="required" data-fileobj="wallet file" data-selection="openFile" data-targetinput="input-settings-path" data-initial="service_bin" readonly="readonly" class="text-block path-input-button" id="input-settings-path" placeholder="Required, full path to the DNX-service executable file..." />
 				<button data-fileobj="wallet file" data-selection="saveFile" data-targetinput="input-settings-path" type="button" class="button-browse path-input-button notabindex" id="button-settings-browse"><i class="fas fa-folder-open"></i></button>
 			</div>
 
 			<div class="input-wrap">
-				<h4 class="text-spaced input-required">Select path to DNX-node executable file</h4>
+				<h4 class="text-spaced input-required" data-i18n="settings-node-path">Select path to DNX-node executable file</h4>
 				<input tabindex="0" required="required" data-fileobj="node file" data-selection="openFile" data-targetinput="input-settings-path2" data-initial="node_bin" readonly="readonly" class="text-block path-input-button" id="input-settings-path2" placeholder="Required, full path to the DNX-node executable file..." />
 				<button data-fileobj="node file" data-selection="saveFile" data-targetinput="input-settings-path2" type="button" class="button-browse path-input-button notabindex" id="button-settings-browse2"><i class="fas fa-folder-open"></i></button>
 			</div>
 
 			<div class="input-wrap">
-				<h4 class="text-spaced">DHIP ETH Address</h4>
+				<h4 class="text-spaced" data-i18n="settings-dhip-eth">DHIP ETH Address</h4>
 				<input tabindex="0" data-initial="wrapped_addr" name="dhipEthAddr" class="text-block" id="input-settings-eth-address" placeholder="ETH Address for 0xDNX DHIP Participation" />
-				<span id="daemonDhipFormHelp" class="form-help">This will allow you to monitor your 0xDNX DHIP participation.</span>
+				<span id="daemonDhipFormHelp" class="form-help" data-i18n="settings-dhip-eth-info">This will allow you to monitor your 0xDNX DHIP participation</span>
 			</div>
 
 			<div class="input-wrap">
-				<h4 class="text-spaced">QNode SubGroup ID</h4>
+				<h4 class="text-spaced" data-i18n="settings-qnode-subgrp">QNode SubGroup ID</h4>
 				<input tabindex="0" data-initial="qnode_subgrp" name="qnodeSubgroup" class="text-block" id="input-settings-qnode-subgrp" placeholder="QNode Subgroup ID for monitoring your nodes" />
-				<span id="daemonQnodeFormHelp" class="form-help">This will allow you to monitor your Dynex Quantum Nodes.</span>
+				<span id="daemonQnodeFormHelp" class="form-help" data-i18n="settings-qnode-subgrp-info">This will allow you to monitor your Dynex Quantum Nodes</span>
 			</div>
 			
 			<div class="input-wrap">
-				<h4 class="text-spaced input-required">Language</h4>
-				<select class="text-block" id="settings_lang" style="width: 100%; margin-bottom: 0px;" required="required">
-					<option value="en">English</option>
+				<h4 class="text-spaced input-required" data-i18n="settings-language">Language</h4>
+				<select class="text-block" name="systemLanguage" id="input-settings-language" style="width: 100%; margin-bottom: 0px;" required="required">
+					<optgroup label="Default">
+						<option value="en" data-i18n="settings-language-en">English</option>
+					<optgroup label="Standard">
+						<option value="cn" data-i18n="settings-language-cn">Chinese</option>
+						<option value="nl" data-i18n="settings-language-nl">Dutch</option>
+						<option value="fr" data-i18n="settings-language-fr">French</option>
+						<option value="gr" data-i18n="settings-language-gr">Greek</option>
+						<option value="de" data-i18n="settings-language-de">German</option>
+						<option value="it" data-i18n="settings-language-it">Italian</option>
+						<option value="jp" data-i18n="settings-language-jp">Japanese</option>
+						<option value="pl" data-i18n="settings-language-pl">Polish</option>
+						<option value="pt" data-i18n="settings-language-pt">Portuguese</option>
+						<option value="ru" data-i18n="settings-language-ru">Russian</option>
+						<option value="es" data-i18n="settings-language-es">Spanish</option>
+						<option value="tr" data-i18n="settings-language-tr">Turkish</option>
+					</optgroup>
+					<optgroup label="Special">
+						<option value="pirate" data-i18n="settings-language-pirate">Pirate</option>
+					</optgroup>	
 				</select>
-				<span class="form-help">Which language would you like to use</span>
+				<span class="form-help" data-i18n="settings-language-info">Which language would you like to use</span>
 			</div>			
 
 			<div class="input-wrap hidden">
@@ -68,7 +86,7 @@
 			<div class="input-wrap">
 				<div class="two-cols">
 					<div class="first-col">
-						<button tabindex="0" type="button" class="form-bt button-blue" id="button-settings-save">Save the settings</button>
+						<button tabindex="0" type="button" class="form-bt button-blue" id="button-settings-save" data-i18n="settings-save-button">Save the settings</button>
 					</div>
 					<div class="second-col">
 						<span class="form-ew form-msg text-spaced-warning" id="text-settings-warning"></span>
@@ -78,6 +96,6 @@
 				</div>
 			</div>
 		</div>
-		<button type="button" class="form-bt back-button-top-left" data-section="section-welcome" id="button-settings-back"><img src="../assets/general/arrow-left-white.png" /> Back</button>
+		<button type="button" class="form-bt back-button-top-left" data-section="section-welcome" id="button-settings-back"><img src="../assets/general/arrow-left-white.png" data-i18n="settings-back-button" /> Back</button>
 	</section>
 </template>

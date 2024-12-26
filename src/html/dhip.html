@@ -4,14 +4,14 @@
 			<div class="title-left">
 				<div class="div-title clearfix">
 					<img src="../assets/dhip/title.png" />
-					<h2 class="title">Dynex Holders</h2>
-					<div class="subtitle">Incentive program (DHIP)</div>
+					<h2 class="title" data-i18n="dhip-title">Dynex Holders</h2>
+					<div class="subtitle" data-i18n="dhip-incentive-program">Incentive program (DHIP)</div>
 				</div>
 			</div>
 			<div class="title-right overview-balance2">
 				<div id="balance-available2" title="Opt in to DHIP">
 					<span data-cplabel="Balance2" class="tctcl">
-						<button type="button" class="form-bt button-blue" style="width: 150px;">Opt-In</button>
+						<button type="button" class="form-bt button-blue" style="min-width: 150px;" data-i18n="dhip-opt-in" disabled="disabled">Opt-In</button>
 					</span>
 				</div>
 			</div>			
@@ -21,17 +21,17 @@
 				<img src="../assets/dhip/markets-icon.png" />
 			</div>
 			<div class="box">
-				<div class="title">Total Value Locked</div>
+				<div class="title" data-i18n="dhip-total-locked">Total Value Locked</div>
 				<div class="price" id="tvl-dnx">0.000000000 DNX</div>
 				<div class="price" id="tvl-0xdnx">0.000000000 0xDNX</div>
 			</div>
 			<div class="box">
-				<div class="title">Total Claimed This Month</div>
+				<div class="title" data-i18n="dhip-total-claimed">Total Claimed This Month</div>
 				<div class="price" id="claimed-dnx">0.000000000 DNX</div>
 				<div class="price" id="claimed-0xdnx">0.000000000 0xDNX</div>
 			</div>
 			<div class="box">
-				<div class="title">Rebate</div>
+				<div class="title" data-i18n="dhip-rebate">Rebate</div>
 				<div class="price" id="dhip-rebate-percent" style="font-size: 24px;">0.00 %</div>
 			</div>
 		</div>
@@ -43,17 +43,17 @@
 					<input tabindex="0" id="tx-search" class="text-block search noenter" placeholder="Search by anything..." />
 					</div>
 					<div class="tx-sort">
-						Sort by:
-						<span tabindex="0" class="csort" data-dir="0" id="dhipSortAmount">Amount</span>
-						<span tabindex="0" class="csort" data-dir="0" id="dhipSortTime">Date</span>
+						<span data-i18n="dhip-sortby">Sort by</span>:
+						<span tabindex="0" class="csort" data-dir="0" id="dhipSortAmount" data-i18n="dhip-sortby-amount">Amount</span>
+						<span tabindex="0" class="csort" data-dir="0" id="dhipSortTime" data-i18n="dhip-sortby-date">Date</span>
 					</div>
 				</div>
 				<table class="custom-table transaction-list-table" id="dhip-list-table">
 					<thead>
 						<tr>
-							<th style="width: 25%;">Date</th>
-							<th>Transaction hash</th>
-							<th style="width: 20%;">Amount</th>
+							<th style="width: 25%;" data-i18n="dhip-sortby-date">Date</th>
+							<th data-i18n="dhip-sortby-tx">Transaction hash</th>
+							<th data-i18n="dhip-sortby-amount" style="width: 20%;">Amount</th>
 						</tr>
 					</thead>
 					<tbody class="list" id="dhipList"></tbody>

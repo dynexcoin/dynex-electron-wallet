@@ -4,15 +4,15 @@
 			<div class="title-left">
 				<div class="div-title clearfix">
 					<img src="../assets/addressbook/title.png" />
-					<h2 class="title">Address Book</h2>
-					<div class="subtitle">Contacts</div>
+					<h2 class="title" data-i18n="addressbook-title">Address Book</h2>
+					<div class="subtitle" data-i18n="addressbook-contacts">Contacts</div>
 				</div>
 			</div>
 			<div class="title-right">
 				<select id="button-addressbook-order">
-					<option disabled>Sort the contact</option>
-					<option value="name">Label</option>
-					<option value="address">Wallet Address</option>
+					<option disabled data-i18n="addressbook-sortby">Sort the contact</option>
+					<option value="name" data-i18n="addressbook-sortby-label">Label</option>
+					<option value="address" data-i18n="addressbook-sortby-address">Wallet Address</option>
 				</select>
 			</div>
 		</div>
@@ -31,7 +31,7 @@
 					<input required="required" class="text-block" id="input-addressbook-name" placeholder="Label" />
 				</div>
 				<div class="submit">
-					<button type="button" class="form-bt button-blue" id="button-addressbook-save">Save contact</button>
+					<button type="button" class="form-bt button-blue" id="button-addressbook-save" data-i18n="addressbook-save-button">Save Contact</button>
 				</div>
 			</div>
 		</div>

@@ -4,14 +4,14 @@
 			<div class="title-left">
 				<div class="div-title clearfix">
 					<img src="../assets/transactions/title.png" />
-					<h2 class="title">Transactions</h2>
-					<div class="subtitle">History</div>
+					<h2 class="title" data-i18n="transactions-title">Transactions</h2>
+					<div class="subtitle" data-i18n="transactions-history">History</div>
 				</div>
 			</div>	
 			<div class="title-right overview-balance2 transactions-div-export hidden">
 				<div id="balance-available2" title="Export as CSV">
 					<span data-cplabel="Balance2" class="tctcl">
-						<button type="button" class="form-bt button-blue" id="transaction-export">Export as CSV</button>
+						<button type="button" class="form-bt button-blue" id="transaction-export" data-i18n="transactions-export">Export as CSV</button>
 					</span>
 				</div>
 			</div>			
@@ -24,20 +24,20 @@
 					<input tabindex="0" id="tx-search" class="text-block search noenter" placeholder="Search by anything..." />
 					</div>
 					<div class="tx-sort">
-						Sort by:
-						<span tabindex="0" class="csort" data-dir="0" id="txSortAmount">Amount</span>
-						<span tabindex="0" class="csort" data-dir="0" id="txSortTime">Date</span>
-						<span tabindex="0" class="csort" data-dir="0" id="txSortStatus">Status</span>
+						<span data-i18n="transactions-sortby">Sort by</span>:
+						<span tabindex="0" class="csort" data-dir="0" id="txSortAmount" data-i18n="transactions-sortby-amount">Amount</span>
+						<span tabindex="0" class="csort" data-dir="0" id="txSortTime" data-i18n="transactions-sortby-date">Date</span>
+						<span tabindex="0" class="csort" data-dir="0" id="txSortStatus" data-i18n="transactions-sortby-status">Status</span>
 					</div>
 				</div>
 				<table class="custom-table transaction-list-table" id="transaction-list-table">
 					<thead>
 						<tr>
-							<th>Date</th>
-							<th>Transaction Hash</th>
-							<th>Payment ID</th>
-							<th>Amount</th>
-							<th>Status</th>
+							<th data-i18n="transactions-sortby-date">Date</th>
+							<th data-i18n="transactions-sortby-tx">Transaction Hash</th>
+							<th data-i18n="transactions-sortby-paymentid">Payment ID</th>
+							<th data-i18n="transactions-sortby-amount">Amount</th>
+							<th data-i18n="transactions-sortby-status">Status</th>
 						</tr>
 					</thead>
 					<tbody class="list"></tbody>
@@ -48,20 +48,20 @@
 
 		<div class="transactions-div-no-transactions">
 			<div id="txfiller" class="list-tables">
-				<p>Transaction data not available.<br>Either you haven't made any transaction or your wallet still being synchronized.</p>
+				<p data-i18n="transactions-datanotavailable">Transaction data not available</p><p data-i18n="transactions-notsynced">Either you haven't made any transaction or your wallet still being synchronized</p>
 			</div>
 		</div>
 
 		<div class="transactions-div-transaction-lists">
 			<div id="mempool-lists" class="list-tables hidden">
-				<h2>Mempool</h2>
+				<h2 data-i18n="transactions-mempool">Mempool</h2>
 				<table class="custom-table transaction-list-table" id="transaction-list-table2">
 					<thead>
 						<tr>
-							<th style="width: 50%;">Transaction Hash</th>
-							<th>Amount</th>
-							<th>Fee</th>
-							<th>Status</th>
+							<th style="width: 50%;" data-i18n="transactions-sortby-tx">Transaction Hash</th>
+							<th data-i18n="transactions-sortby-amount">Amount</th>
+							<th data-i18n="transactions-sortby-fee">Fee</th>
+							<th data-i18n="transactions-sortby-status">Status</th>
 						</tr>
 					</thead>
 					<tbody class="list" id="mempoolTbody"></tbody>
@@ -72,7 +72,7 @@
 		<div class="input-wrap button-wrap" style="padding: 0;margin-top: 1rem;">
 			<input type="hidden" id="transaction-updated" value="0" />
 			<input type="hidden" id="transaction-notify" value="0" />
-			<button tabindex="-1" type="button" class="hidden button-green small" id="button-transactions-refresh">Refresh</button>
+			<button tabindex="-1" type="button" class="hidden button-green small" id="button-transactions-refresh" data-i18n="transactions-refresh-button">Refresh</button>
 		</div>
 	</section>
 </template>

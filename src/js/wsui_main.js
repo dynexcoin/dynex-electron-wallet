@@ -55,6 +55,7 @@ let settingsInputServiceBin;
 let settingsInputNodeBin;
 let settingsInputWrappedAddr;
 let settingsInputQNodeSubGrp;
+let settingsInputLanguage;
 let settingsInputMinToTray;
 let settingsInputCloseToTray;
 let settingsButtonSave;
@@ -160,6 +161,7 @@ function populateElementVars(){
 	settingsInputNodeBin = document.getElementById('input-settings-path2');
 	settingsInputWrappedAddr = document.getElementById('input-settings-eth-address');
 	settingsInputQNodeSubGrp = document.getElementById('input-settings-qnode-subgrp');
+	settingsInputLanguage = document.getElementById('input-settings-language');
 	settingsInputMinToTray = document.getElementById('checkbox-tray-minimize');
 	settingsInputCloseToTray = document.getElementById('checkbox-tray-close');
 	settingsButtonSave = document.getElementById('button-settings-save');
@@ -1037,6 +1039,7 @@ function initSettingVal(values){
 		settings.set('node_bin', values.node_bin);
 		settings.set('wrapped_addr', values.wrapped_addr);
 		settings.set('qnode_subgrp', values.qnode_subgrp);
+		settings.set('language', values.language);
 		settings.set('daemon_host', values.daemon_host);
 		settings.set('daemon_port', values.daemon_port);
 		settings.set('tray_minimize', values.tray_minimize);
@@ -1046,6 +1049,7 @@ function initSettingVal(values){
 	settingsInputNodeBin.value = settings.get('node_bin');
 	settingsInputWrappedAddr.value = settings.get('wrapped_addr');
 	settingsInputQNodeSubGrp.value = settings.get('qnode_subgrp');
+	settingsInputLanguage.value = settings.get('language');
 	settingsInputDaemonAddress.value = settings.get('daemon_host');
 	settingsInputDaemonPort.value = settings.get('daemon_port');
 	settingsInputMinToTray.checked = settings.get('tray_minimize');
@@ -1177,6 +1181,7 @@ function handleSettings(){
 		let nodeBinValue = settingsInputNodeBin.value ? settingsInputNodeBin.value.trim() : '';
 		let wrappedTokenValue = settingsInputWrappedAddr.value ? settingsInputWrappedAddr.value.trim() : '';
 		let qnodeSubGrpValue = settingsInputQNodeSubGrp.value ? settingsInputQNodeSubGrp.value.trim() : '';
+		let settingsLanguage = settingsInputLanguage.value ? settingsInputLanguage.value.trim() : '';
 		let daemonHostValue = settingsInputDaemonAddress.value ? settingsInputDaemonAddress.value.trim() :'';
 		let daemonPortValue = settingsInputDaemonPort.value ? parseInt(settingsInputDaemonPort.value.trim(),10) : '';
 
@@ -1227,6 +1232,7 @@ function handleSettings(){
 			node_bin: nodeBinValue,
 			wrapped_addr: wrappedTokenValue,
 			qnode_subgrp: qnodeSubGrpValue,
+			language: settingsLanguage,
 			daemon_host: daemonHostValue,
 			daemon_port: daemonPortValue,
 			tray_minimize: settingsInputMinToTray.checked,
@@ -1234,6 +1240,7 @@ function handleSettings(){
 		};
 
 		initSettingVal(vals);
+		loadLanguage(settingsLanguage);
 		remote.app.checkUpdateConfig(); // re-check config format
 		formMessageReset();
 		initNodeCompletion();
@@ -1455,6 +1462,7 @@ function handleWalletOpen(){
 			node_bin: settings.get('node_bin') || "DNX-node",
 			wrapped_addr: settings.get('wrapped_addr') || "",
 			qnode_subgrp: settings.get('qnode_subgrp') || "",
+			language: settings.get('language') || "en",
 			daemon_host: daemonHostValue,
 			daemon_port: daemonPortValue,
 			tray_minimize: settings.get('tray_minimize'),
@@ -2674,9 +2682,58 @@ function handleNetworkChange(){
 	});
 }
 
+// language system
+async function loadLanguage(lang) {
+	// Function to load the selected language JSON file
+	try {
+		const response = await fetch(`../../lang/${lang}.json`);
+		if (!response.ok) throw new Error(`Language file ${lang} not found.`);
+		const translations = await response.json();
+		applyTranslations(translations);
+		log.debug("[dnx-lang] set language:", settings.get('language'));
+	} catch (error) {
+		log.debug('[dnx-lang] Error loading language:', error);
+	}
+}
+function applyTranslations(translations) {
+	// Function to apply translations to the DOM
+	document.querySelectorAll('[data-i18n]').forEach(element => {
+		const key = element.getAttribute('data-i18n');
+		if (translations[key]) {
+			element.innerHTML = translations[key];
+		}
+	});
+}
+
 // event handlers
+function initHelp() {
+	const toggleButtons = document.querySelectorAll('.toggleButton');
+	const contents = document.querySelectorAll('.content-help');
+
+	toggleButtons.forEach((button, index) => {
+		button.addEventListener('click', () => {
+		  // Close all content divs
+			contents.forEach((content) => {
+				content.style.display = 'none';
+			});
+			// Toggle the clicked content div
+			const content = contents[index];
+			if (content.style.display === 'none' || content.style.display === '') {
+				content.style.display = 'block';
+			}
+			// Remove 'active' class from all buttons
+			toggleButtons.forEach((btn) => btn.classList.remove('active'));
+			// Add 'active' class to the clicked button
+			button.classList.add('active');
+		});
+	});
+}
 function initHandlers(){
 	initSectionTemplates();
+
+	// language check (debug only)
+	let currentLanguage = settings.get('language') || "en";
+	loadLanguage(currentLanguage);
 
 	// netstatus
 	handleNetworkChange();
@@ -2936,6 +2993,8 @@ function initHandlers(){
 	handleTransactions();
 	// transactions - mempool (by wallet)
 	handleMempool();
+	// initiate the collpasible divs on Help Page
+	initHelp();
 }
 
 function animateLeft(obj, from, to, cb){

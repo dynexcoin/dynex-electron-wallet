@@ -4,13 +4,13 @@
 			<div class="title-left">
 				<div class="div-title clearfix">
 					<img src="../assets/bridge/title.png" />
-					<h2 class="title">Dynex Bridge</h2>
-					<div class="subtitle">Bridge over to other chains</div>
+					<h2 class="title" data-i18n="bridge-title">Dynex Bridge</h2>
+					<div class="subtitle" data-i18n="bridge-over-chains">Bridge over to other chains</div>
 				</div>
 			</div>
 			<div class="title-right overview-balance2">
 				<div id="balance-available2" title="Available Balance">
-					<div class="blue">Your Wrapped DNX</div> 
+					<div class="blue" data-i18n="bridge-wrapped-balance">Your Wrapped DNX</div> 
 					<span data-cplabel="Balance2" class="tctcl" id="balanceWrapped">0.000000000</span> 0xDNX (ETH)
 				</div>
 			</div>			
@@ -21,40 +21,40 @@
 				<img src="../assets/bridge/markets-icon.png" />
 			</div>
 			<div class="box">
-				<div class="title">Total Volume</div>
+				<div class="title" data-i18n="bridge-total-volume">Total Volume</div>
 				<div class="price" id="bridge-total-volume">0 DNX</div>
 			</div>
 			<div class="box">
-				<div class="title">24 Hours Volume</div>
+				<div class="title" data-i18n="bridge-24hr-volume">24 Hours Volume</div>
 				<div class="price" id="bridge-24hr-volume">0 DNX</div>
 			</div>
 			<div class="box">
-				<div class="title">Total Transactions</div>
+				<div class="title" data-i18n="bridge-total-transactions">Total Transactions</div>
 				<div class="price" id="bridge-total-transactions">0</div>
 			</div>
 		</div>		
 		
 		<div class="div-input">
 			<div class="input-wrap">
-				<h4 class="text-spaced input-required">Chain</h4>
+				<h4 class="text-spaced input-required" data-i18n="bridge-chain">Chain</h4>
 				<select class="text-block" id="input-send-bridge-chain" style="width: 100%;" required="required">
 					<option value="1">Ethereum (ETH)</option>
 				</select>
-				<span class="form-help info blue">Please choose the chain you would like to bridge to.</span>
+				<span class="form-help info blue" data-i18n="bridge-chain-info">Please choose the chain you would like to bridge to</span>
 			</div>
 			<div class="input-wrap">
-				<h4 class="text-spaced input-required">Chain Wallet ID</h4>
+				<h4 class="text-spaced input-required" data-i18n="bridge-walletid">Chain Wallet ID</h4>
 				<input tabindex="0" title="Required, where you would like your wrapped Dynex sent to?..." required="required" type="text" class="text-block" id="input-send-bridge-to" />
-				<span class="form-help info blue">Please supply a wallet address for where you wish your wrapped Dynex to be sent to.</span>
+				<span class="form-help info blue" data-i18n="bridge-walletid-info">Please supply a wallet address for where you wish your wrapped Dynex to be sent to</span>
 			</div>				
 			<div class="input-wrap">
-				<h4 class="text-spaced input-required">Amount</h4>
+				<h4 class="text-spaced input-required" data-i18n="bridge-amount">Amount</h4>
 				<input tabindex="0" title="Required, amount of DNX you want to send to bridge..." required="required" type="number" step="0.01" min="0.01" max="10000000.00" class="text-block" id="input-send-bridge-amount" placeholder="1.00" />
-				<div class="form-help info blue" style="width: 100%;">Amount of DNX you wish to send to the bridge to be wrapped to 0xDNX.</div>
-				<div class="form-help info blue" style="width: 100%;">Fee: <span id="bridge-fee-amount">0</span> DNX</div>
+				<div class="form-help info blue" style="width: 100%;" data-i18n="bridge-amount-info">Amount of DNX you wish to send to the bridge to be wrapped to 0xDNX</div>
+				<div class="form-help info blue" style="width: 100%;"><span data-i18n="bridge-amount-fee">Fee</span>: <span id="bridge-fee-amount">0</span> DNX</div>
 			</div>
 			<div class="input-wrap">
-			   <button type="button" class="form-bt button-blue" id="button-send-bridge">Send Bridge Payment</button>
+			   <button type="button" class="form-bt button-blue" id="button-send-bridge" data-i18n="bridge-send-payment">Send Bridge Payment</button>
 			</div>		
 
 			<div class="input-wrap">

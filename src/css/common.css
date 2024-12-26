@@ -348,13 +348,16 @@ span.form-msg{
 	line-height: 1.1rem;
 	text-shadow: 1px 1px 1px rgba(255,255,255, .2);
 	text-transform: uppercase;
-/*	transition: all 0.15s ease; */
 	color: #f3f3f3;
 	padding: 13px 1rem 13px 1rem;
 	cursor: pointer;
-	/* margin-right: 0.25rem; */
-	/* box-shadow: 2px 2px 2px rgba(0,0,0,.29), inset 0px 0px 2px rgba(0,0,0, .5); */
 }
+.button-blue:disabled{
+	background: grey !important;
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+}
+
 a.external.button-blue{
 	padding: 1rem !important;
 	color: #f3f3f3;
@@ -1410,6 +1413,7 @@ body .block-explorer-div-content .button-blue:hover{
 	text-shadow: 0px -1px 0px #333;
 	margin: 0 0 62px 0;
 	color: #2798c7;
+	text-transform: uppercase;
 }
 .welcome-wiki{
 	text-align: center;
@@ -3527,4 +3531,39 @@ a.external{
 	border-radius: 3px;
 	margin-top: 0.5rem;
 	display: inline-block;
+}
+
+/* About Page */
+.content-help-frame {
+	margin-top: 15px;
+	margin-left: 45px;
+	margin-right: 50px;
+}
+.content-help-row {
+	margin-bottom: 5px;
+}
+.content-help {
+	display: none; /* Initially hidden */
+	padding: 10px 15px;
+	border: .1px solid #ddd;
+}
+.button-help {
+	width: 100%;
+	padding: 10px 15px;
+	background-color: transparent;
+	color: #fff;
+	border: none;
+	font-size: 16px;
+	text-align: left;
+	cursor: pointer;
+}
+.button-help:hover {
+	background-color: #0056b3;
+}
+.button-help:focus {
+	border: 0px;
+	outline: none;
+}
+.button-help.active {
+	background-color: #0056b3;
 }
