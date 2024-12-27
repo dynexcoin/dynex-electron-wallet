@@ -38,7 +38,7 @@ This wallet contains the basic functions required to manage your Dynex (DNX):
 ### Languages
 * ✅ English (Default)
 * ✅ Chinese - flugel
-* Dutch
+* ✅ Dutch - MJ
 * ✅ French - pasteyy
 * ✅ Greek - nostalgia
 * ✅ German - sumitomo
@@ -48,6 +48,7 @@ This wallet contains the basic functions required to manage your Dynex (DNX):
 * Portuguese 
 * ✅ Russian - Отец Сергий
 * ✅ Spanish - ismoyano
+* ✅ Swedish - maximilian
 * ✅ Turkish - giants0808
 
 ### Notes
