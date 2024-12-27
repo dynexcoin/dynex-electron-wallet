@@ -30,6 +30,7 @@ This wallet contains the basic functions required to manage your Dynex (DNX):
   * Provides internal node and wallet services
   * Option to use system tray (on closing/minimizing wallet)
   * Keyboard shortcuts for ease of use
+  * Multi language system (supporting 10+ languages)
 * Dynex Ecosystem Tools
   * DHIP (Opt in for Native L1 Chain)
   * Bridge (Ability to bridge L1 DNX to L2 0xDNX)
@@ -81,7 +82,7 @@ See: https://docs.appimage.org/user-guide/run-appimages.html
 2. Extract downloaded zip archived into your home folder
 3. Open terminal and Run: `cd /Users/YOURNAME/Dynex-Electron-Wallet.app/Contents/MacOS && ./Dynex-Electron-Wallet`
 
-### Build
+### Build From Source
 You need to have `Node.js` and `npm` installed, go to https://nodejs.org and find out how to get it installed on your platform.
 
 Once you have Node+npm installed:
