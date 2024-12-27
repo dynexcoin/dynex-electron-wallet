@@ -48,7 +48,7 @@ This wallet contains the basic functions required to manage your Dynex (DNX):
 * Portuguese 
 * ✅ Russian - Отец Сергий
 * ✅ Spanish - ismoyano
-* Turkish
+* ✅ Turkish - giants0808
 
 ### Notes
 Dynex Electron Wallet relies on `DNX-service` and `DNX-node` to manage wallet container &amp; rpc communication.
