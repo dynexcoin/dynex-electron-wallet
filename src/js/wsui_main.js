@@ -2723,7 +2723,7 @@ function applyAdaptiveTextSize() {
 function adjustTextSize(element, parent) {
 	// Function to adjust text size
 	const maxFontSize = 16; // Set a maximum font size
-	const minFontSize = 12; // Set a minimum font size
+	const minFontSize = 13; // Set a minimum font size
 	let fontSize = maxFontSize;
 
 	element.style.fontSize = `${fontSize}px`;
