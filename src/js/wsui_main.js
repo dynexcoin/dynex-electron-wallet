@@ -894,6 +894,10 @@ function changeSection(sectionId, isSettingRedir) {
 		listAddressBook(true);
 	}
 	// Bridge Functions
+	if(targetSection === 'section-transactions'){	
+		handleMempool();
+	}
+	// Bridge Functions
 	if(targetSection === 'section-bridge'){
 		lookupBridge();
 		if (settings.get('wrapped_addr') != '' && settings.get('wrapped_addr') != undefined) {
@@ -2118,7 +2122,6 @@ function handleSendTransfer(){
 					md.close();
 					formMessageSet('send', 'warning2', 'Sending bridge transaction, please wait...<br><progress></progress>');
 					wsmanager.sendTransaction(tx).then((result) => {
-						console.log(result);
 						formMessageReset();
 						let txhashUrl = `<a class="external" title="view in block explorer" href="${config.blockExplorerTransactionUrl.replace('[[TX_HASH]]', result.transactionHash)}">${result.transactionHash}</a>`;
 						let okMsg = `Transaction sent!<br>Tx. hash: ${txhashUrl}.<br>Your balance may appear incorrect while transaction(s) not fully confirmed.`;
@@ -2161,11 +2164,9 @@ function handleSendTransfer(){
 		wsmanager.optimizeWallet().then( (res) => {
 			//FUSION_IN_PROGRESS = false;
 			// do nothing, just wait
-			// console.log(res);
 		}).catch((err) => {
 			//FUSION_IN_PROGRESS = false;
 			// do nothing, just wait
-			// console.log(err.message);
 		});
 		return; // just return, it will notify when its done.
 	});
@@ -2682,7 +2683,8 @@ function handleNetworkChange(){
 	});
 }
 
-// language system
+// Array of CSS classes to exempt from adaptive text resizing
+const adaptiveTextExemptions = ['form-help', 'welcome-intro-title', 'welcome-intro'];
 async function loadLanguage(lang) {
 	// Function to load the selected language JSON file
 	try {
@@ -2690,6 +2692,7 @@ async function loadLanguage(lang) {
 		if (!response.ok) throw new Error(`Language file ${lang} not found.`);
 		const translations = await response.json();
 		applyTranslations(translations);
+		applyAdaptiveTextSize(); // Ensure text size is adjusted after applying translations
 		log.debug("[dnx-lang] set language:", settings.get('language'));
 	} catch (error) {
 		log.debug('[dnx-lang] Error loading language:', error);
@@ -2703,6 +2706,38 @@ function applyTranslations(translations) {
 			element.innerHTML = translations[key];
 		}
 	});
+}
+function applyAdaptiveTextSize() {
+	// Generate the selector dynamically from the adaptiveTextExemptions array
+	const exemptionSelector = adaptiveTextExemptions.map(cls => `:not(.${cls})`).join('');
+	
+	// Function to adapt text size to fit within parent elements
+	document.querySelectorAll(`[data-i18n]${exemptionSelector}`).forEach(element => {
+		// Exclude elements with the specified classes
+		const parent = element.parentElement || element; // Use parent or fallback to self if no parent
+		if (parent) {
+			adjustTextSize(element, parent);
+		}
+	});
+}
+function adjustTextSize(element, parent) {
+	// Function to adjust text size
+	const maxFontSize = 16; // Set a maximum font size
+	const minFontSize = 12; // Set a minimum font size
+	let fontSize = maxFontSize;
+
+	element.style.fontSize = `${fontSize}px`;
+	while (
+		(element.scrollWidth > parent.clientWidth || element.scrollHeight > parent.clientHeight) &&
+		fontSize > minFontSize
+	) {
+		fontSize--;
+		element.style.fontSize = `${fontSize}px`;
+	}
+
+	if (fontSize === minFontSize && (element.scrollWidth > parent.clientWidth || element.scrollHeight > parent.clientHeight)) {
+		log.debug('[dnx-lang] Warning: Text still overflowing at minimum size for', element);
+	}
 }
 
 // event handlers

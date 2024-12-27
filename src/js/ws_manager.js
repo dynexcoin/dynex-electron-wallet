@@ -623,10 +623,20 @@ WalletShellManager.prototype.getSecretKeys = function(address){
     });
 };
 
-WalletShellManager.prototype.sendTransaction = function(params){
+WalletShellManager.prototype.sendTransaction = function(params) {
     let wsm = this;
     return new Promise((resolve, reject) => {
         wsm.serviceApi.sendTransaction(params).then((result) => {
+            let currentLanguage = settings.get('language') || "en";
+            if (currentLanguage == 'pirate') {
+                // Play the pirate MP3 sound clip
+                try {
+                    let audio = new Audio('../../src/assets/audio/1.mp3');
+                    audio.play().catch(err => console.error("Error playing audio: ", err));
+                } catch (error) {
+                    console.log("Audio playback failed, possibly no audio device available: ", error);
+                }
+            }
             return resolve(result);
         }).catch((err) => {
             return reject(err);

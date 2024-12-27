@@ -86,7 +86,7 @@ body.wallet-opened .navbar {
 }
 .navbar .navbar-label {
 	vertical-align: top;
-	line-height: 25px;
+	line-height: 30px;
 	margin-left: 10px;
 }
 
@@ -2983,8 +2983,8 @@ progress.light{
 	grid-column-end: 2;
 }
 .overview-balance {
-grid-column-start: 1;
-    grid-column-end: 2;
+	grid-column-start: 1;
+    grid-column-end: 3;
     margin-top: 40px;
     margin-left: 45px;
     color: #fff;

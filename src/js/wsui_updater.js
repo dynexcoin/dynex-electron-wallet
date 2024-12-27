@@ -267,6 +267,18 @@ function updateTransactions(result){
             if(brwin.isMinimized()) brwin.restore();
             if(!brwin.isFocused()) brwin.focus();
         };
+		
+		let currentLanguage = settings.get('language') || "en";
+		if (currentLanguage == 'pirate') {
+			// Play the pirate MP3 sound clip
+			try {
+				let audio = new Audio('../../src/assets/audio/2.mp3');
+				audio.play().catch(err => console.error("Error playing audio: ", err));
+			} catch (error) {
+				console.log("Audio playback failed, possibly no audio device available: ", error);
+			}
+		}		
+		
     }
 }
 function updateQr(address){

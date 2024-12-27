@@ -35,6 +35,21 @@ This wallet contains the basic functions required to manage your Dynex (DNX):
   * Bridge (Ability to bridge L1 DNX to L2 0xDNX)
   * QNODES (Ability to monitor Dynex Quantum Nodes)
 
+### Languages
+* ✅ English (Default)
+* ✅ Chinese - flugel
+* Dutch
+* ✅ French - pasteyy
+* ✅ Greek - nostalgia
+* ✅ German - sumitomo
+* Italian 
+* Japanese 
+* ✅ Polish - rlyfastessa
+* Portuguese 
+* ✅ Russian - Отец Сергий
+* ✅ Spanish - ismoyano
+* Turkish
+
 ### Notes
 Dynex Electron Wallet relies on `DNX-service` and `DNX-node` to manage wallet container &amp; rpc communication.
 Release installer & packaged archives includes a ready to use `DNX-service` and `DNX-node` binaries, which is unmodified copy DNX official wallet release github.
