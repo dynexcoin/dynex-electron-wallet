@@ -1,0 +1,208 @@
+{
+	"welcome-to": "Benvenuto",	
+	"welcome-dynex-wallet": "Dynex Wallet",	
+	"welcome-create-wallet": "Crea un nuovo portafoglio",	\\wallet=portafoglio? same meaning, what did you like to use? I like wallet also if i'm italian
+	"welcome-open-wallet": "Apri il portafoglio",	
+	"welcome-import-key": "Importa chiavi private",	
+	"welcome-import-seed": "Importa frase mnemonica",	
+	
+	"create-new-wallet": "Crea un nuovo portafoglio Dynex",	
+	"create-where-tostore": "Seleziona un percorso dove archiviare i file del portafoglio",	
+	"create-set-password": "Setta una password per aprire questo portafoglio",	
+	"create-new-button": "Crea un nuovo portafoglio Dynex",	
+	"create-back-button": "Indietro",
+	
+	"open-wallet": "Apri il tuo portafoglio Dynex",
+	"open-select-file": "Seleziona i file del portafoglio",
+	"open-wallet-password": "Wallet Password",  \\ the meaning is insert the password to access the wallet? In the case put "Inserisci la password del portafoglio"
+	"open-openwallet": "Apri il portafoglio",
+	"open-back-button": "Indietro",
+
+	"import-keys-import": "Importa le chiavi private per recuperare un wallet",
+	"import-keys-location": "Seleziona un percorso dove archiviare i file del portafoglio",
+	"import-keys-password": "Setta una password per aprire questo portafoglio",
+	"import-keys-height": "Scansiona l'altezza", \\what do precisely? Maybe i can put somethings better
+	"import-keys-viewkey": "Guarda le parole da importare",
+	"import-keys-spendkey": "Chiave di spesa da importare", \\what do precisely? In which sense?
+	"import-keys-importinfo": "Importa le chiavi private e recupera il portafoglio",
+	"import-keys-back-button": "Indietro",
+	
+	"import-seed-import": "Importa la frase mnemonica e recupera il portafoglio",
+	"import-seed-location": "Seleziona un percorso dove archiviare i file del portafoglio",
+	"import-seed-password": "Setta una password per aprire questo portafoglio", //Whch function is set and where is insert?
+	"import-seed-height": "Scansiona l'altezza",
+	"import-seed-phrase": "Importa frase mnemonica",
+	"import-seed-button": "Importa frase mnemonica e recupera il portafoglio",
+	"import-seed-back-button": "Indietro",
+	
+	"navigation-wallet": "Portafoglio", \\wallet or portafoglio? same meaning, what did you like to use? I like wallet also if i'm italian
+	"navigation-send": "Invia Dynex",
+	"navigation-transactions": "Transazioni",
+	"navigation-bridge": "Bridge",  \\Bridge in italian is Ponte, like ponte di Messina. I like bridge also if i'm italian, is clear. Should Be like in english: Transfer your asset to a different protocol = Trasferisci la tua moneta 	su un protocollo differente
+	"navigation-dhip": "DHIP", \\DHIP=Programma di Incentivazione dei possessori di Dynex
+	"navigation-qnodes": "QNodes",
+	"navigation-addressbook": "Rubrica",
+	"navigation-backup": "Backup", \\backup is also a common italian word. What is the meaning? Save somethings? because backup is good
+	"navigation-help": "Aiuto",  \\In italian websites, is also common FAQ=Domande Frequenti 
+	
+	"overview-balance": "Saldo",
+	"overview-available": "Disponibile",
+	"overview-unconfirmed": "Non-Confermato",
+	"overview-fusion-wallet": "Transazioni Fusion Wallet", \\Is not clear for me
+	"overview-fusion-inprogress": "Fusion Wallet in avanzamento",
+	"overview-sync-status": "Stato Sincronizazione Blockhain",
+	"overview-dhip-status": "Stato DHIP",
+	"overview-copy-address": "Copia Indirizzo",
+	"overview-wallet-address": "Il tuo Portafoglio",
+	"overview-qr-address": "QR Code",
+	"overview-share-address": "Scansiona per condividere il tuo indirizzo", \\Sure is like "Scan for share my address to someone"? In the case is OK. But it has no sense
+	"overview-zoom": "Zoom",
+	"overview-dnx-price": "Prezzo Dynex",
+	"overview-dnx-tradevol": "Volume di trading nelle 24h",
+	"overview-dnx-marketcap": "Capitalizzazione di mercato",
+	"overview-close-wallet": "Chiudi portafoglio",
+	
+	"send-transfer": "Invia / Trasferisci Dynex",
+	"send-process": "Elabora un pagamento DNX",  \\what do precisely? For Industry?
+	"send-amount": "Quantità",  \\If is referrring to the amount of Dynex is Quantità, however if is referring to the price is Importo
+	"send-amount-info": "Inserisci la quantità che vuoi inviare",
+	"send-sendall": "Invia tutto",
+	"send-to": "Indirizzo del destinatario",
+	"send-to-info": "Inserisci uno o più caratteri per cercare tra i contatti, o inserisci un nuovo indirizzo",
+	"send-fee": "Commissioni di transazione",
+	"send-fee-info": " La Min. commissione è 0.001 DNX",
+	"send-paymentid": "ID Pagamento",
+	"send-sendbtn": "Invia un pagamento Dynex", \\Not clear
+	
+	"transactions-title": "Transazioni",
+	"transactions-history": "Cronologia Transazioni",
+	"transactions-export": "Esporta in CSV",
+	"transactions-sortby": "Ordina per",
+	"transactions-sortby-amount": "Quantità", \\If is referrring to the amount of Dynex is Quantità, however if is referring to the price is Importo
+	"transactions-sortby-date": "Data",
+	"transactions-sortby-tx": "Hash della transazione",
+	"transactions-sortby-paymentid": "ID Pagamento",
+	"transactions-sortby-fee": "Commissioni",
+	"transactions-sortby-status": "Stato",
+	"transactions-datanotavailable": "Dati della transazione non disponibili",
+	"transactions-notsynced": "Non hai effettuato alcuna transazione o il tuo portafoglio è ancora in fase di sincronizzazione",
+	"transactions-mempool": "Elenco Transazioni In Corso",
+	"transactions-refresh-button": "Aggiorna",
+	
+	"bridge-title": "Dynex Bridge",
+	"bridge-over-chains": "Bridge DNX su altre blockchain",
+	"bridge-wrapped-balance": "I tuoi DNX Wrappati (0xDNX)",
+	"bridge-total-volume": "Volume Totale",
+	"bridge-24hr-volume": "Volume nelle 24h",
+	"bridge-total-transactions": "Transazioni Totali",
+	"bridge-chain": "Network", //Instead of Blockchain we can use Protocol or Netowrk or Chain. Translating chain to Italian, is "Catena", but no one use it in Italy. Blockchain= Catena a blocchi
+	"bridge-chain-info": "Prego, seleziona la chain dove vorressi effettuare il bridge",
+	"bridge-chain-walletid": "Chain Wallet ID", \\I need to see what exatly do, should be OK if is in english. ChainId says also the italian metamask AP
+	"bridge-walletid": "Chain Wallet ID", \\I need to see what exatly do, should be OK if is in english. ChainId says also the italian metamask APP
+	"bridge-walletid-info": "Fornisci un indirizzo del portafoglio a cui desideri inviare i tuoi Wrapped Dnx (0xDNX)", \\Is the wallet for 0xDnx, not the native Dynex. I precisely because is important ;)
+	"bridge-amount": "Quantità",
+	"bridge-amount-info": "Quantità di DNX che desideri inviare al bridge per essere convertita in 0xDNX",
+	"bridge-amount-fee": "Commissioni",
+	"bridge-send-payment": "Invia pagamento verso il bridge", \\Litterally i translate, send payment to the bridge. We can use also Process the payment to the bridge=Processa il pagamento verso il bridge
+	
+	"dhip-title": "Possessori di Dynex",
+	"dhip-incentive-program": "Programma d'incentivazione per i possessori di Dynex (DHIP)",
+	"dhip-opt-in": "Partecipazione Volontaria", \\Literally transalted like Volontary Partecipation or we can use give consensus = Dai il Consenso
+	"dhip-total-locked": "Totale valore bloccato",
+	"dhip-total-claimed": "Totale rivendicato questo mese",
+	"dhip-rebate": "Incentivo", \\Rebate in italian has no sense, the only words close to rebate is discount. If i understand correctly, the rebate is something that Dynex provide like add-on to the DHIP, so i suggest Dynex 	Addittional Contribution=Contributo Aggiuntivo or simply Incentive or Reward=Ricompensa
+	"dhip-sortby": "Ordina Per",
+	"dhip-sortby-amount": "Quantità",
+	"dhip-sortby-date": "Data",
+	"dhip-sortby-tx": "Hash della transazione",
+	
+	"qnodes-title": "QNodes", \\NodiQ or Nodi Quantistici
+	"qnodes-node-overview": "Stato Nodi Quantistici",	
+	"qnodes-send-collateral": "Invia collaterale", \\To understand exactly in english the action.
+	"qnodes-quantum-nodes": "Nodi Quantistici",
+	"qnodes-collateral": "Collaterale",
+	"qnodes-online": "Online", \\No Transaltion
+	"qnodes-offline": "Offline", \\No Tranlation
+	"qnodes-gpu-overview": "Stato GPU",
+	"qnodes-working": "In Funzione",
+	"qnodes-mining": "Mining",\\No Tranlation
+	"qnodes-stats": "Statistiche",
+	"qnodes-nodes": "Nodi",
+	"qnodes-power": "Power", \\Is what consume, in the case Consumo or Assorbimento. Power is transalted in Potenza, but Power is like 700HP
+	"qnodes-last-update": "Ultimo Aggiornamento", \\Is like update? or look if is updated or what?
+	"qnodes-sortby": "Ordina Per",
+	"dhip-sortby-uptime": "Tempo di attività",
+	"dhip-sortby-power": "Consumo", \\If Is what consume, in the case is Consumo or Assorbimento. Power is transalted in Potenza, but Power is like 700HP
+	"dhip-sortby-gpu": "GPUs",
+	"dhip-sortby-status": "Stato",
+	"dhip-sortby-la": "LA",\\LA is last access? In the case is "Ultimo accesso"
+	"dhip-sortby-geo": "Nazione", \\I Suggest Nation?
+	
+	"addressbook-title": "Rubrica",
+	"addressbook-contacts": "Contatti",
+	"addressbook-sortby": "Ordina tra i contatti",
+	"addressbook-sortby-label": "Etichetta",
+	"addressbook-sortby-address": "Indirizzo del portafoglio",
+	"addressbook-save-button": "Salva contatto",
+	
+	"backup-title": "Backup",
+	"backup-savekeys": "Salva le tue chiavi",
+	"backup-reveal": "Rivela le tue chiavi e frase mnemonica",
+	"backup-export": "Esporta su file",
+	"backup-safety-msg": "Eseguire il backup della tua chiave è uno dei passaggi più importanti per mantenere al sicuro il tuo Dynex. Le chiavi private di seguito possono ripristinare il tuo wallet utilizzando il Dynex Electron 	Wallet. Devi capire che questa chiave privata è molto sensibile. NON CONDIVIDERE MAI questa chiave con nessuno. Con questa chiave puoi recuperare e installare il tuo wallet su qualsiasi computer. Quindi, se qualcuno riesce a 	trovarla/vederla, può recuperare il tuo wallet e spostare i fondi a suo piacimento.Il modo migliore per salvare il tuo wallet è stampare su carta due copie di questa chiave e nasconderle in due posti sicuri diversi. Se perdi 	questa chiave e hai cancellato il file del wallet, non sarai mai in grado di recuperare i tuoi fondi. I tuoi fondi saranno persi per sempre.",
+	"backup-safety-msg2": ""Questa chiave è essenziale per salvare il tuo wallet e i tuoi fondi dal perdersi per sempre.",
+	"backup-safety-msg3": "Non conservarla sul tuo smartphone, tablet o computer. Sei l'unico responsabile della sicurezza delle tue chiavi.",
+	"backup-your-viewkey": "GUARDA LA TUA CHIAVE PRIVATA",
+	"backup-your-viewkey-info": "La chiave non contiene spazi",
+	"backup-your-spendkey": "LA TUA CHIAVE PRIVATA DI SPESA",
+	"backup-your-spendkey-info": "La chiave non contiene spazi",
+	"backup-your-seed": "LA TUA FRASE MNEMONICA PRIVATA",
+	"backup-your-seed-info": "La frase mnemonica è sempre 25 parole",
+	"backup-privkeys-seed": "Chiave Privata e Frase Mnemonica",
+	"backup-safety-msg4": "Per favore, esegui un backup e tieni queste chiavi segrete. Puoi usare queste chiavi per ripristinare il tuo wallet. Chiunque le conosca può accedere al tuo wallet.",
+	"backup-your-viewkey2": "Guarda la tua chiave",
+	"backup-your-spendkey2": "Guarda la tua chiave di spesa",
+	"backup-your-seed2": "Frase Mnemonica", \\I need look=guarda or Backup?
+	
+	"help-title": "Aiuto",
+	"help-common-issues": "Aiuto Gnerale per i problemi comuni",
+	"help-website": "Sito Web Dynex",
+	"help-explorer": "Block Explorer", \\In italian is esploratore di blocchi but block explorer is good, is a common word in crypto, the basic
+	"help-news": "Ultime Notizie", \\I like News, is internation. News in italian is "Novità" or to be catch like "Latest News= Ultime Notizie". 
+	"help-socials": "Socials",
+	
+	"settings-title": "Impostazioni",
+	"settings-dynex-wallet": "Portafoglio Dynex",
+	"settings-service-path": "Seleziona il percorso del file eseguibile DNX-service",
+	"settings-node-path": "Seleziona il percorso del file eseguibile DNX-node",
+	"settings-dhip-eth": "Indirizzo DHIP ETH",
+	"settings-dhip-eth-info": "Questo ti permette di monitorare la tua partecipazione al programma d' incentivazione di Dynex (DHIP) su 0xDNX",
+	"settings-qnode-subgrp": "ID Sottogruppo del QNode",
+	"settings-qnode-subgrp-info": "Questo ti permette di monitorare il tuo nodo quantistico",
+	"settings-language": "Lingua",
+	"settings-language-info": "Quale lingua vorresti utilizzare", \\We need to add the ? at the end?
+	"settings-language-en": "English",
+	"settings-language-fr": "French",
+	"settings-language-de": "German",
+	"settings-language-nl": "Dutch",
+	"settings-language-gr": "Greek",
+	"settings-language-ru": "Russian",
+	"settings-language-it": "Italian",
+	"settings-language-es": "Spanish",
+	"settings-language-pt": "Portuguese",
+	"settings-language-cn": "Chinese",
+	"settings-language-pl": "Polish",
+	"settings-language-tr": "Turkish",
+	"settings-language-jp": "Japanese",
+	"settings-language-se": "Swedish",
+	"settings-language-pirate": "Pirate", \\Pirata in the case.. i Understand what is 
+	"settings-save-button": "Salva le impostazioni",
+	"settings-back-button": "Indietro",
+	
+	"about-title": "Questo software è un'interfaccia grafica (GUI) per gestire Dynex (DNX). Puoi utilizzare questo software per creare nuovi portafogli Dynex, importarli o aprire portafogli elettronici esistenti. Puoi gestire il tuo 	portafoglio, come visualizzare il saldo e la cronologia delle transazioni, inviare/trasferire DNX. I codici sorgente, le note di rilascio, la documentazione e il bug tracker possono essere trovati sulla nostra <a 	class='external' title='open Github page' href='' id='github-link'>github page</a>",
+	"about-license": "Licenze",
+	"about-license-p1": "Copyright Sviluppatori Dynex",
+	"about-license-p2": "Il permesso di usare, copiare, modificare e/o distribuire questo software per qualsiasi scopo, con o senza commissioni, è qui concesso, a condizione che l'avviso di copyright sopra riportato e questo avviso di permesso appaiano in tutte le copie.",
+	"about-license-p3": "IL SOFTWARE VIENE FORNITO "COSÌ COM'È" E L'AUTORE DECLINA QUALSIASI GARANZIA RELATIVA A QUESTO SOFTWARE, INCLUSE TUTTE LE GARANZIE IMPLICITE DI COMMERCIABILITÀ E IDONEITÀ. IN NESSUN CASO L'AUTORE SARÀ RESPONSABILE PER QUALSIASI DANNO SPECIALE, DIRETTO, INDIRETTO O CONSEQUENZIALE, O PER QUALSIASI DANNO DERIVANTE DALLA PERDITA DI UTILIZZO, DATI O PROFITTI, SIA IN UN'AZIONE CONTRATTUALE, NEGLIGENZA O ALTRO ATTO ILLECITO, DERIVANTE DA O IN CONNESSIONE CON L'USO O LE PRESTAZIONI DI QUESTO SOFTWARE.",
+	"about-back-button": "Indietro"
+}
