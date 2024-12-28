@@ -1173,7 +1173,7 @@ function showInitialPage(){
 	let versionInfo = document.getElementById('walletShellVersion');
 	if(versionInfo) versionInfo.innerHTML = WS_VERSION;
 	let wVersionInfo = document.getElementById('walletVersion');
-	if(wVersionInfo) wVersionInfo.innerHTML = "1.0.0";
+	if(wVersionInfo) wVersionInfo.innerHTML = "1.0.2";
 	wsmanager.startNode();	
 }
 
@@ -1188,6 +1188,10 @@ function handleSettings(){
 		let settingsLanguage = settingsInputLanguage.value ? settingsInputLanguage.value.trim() : '';
 		let daemonHostValue = settingsInputDaemonAddress.value ? settingsInputDaemonAddress.value.trim() :'';
 		let daemonPortValue = settingsInputDaemonPort.value ? parseInt(settingsInputDaemonPort.value.trim(),10) : '';
+
+		// Bugfix to make sure that on 1st load that these options are "blank"
+		if (wrappedTokenValue == "undefined" || wrappedTokenValue == undefined || wrappedTokenValue == null) { wrappedTokenValue = ""; }
+		if (qnodeSubGrpValue == "undefined" || qnodeSubGrpValue == undefined || qnodeSubGrpValue == null) { qnodeSubGrpValue = ""; }
 
 		if(!serviceBinValue.length){
 			formMessageSet('settings','error',`Settings can't be saved, please enter correct values`);
@@ -2688,7 +2692,7 @@ const adaptiveTextExemptions = ['form-help', 'welcome-intro-title', 'welcome-int
 async function loadLanguage(lang) {
 	// Function to load the selected language JSON file
 	try {
-		const response = await fetch(`../../lang/${lang}.json`);
+		const response = await fetch(`../../resources/lang/${lang}.json`);
 		if (!response.ok) throw new Error(`Language file ${lang} not found.`);
 		const translations = await response.json();
 		applyTranslations(translations);

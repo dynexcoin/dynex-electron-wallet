@@ -21,10 +21,15 @@ log.transports.file.level = LOG_LEVEL;
 log.transports.file.maxSize = 5 * 1024 * 1024;
 
 const WALLETSHELL_VERSION = app.getVersion() || '0.3.x';
+log.info(`Starting Electron WalletShell v${WALLETSHELL_VERSION}`);
+log.info(`Starting Dynex Wallet v1.0.2`);
+
 const SERVICE_FILENAME =  ( platform === 'win32' ? `${config.walletServiceBinaryFilename}.exe` : config.walletServiceBinaryFilename );
 const NODE_FILENAME =  ( platform === 'win32' ? `${config.walletNodeBinaryFilename}.exe` : config.walletNodeBinaryFilename );
-const DEFAULT_SERVICE_BIN = path.join(__dirname, 'dnx', SERVICE_FILENAME);
-const DEFAULT_NODE_BIN = path.join(__dirname, 'dnx', NODE_FILENAME);
+const DEFAULT_SERVICE_BIN = path.join(__dirname, 'resouces', 'dnx', SERVICE_FILENAME);
+log.info("DNX-Service.exe Pathway: ", DEFAULT_SERVICE_BIN); 
+const DEFAULT_NODE_BIN = path.join(__dirname, 'resouces', 'dnx', NODE_FILENAME);
+log.info("DNX-Node.exe Pathway: ", DEFAULT_NODE_BIN); 
 
 const DEFAULT_SETTINGS = {
     service_bin: DEFAULT_SERVICE_BIN,
@@ -50,9 +55,6 @@ app.prompExit = true;
 app.prompShown = false;
 app.needToExit = false;
 app.setAppUserModelId(config.appId);
-
-log.info(`Starting Electron WalletShell v${WALLETSHELL_VERSION}`);
-log.info(`Starting Dynex Wallet v1.0.0`);
 
 let trayIcon = path.join(__dirname,'src/assets/tray.png');
 let trayIconHide = path.join(__dirname,'src/assets/trayon.png');
@@ -275,35 +277,6 @@ function serviceConfigFormatCheck(){
 
 app.checkUpdateConfig = serviceConfigFormatCheck;
 
-function serviceBinCheck(){
-    if (!IS_DEBUG) {
-        // better to force using default service binary remove it from settings page?
-        log.warn('Using default service bin path');
-        settings.set('service_bin', DEFAULT_SERVICE_BIN);
-    }
-
-    if (DEFAULT_SERVICE_BIN.startsWith('/tmp')) {
-        log.warn(`AppImage env, copying service bin file`);
-        let targetPath = path.join(app.getPath('userData'), SERVICE_FILENAME);
-        try {
-            fs.renameSync(targetPath, `${targetPath}.bak`, (err) => {
-                if (err) log.error(err);
-            });
-        } catch (_e) { }
-
-        try {
-            fs.copyFile(DEFAULT_SERVICE_BIN, targetPath, (err) => {
-                if (err) {
-                    log.error(err);
-                    return;
-                }
-                settings.set('service_bin', targetPath);
-                log.debug(`service binary copied to ${targetPath}`);
-            });
-        } catch (_e) { }
-    }
-}
-
 function initSettings(){
     Object.keys(DEFAULT_SETTINGS).forEach((k) => {
         if(!settings.has(k) || settings.get(k) === null){
@@ -312,7 +285,6 @@ function initSettings(){
     });
     settings.set('service_password', crypto.randomBytes(32).toString('hex'));
     settings.set('version', WALLETSHELL_VERSION);
-    serviceBinCheck();
 }
 
 const silock = app.requestSingleInstanceLock();

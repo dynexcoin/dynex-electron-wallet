@@ -108,7 +108,8 @@ $ npm run dist-lin
 # build Windows package
 $ mkdir -p ./bin/win
 $ cp /path/to/win-version-of/DNX-service.exe ./bin/win/
-$ npm run dist-win
+$ [LINUX] npm run dist-win (running from linux)
+$ [WIN] node_modules\.bin\electron-builder --x64 --win -c.extraResources=dnx\DNX-service.exe -c.extraResources=dnx\DNX-node.exe -c.extraResources=dnx\libcurl.dll -c.extraResources=dnx\zlib1.dll -c.extraResources=lang\en.json  -c.extraResources=lang\en.json -c.extraResources=lang\cn.json -c.extraResources=lang\de.json -c.extraResources=lang\es.json -c.extraResources=lang\gr.json -c.extraResources=lang\nerd.json -c.extraResources=lang\nerd.md -c.extraResources=lang\nl.json -c.extraResources=lang\pirate.json -c.extraResources=lang\pl.json -c.extraResources=lang\ru.json -c.extraResources=lang\se.json
 
 # build OSX package
 $ mkdir -p ./bin/osx
