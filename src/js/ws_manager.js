@@ -162,7 +162,7 @@ WalletShellManager.prototype.startNode = function(){
 		'--restricted-rpc',			// RPC only needs to be READ VIEW
     ]);
 
-	log.debug('Starting Node...');
+	log.debug('[dnx-node] worker started');
     this.nodeProcess = childProcess.execFile(this.nodeBin, nodeArgs, (error, stdout, stderr) => {
 		// if(stderr) log.debug(stderr);
 	});
@@ -293,13 +293,11 @@ WalletShellManager.prototype._spawnService = function(walletFile, password, onEr
     }
 
     let wsm = this;
-    log.debug('Starting service...');
-	// log.debug('Args: ', serviceArgs);
     try{
         this.serviceProcess = childProcess.spawn(wsm.serviceBin, serviceArgs);
         this.servicePid = this.serviceProcess.pid;
-		log.debug('Service started OK');
-		log.debug('Service PID: ' + this.serviceProcess.pid);
+		log.debug('[dnx-service] worker started');
+		log.debug('[dnx-service] pid: ' + this.serviceProcess.pid);
     }catch(e){
         if(onError) onError(ERROR_WALLET_EXEC);
         log.error(`${config.walletServiceBinaryFilename} is not running`);
@@ -308,7 +306,7 @@ WalletShellManager.prototype._spawnService = function(walletFile, password, onEr
     
     this.serviceProcess.on('close', () => {
         this.terminateService(true);
-        log.debug(`${config.walletServiceBinaryFilename} closed`);
+        log.debug(`[dnx-service] closed`);
     });
 
     this.serviceProcess.on('error', (err) => {
@@ -326,9 +324,9 @@ WalletShellManager.prototype._spawnService = function(walletFile, password, onEr
     let TEST_OK = false;
     const MAX_CHECK = 10;
     function testConnection(retry){
-		log.debug('Testing Connection');
+		log.debug('[dnx-service] testing connection');
         wsm.serviceApi.getAddress().then((address) => {
-            log.debug('Got an address, connection ok!');
+            log.debug('[dnx-service] connection test - pass');
             if(!TEST_OK){
                 wsm.serviceActiveArgs = serviceArgs;
                 // update session
@@ -457,18 +455,18 @@ WalletShellManager.prototype.startSyncWorker = function(){
     this.syncWorker.on('close', function (){
         wsm.syncWorker = null;
         try{wsm.syncWorker.kill('SIGKILL');}catch(e){}
-        log.debug(`service worker terminated.`);
+        log.debug(`[dnx-service] worker terminated.`);
     });
 
     this.syncWorker.on('exit', function (){
         wsm.syncWorker = null;
-        log.debug(`service worker exited.`);
+        log.debug(`[dnx-service] worker exited.`);
     });
 
     this.syncWorker.on('error', function(err){
         try{wsm.syncWorker.kill('SIGKILL');}catch(e){}
         wsm.syncWorker = null;
-        log.debug(`service worker error: ${err.message}`);
+        log.debug(`[dnx-service] worker error: ${err.message}`);
     });
 
     let cfgData = {

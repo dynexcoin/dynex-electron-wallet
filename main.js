@@ -26,8 +26,20 @@ log.info(`Starting Dynex Wallet v${config.walletVersion}`);
 
 const SERVICE_FILENAME =  ( platform === 'win32' ? `${config.walletServiceBinaryFilename}.exe` : config.walletServiceBinaryFilename );
 const NODE_FILENAME =  ( platform === 'win32' ? `${config.walletNodeBinaryFilename}.exe` : config.walletNodeBinaryFilename );
-const DEFAULT_SERVICE_BIN = path.join(__dirname, 'resouces', 'dnx', SERVICE_FILENAME);
-const DEFAULT_NODE_BIN = path.join(__dirname, 'resouces', 'dnx', NODE_FILENAME);
+const DEFAULT_SERVICE_BIN = path.join(
+	app.getAppPath(),
+	'..', '..', // Move out of app.asar due to electron compiling
+	'resources',
+	'dnx',
+	SERVICE_FILENAME
+);
+const DEFAULT_NODE_BIN = path.join(
+	app.getAppPath(),
+	'..', '..', // Move out of app.asar due to electron compiling
+	'resources',
+	'dnx',
+	NODE_FILENAME
+);
 
 const DEFAULT_SETTINGS = {
     service_bin: DEFAULT_SERVICE_BIN,

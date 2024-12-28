@@ -760,9 +760,9 @@ function lookupQnodes(nodeSubGrp) {
 				var a = document.getElementById('qnodes-locked');
 				a.innerHTML = "0 DNX Collateral";
 				var b = document.getElementById('qnodes-online');
-				b.innerHTML = onlineNodes + " " + translateString("qnode_online");
+				b.innerHTML = onlineNodes + " " + translateString("qnode_js_online");
 				var c = document.getElementById('qnodes-offline');
-				c.innerHTML = offlineNodes + " " + translateString("qnode_offline");
+				c.innerHTML = offlineNodes + " " + translateString("qnode_js_offline");
 				var d = document.getElementById('gpu-working');
 				d.innerHTML = res.subgroup_statistics.gpu_stats.active + " " + translateString("qnode_js_working");
 				var e = document.getElementById('gpu-mining');
