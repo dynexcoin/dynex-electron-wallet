@@ -49,6 +49,9 @@ const DEFAULT_SETTINGS = {
     service_password: crypto.randomBytes(32).toString('hex'),
     daemon_host: config.remoteNodeDefaultHost,
     daemon_port: config.daemonDefaultRpcPort,
+    language: 'en',
+    wrapped_addr: '',
+    qnode_subgrp: '',
     pubnodes_date: null,
     pubnodes_data: config.remoteNodeListFallback,
     pubnodes_custom: ['node.dynexcoin.org:18333'],
@@ -58,7 +61,7 @@ const DEFAULT_SETTINGS = {
 
 const DEFAULT_SIZE = {
     width: 1280,
-    height: IS_DEBUG ? 1000 : 850
+    height: IS_DEBUG ? 1000 : 900
 };
 
 app.prompExit = true;
