@@ -1777,7 +1777,7 @@ dialog[open]{
 	color: #fff;
 	overflow-wrap: break-word;
 	background-color: transparent;
-	font-size: 15px;
+	font-size: 14px;
 	padding: 7px 1rem;
 }
 .tx-dialog .opa50{
@@ -2948,7 +2948,7 @@ div.about-links a{
 	text-transform: inherit;
 	font-size: 16px;
 	background-color: #42769b;
-	opacity: .5;
+	opacity: .8;
 	padding-top: 10px;
 	padding-bottom: 10px;
 }

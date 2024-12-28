@@ -22,7 +22,7 @@ log.transports.file.maxSize = 5 * 1024 * 1024;
 
 const WALLETSHELL_VERSION = app.getVersion() || '0.3.x';
 log.info(`Starting Electron WalletShell v${WALLETSHELL_VERSION}`);
-log.info(`Starting Dynex Wallet v1.0.2`);
+log.info(`Starting Dynex Wallet v1.0.3`);
 
 const SERVICE_FILENAME =  ( platform === 'win32' ? `${config.walletServiceBinaryFilename}.exe` : config.walletServiceBinaryFilename );
 const NODE_FILENAME =  ( platform === 'win32' ? `${config.walletNodeBinaryFilename}.exe` : config.walletNodeBinaryFilename );

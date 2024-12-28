@@ -3,7 +3,7 @@
   "productName": "Dynex-Electron-Wallet",
   "description": "Dynex GUI Wallet",
   "electron_version": "3.5.3",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "homepage": "https://dynexcoin.org",
   "repository": "",
   "main": "main.js",

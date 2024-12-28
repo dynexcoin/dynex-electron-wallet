@@ -1173,7 +1173,7 @@ function showInitialPage(){
 	let versionInfo = document.getElementById('walletShellVersion');
 	if(versionInfo) versionInfo.innerHTML = WS_VERSION;
 	let wVersionInfo = document.getElementById('walletVersion');
-	if(wVersionInfo) wVersionInfo.innerHTML = "1.0.2";
+	if(wVersionInfo) wVersionInfo.innerHTML = "1.0.3";
 	wsmanager.startNode();	
 }
 
@@ -2305,7 +2305,7 @@ function handleTransactions(){
 		let dialogTpl = `
 				<div class="div-transactions-panel">
 					<div class="clearfix">
-						<button data-target="#tx-dialog" type="button" class="form-bt button-blue dialog-close-default" id="button-transactions-panel-close">Back to transactions</button>
+						<button data-target="#tx-dialog" type="button" class="form-bt button-blue dialog-close-default" id="button-transactions-panel-close">Back</button>
 
 						<div class="div-title clearfix">
 							<img src="../assets/transactions/title.png" />
