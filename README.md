@@ -28,7 +28,6 @@ This wallet contains the basic functions required to manage your Dynex (DNX):
   * Backup your wallet with your private keys so you can restore your wallet anytime
 * Misc
   * Provides internal node and wallet services
-  * Option to use system tray (on closing/minimizing wallet)
   * Keyboard shortcuts for ease of use
   * Multi language system (supporting 10+ languages)
 * Dynex Ecosystem Tools
@@ -40,17 +39,17 @@ This wallet contains the basic functions required to manage your Dynex (DNX):
 * ✅ English (Default)
 * ✅ Chinese - flugel
 * ✅ Dutch - MJ & karim
-* ✅ French - pasteyy
+* ✅ French - pasteyy (PENDING)
 * ✅ Greek - nostalgia
 * ✅ German - sumitomo
-* Italian 
+* ✅ Italian - piciluc8571
 * Japanese 
 * ✅ Polish - rlyfastessa
 * Portuguese 
 * ✅ Russian - Отец Сергий
 * ✅ Spanish - ismoyano
 * ✅ Swedish - maximilian
-* ✅ Turkish - giants0808
+* ✅ Turkish - giants0808 (PENDING)
 
 ### Notes
 Dynex Electron Wallet relies on `DNX-service` and `DNX-node` to manage wallet container &amp; rpc communication.
