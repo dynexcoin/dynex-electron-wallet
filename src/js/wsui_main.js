@@ -14,6 +14,7 @@ const config = require('./ws_config');
 const Chart = require('chart.js');
 const log = require('electron-log');
 const request = require('request-promise-native');
+const { setTranslations, translateString, applyTranslations, applyAdaptiveTextSize } = require('./ws_translation');
 
 const wsmanager = new WalletShellManager();
 const wsession = new WalletShellSession();
@@ -34,6 +35,9 @@ let TXLIST_OBJ = null;
 let COMPLETION_PUBNODES;
 let COMPLETION_ADDRBOOK;
 let isHandlingMempool = false; // Flag to prevent overlapping function calls
+
+const adaptiveTextExemptions = ['form-help', 'welcome-intro-title', 'welcome-intro'];
+let translationsCache = {}; // Cache to store the loaded translations for reuse
 
 /*  dom elements vars; */
 // body
@@ -277,117 +281,6 @@ function initSectionTemplates(){
 	populateElementVars();
 }
 
-let keybindingTpl = `<div id="section-shortcuts">
-	<div class="transaction-panel">
-		<div class="div-title clearfix">
-			<img src="../assets/shortcuts/title.png" />
-			<h2 class="title">Available Keybindings</h2>
-			<div class="subtitle">Dynex Wallet</div>
-		</div>
-		<table class="custom-table kb-table">
-			<tbody>
-				<tr class="odd">
-					<th scope="col"><kbd>Ctrl</kbd>+<kbd>Home</kbd></th>
-					<td class="fc"><img src="../assets/general/arrow-left-white.png" /></td>
-					<td>Switch to <strong>overview/welcome</strong> screen</td>
-				</tr>
-				<tr class="transparent">
-					<td colspan="2"></td>
-				</tr>
-				<tr class="even">
-					<th scope="col"><kbd>Ctrl</kbd>+<kbd>Tab</kbd></th>
-					<td><img src="../assets/general/arrow-left-white.png" /></td>
-					<td>Switch to <strong>next screen</strong></td>
-				</tr>
-				<tr class="transparent">
-					<td colspan="2"></td>
-				</tr>
-				<tr class="odd">
-					<th scope="col"><kbd>Ctrl</kbd>+<kbd>n</kbd></th>
-					<td><img src="../assets/general/arrow-left-white.png" /></td>
-					<td>Switch to <strong>Create new wallet</strong> screen</td>
-				</tr>
-				<tr class="transparent">
-					<td colspan="2"></td>
-				</tr>
-				<tr class="even">
-					<th scope="col"><kbd>Ctrl</kbd>+<kbd>o</kbd></th>
-					<td><img src="../assets/general/arrow-left-white.png" /></td>
-					<td>Switch to <strong>Open a wallet</strong> screen</td>
-				</tr>
-				<tr class="transparent">
-					<td colspan="2"></td>
-				</tr>
-				<tr class="odd">
-					<th scope="col"><kbd>Ctrl</kbd>+<kbd>i</kbd></th>
-					<td><img src="../assets/general/arrow-left-white.png" /></td>
-					<td>Switch to <strong>Import wallet from private keys</strong> screen</td>
-				</tr>
-				<tr class="transparent">
-					<td colspan="2"></td>
-				</tr>
-				<tr class="even">
-					<th scope="col"><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>i</kbd></th>
-					<td><img src="../assets/general/arrow-left-white.png" /></td>
-					<td>Switch to <strong>Import wallet from mnemonic seed</strong> screen</td>
-				</tr>
-				<tr class="transparent">
-					<td colspan="2"></td>
-				</tr>
-				<tr class="odd">
-					<th scope="col"><kbd>Ctrl</kbd>+<kbd>e</kbd></th>
-					<td><img src="../assets/general/arrow-left-white.png" /></td>
-					<td>Switch to <strong>Export private keys/seed</strong> screen (when wallet opened)</td>
-				</tr>
-				<tr class="transparent">
-					<td colspan="2"></td>
-				</tr>
-				<tr class="even">
-					<th scope="col"><kbd>Ctrl</kbd>+<kbd>t</kbd></th>
-					<td><img src="../assets/general/arrow-left-white.png" /></td>
-					<td>Switch to <strong>Transactions</strong> screen (when wallet opened)</td>
-				</tr>
-				<tr class="transparent">
-					<td colspan="2"></td>
-				</tr>
-				<tr class="odd">
-					<th scope="col"><kbd>Ctrl</kbd>+<kbd>s</kbd></th>
-					<td><img src="../assets/general/arrow-left-white.png" /></td>
-					<td>Switch to <strong>Send/Transfer</strong> screen (when wallet opened)</td>
-				</tr>
-				<tr class="transparent">
-					<td colspan="2"></td>
-				</tr>
-				<tr class="even">
-					<th scope="col"><kbd>Ctrl</kbd>+<kbd>x</kbd></th>
-					<td><img src="../assets/general/arrow-left-white.png" /></td>
-					<td>Close wallet</td>
-				</tr>
-				<tr class="transparent">
-					<td colspan="2"></td>
-				</tr>
-				<tr class="odd">
-					<th scope="col"><kbd>Ctrl</kbd>+<kbd>/</kbd></th>
-					<td><img src="../assets/general/arrow-left-white.png" /></td>
-					<td>Display shortcut key information (this dialog)</td>
-				</tr>
-				<tr class="transparent">
-					<td colspan="2"></td>
-				</tr>
-				<tr class="even">
-					<th scope="col"><kbd>Esc</kbd></th>
-					<td><img src="../assets/general/arrow-left-white.png" /></td>
-					<td>Close any opened dialog (like this dialog)</td>
-				</tr> 
-			</tbody>
-		</table>
-		<div class="div-panel-buttons">
-			<button  data-target="#ab-dialog" type="button" class="button-blue dialog-close-default">Close</button>
-		</div>
-	</div>
-</div>
-`;
-
 function genPaymentId(ret){
 	ret = ret || false;
 	
@@ -395,10 +288,10 @@ function genPaymentId(ret){
 	if(ret) return payId;
 	
 	let dialogTpl = `<div class="transaction-panel">
-	<h4>Generated Payment ID:</h4>
-	<textarea data-cplabel="Payment ID" title="click to copy" class="ctcl default-textarea" rows="1" readonly="readonly">${payId}</textarea>
+	<h4>${translateString("paymentid_generate")}:</h4>
+	<textarea data-cplabel="${translateString("paymentid_paymentid")}" title="${translateString("paymentid_click_tocopy")}" class="ctcl default-textarea" rows="1" readonly="readonly">${payId}</textarea>
 	<div class="div-panel-buttons">
-		<button  data-target="#ab-dialog" type="button" class="button-gray dialog-close-default">Close</button>
+		<button  data-target="#ab-dialog" type="button" class="button-gray dialog-close-default">${translateString("paymentid_close_button")}</button>
 	</div>
 	`;
 	let dialog = document.getElementById('ab-dialog');
@@ -440,13 +333,122 @@ function showIntegratedAddressForm(){
 function showKeyBindings(){
 	let dialog = document.getElementById('ab-dialog');
 	if(dialog.hasAttribute('open')) dialog.close();
+	let keybindingTpl = `<div id="section-shortcuts">
+		<div class="transaction-panel">
+			<div class="div-title clearfix">
+				<img src="../assets/shortcuts/title.png" />
+				<h2 class="title">${translateString("keybindings_title")}</h2>
+				<div class="subtitle">${translateString("keybindings_subtitle")}</div>
+			</div>
+			<table class="custom-table kb-table">
+				<tbody>
+					<tr class="odd">
+						<th scope="col"><kbd>Ctrl</kbd>+<kbd>Home</kbd></th>
+						<td class="fc"><img src="../assets/general/arrow-left-white.png" /></td>
+						<td>${translateString("keybinding_overview")}</td>
+					</tr>
+					<tr class="transparent">
+						<td colspan="2"></td>
+					</tr>
+					<tr class="even">
+						<th scope="col"><kbd>Ctrl</kbd>+<kbd>Tab</kbd></th>
+						<td><img src="../assets/general/arrow-left-white.png" /></td>
+						<td>${translateString("keybinding_next_screen")}</td>
+					</tr>
+					<tr class="transparent">
+						<td colspan="2"></td>
+					</tr>
+					<tr class="odd">
+						<th scope="col"><kbd>Ctrl</kbd>+<kbd>n</kbd></th>
+						<td><img src="../assets/general/arrow-left-white.png" /></td>
+						<td>${translateString("keybinding_new_wallet")}</td>
+					</tr>
+					<tr class="transparent">
+						<td colspan="2"></td>
+					</tr>
+					<tr class="even">
+						<th scope="col"><kbd>Ctrl</kbd>+<kbd>o</kbd></th>
+						<td><img src="../assets/general/arrow-left-white.png" /></td>
+						<td>${translateString("keybinding_open_wallet")}</td>
+					</tr>
+					<tr class="transparent">
+						<td colspan="2"></td>
+					</tr>
+					<tr class="odd">
+						<th scope="col"><kbd>Ctrl</kbd>+<kbd>i</kbd></th>
+						<td><img src="../assets/general/arrow-left-white.png" /></td>
+						<td>${translateString("keybinding_import_private_keys")}</td>
+					</tr>
+					<tr class="transparent">
+						<td colspan="2"></td>
+					</tr>
+					<tr class="even">
+						<th scope="col"><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>i</kbd></th>
+						<td><img src="../assets/general/arrow-left-white.png" /></td>
+						<td>${translateString("keybinding_import_mnemonic_seed")}</td>
+					</tr>
+					<tr class="transparent">
+						<td colspan="2"></td>
+					</tr>
+					<tr class="odd">
+						<th scope="col"><kbd>Ctrl</kbd>+<kbd>e</kbd></th>
+						<td><img src="../assets/general/arrow-left-white.png" /></td>
+						<td>${translateString("keybinding_export_keys")}</td>
+					</tr>
+					<tr class="transparent">
+						<td colspan="2"></td>
+					</tr>
+					<tr class="even">
+						<th scope="col"><kbd>Ctrl</kbd>+<kbd>t</kbd></th>
+						<td><img src="../assets/general/arrow-left-white.png" /></td>
+						<td>${translateString("keybinding_transactions")}</td>
+					</tr>
+					<tr class="transparent">
+						<td colspan="2"></td>
+					</tr>
+					<tr class="odd">
+						<th scope="col"><kbd>Ctrl</kbd>+<kbd>s</kbd></th>
+						<td><img src="../assets/general/arrow-left-white.png" /></td>
+						<td>${translateString("keybinding_send_transfer")}</td>
+					</tr>
+					<tr class="transparent">
+						<td colspan="2"></td>
+					</tr>
+					<tr class="even">
+						<th scope="col"><kbd>Ctrl</kbd>+<kbd>x</kbd></th>
+						<td><img src="../assets/general/arrow-left-white.png" /></td>
+						<td>${translateString("keybinding_close_wallet")}</td>
+					</tr>
+					<tr class="transparent">
+						<td colspan="2"></td>
+					</tr>
+					<tr class="odd">
+						<th scope="col"><kbd>Ctrl</kbd>+<kbd>/</kbd></th>
+						<td><img src="../assets/general/arrow-left-white.png" /></td>
+						<td>${translateString("keybinding_shortcut_info")}</td>
+					</tr>
+					<tr class="transparent">
+						<td colspan="2"></td>
+					</tr>
+					<tr class="even">
+						<th scope="col"><kbd>Esc</kbd></th>
+						<td><img src="../assets/general/arrow-left-white.png" /></td>
+						<td>${translateString("keybinding_close_dialog")}</td>
+					</tr> 
+				</tbody>
+			</table>
+			<div class="div-panel-buttons">
+				<button data-target="#ab-dialog" type="button" class="button-blue dialog-close-default">${translateString("keybinding_close_button")}</button>
+			</div>
+		</div>
+	</div>`;	
 	dialog.innerHTML = keybindingTpl;
 	dialog.showModal();
 }
 
 function switchTab(){
 	if(WALLET_OPEN_IN_PROGRESS){
-		wsutil.showToast('Opening wallet in progress, please wait...');
+		wsutil.showToast(translateString("system_opening"));
 		return;
 	}
 	let isServiceReady = wsession.get('serviceReady') || false;
@@ -493,7 +495,6 @@ function setIconSelected(btnActive) {
 		let normal = img.getAttribute('data-normal');
 		img.setAttribute('src', normal);
 	}
-
 	// add the selected icon to the current item
 	if (btnActive) {
 		let img = btnActive.querySelector('img');
@@ -510,21 +511,19 @@ function formatDateTime(isoString) {
 	return `${formattedDate} ${formattedTime}`;
 }
 function formatWatts(watts) {
-  if (typeof watts !== 'number' || watts < 0) {
-    throw new Error('Input must be a non-negative number.');
-  }
-
-  // Convert the input from milliwatts to watts
-  const actualWatts = watts / 1000;
-
-  if (actualWatts < 1) {
-    // If less than 1 watt, show watts directly (under 1 kW)
-    return `${actualWatts.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} watts`;
-  } else {
-    // Convert to kilowatts (divide by 1,000), round to 2 decimals, and format
-    const kilowatts = (actualWatts / 1000).toFixed(2);
-    return `${kilowatts} kW`;
-  }
+	if (typeof watts !== 'number' || watts < 0) {
+		throw new Error('Input must be a non-negative number.');
+	}
+	// Convert the input from milliwatts to watts
+	const actualWatts = watts / 1000;
+	if (actualWatts < 1) {
+		// If less than 1 watt, show watts directly (under 1 kW)
+		return `${actualWatts.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} watts`;
+	} else {
+		// Convert to kilowatts (divide by 1,000), round to 2 decimals, and format
+		const kilowatts = (actualWatts / 1000).toFixed(2);
+		return `${kilowatts} kW`;
+	}
 }
 function lookupBridge() {
 	request({
@@ -589,19 +588,14 @@ async function lookupWrappedDNX(walletAddress, tokenAddress) {
     if (!/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
       throw new Error("Invalid wallet address format");
     }
-
     // Fetch the token decimals by calling the `decimals` function of the ERC-20 contract
     const decimals = await getTokenDecimals(rpcUrl, tokenAddress);
-
     // ERC-20 balanceOf(address) function selector
     const balanceOfMethodId = "0x70a08231";
-
     // Normalize the wallet address (remove 0x prefix)
     const normalizedWalletAddress = walletAddress.toLowerCase().replace(/^0x/, '');
-
     // Pad the wallet address to 32 bytes (64 characters)
     const paddedWalletAddress = normalizedWalletAddress.padStart(64, '0');
-
     // Construct the data payload for the RPC call (balanceOf + wallet address)
     const data = balanceOfMethodId + paddedWalletAddress;
 
@@ -710,11 +704,10 @@ async function getTokenDecimals(rpcUrl, tokenAddress) {
  * @returns {string} - The human-readable balance.
  */
 function divideStringByDecimals(balance, decimals) {
-  const balanceStr = balance.padStart(decimals + 1, '0'); // Pad with leading zeros to handle decimals
-  const integerPart = balanceStr.slice(0, balanceStr.length - decimals);
-  const decimalPart = balanceStr.slice(balanceStr.length - decimals);
-
-  return `${integerPart}.${decimalPart.replace(/0+$/, '')}`; // Remove trailing zeros in decimal part
+	const balanceStr = balance.padStart(decimals + 1, '0'); // Pad with leading zeros to handle decimals
+	const integerPart = balanceStr.slice(0, balanceStr.length - decimals);
+	const decimalPart = balanceStr.slice(balanceStr.length - decimals);
+	return `${integerPart}.${decimalPart.replace(/0+$/, '')}`; // Remove trailing zeros in decimal part
 }
 function lookupQnodes(nodeSubGrp) {
 	if (nodeSubGrp != '' && nodeSubGrp != null) {
@@ -735,8 +728,8 @@ function lookupQnodes(nodeSubGrp) {
 				qNodeTblBody.innerHTML = '';				// Make sure to clear the table each time its loaded
 				for (let nodeCNT = 0; nodeCNT < nodeArr.length; ++nodeCNT) {
 					nodeElm = nodeArr[nodeCNT];
-					if (nodeElm.status == 0) { onlineNodes++; var onlineStatus = "<span class='green'>Online</span>"; }
-					if (nodeElm.status == 1) { offlineNodes++; var onlineStatus = "<span class='red'>Offline</span>"; }
+					if (nodeElm.status == 0) { onlineNodes++; var onlineStatus = `<span class='green'>${translateString("qnode_js_online")}</span>`; }
+					if (nodeElm.status == 1) { offlineNodes++; var onlineStatus = `<span class='red'>${translateString("qnode_js_offline")}</span>`; }
 									
 					const newRow = document.createElement('tr');
 					const cell1 = document.createElement('td'); const cell2 = document.createElement('td');
@@ -767,21 +760,21 @@ function lookupQnodes(nodeSubGrp) {
 				var a = document.getElementById('qnodes-locked');
 				a.innerHTML = "0 DNX Collateral";
 				var b = document.getElementById('qnodes-online');
-				b.innerHTML = onlineNodes + " Online";
+				b.innerHTML = onlineNodes + " " + translateString("qnode_online");
 				var c = document.getElementById('qnodes-offline');
-				c.innerHTML = offlineNodes + " Offline";
+				c.innerHTML = offlineNodes + " " + translateString("qnode_offline");
 				var d = document.getElementById('gpu-working');
-				d.innerHTML = res.subgroup_statistics.gpu_stats.active + " Working";
+				d.innerHTML = res.subgroup_statistics.gpu_stats.active + " " + translateString("qnode_js_working");
 				var e = document.getElementById('gpu-mining');
-				e.innerHTML = res.subgroup_statistics.gpu_stats.other + " Mining";
+				e.innerHTML = res.subgroup_statistics.gpu_stats.other + " " + translateString("qnode_js_mining");
 				var f = document.getElementById('gpu-offline');
-				f.innerHTML = res.subgroup_statistics.gpu_stats.inactive + " Offline";
+				f.innerHTML = res.subgroup_statistics.gpu_stats.inactive + " " + translateString("qnode_js_offline");
 				var g = document.getElementById('stats-totalnodes');
-				g.innerHTML = res.subgroup_statistics.total_nodes_count + " Nodes";			
+				g.innerHTML = res.subgroup_statistics.total_nodes_count + " " + translateString("qnode_js_nodes");
 				var h = document.getElementById('stats-power');
-				h.innerHTML = "Power: " + formatWatts(res.subgroup_statistics.total_power_consumption);
+				h.innerHTML =  translateString("qnode_js_power") + ": " + formatWatts(res.subgroup_statistics.total_power_consumption);
 				var i = document.getElementById('stats-lastupdate');
-				i.innerHTML = "Last Update: " + formatDateTime(res.info.updated_at);
+				i.innerHTML = translateString("qnode_js_lastupdate") + ": " + formatDateTime(res.info.updated_at);
 				var j = document.getElementById('qnodeSubGrpName');
 				j.innerHTML = res.info.name;
 			}
@@ -831,7 +824,7 @@ function getDnxPrice() {
 // section switcher
 function changeSection(sectionId, isSettingRedir) {
 	if(WALLET_OPEN_IN_PROGRESS){
-		wsutil.showToast('Opening wallet in progress, please wait...');
+		wsutil.showToast(translateString("system_opening"));
 		return;
 	}
 
@@ -843,9 +836,8 @@ function changeSection(sectionId, isSettingRedir) {
 	if(targetSection === 'section-welcome'){
 		sswitch.classList.remove('hidden');
 		iswitch.classList.remove('hidden');
-
-		let d = document.getElementById('bloc-wiki-link-welcome');
-		d.setAttribute('href', config.blocWikiUrl);
+		let a = document.getElementById('welcome-bottom');
+		a.innerHTML = "Version - " + config.walletVersion;
 	}
 	
 	// when settings is loaded, show the warning
@@ -939,7 +931,7 @@ function changeSection(sectionId, isSettingRedir) {
 	let needServiceStopped = 'section-welcome';
 	let needSynced = ['section-send'];
 	if(needSynced.indexOf(targetSection) >= 0 && wsession.get('fusionProgress')){
-		wsutil.showToast('Wallet optimization in progress, please wait');
+		wsutil.showToast(translateString("system_walletfusion_inprogress"));
 		return;
 	}
 
@@ -949,16 +941,16 @@ function changeSection(sectionId, isSettingRedir) {
 	if(needServiceReady.indexOf(targetSection) >=0 && !isServiceReady){
 		// no access to wallet, send, tx when no wallet opened
 		finalTarget = 'section-welcome';
-		toastMsg = "Please create/open your wallet!";
+		toastMsg = translateString("system_create");
 	}else if(needServiceStopped.indexOf(targetSection) >=0 && isServiceReady){
 		finalTarget = 'section-overview';
 	}else if(needSynced.indexOf(targetSection) >=0 && !isSynced){
 		// just return early
-		wsutil.showToast("Please wait until the syncing completes!");
+		wsutil.showToast(translateString("system_pleasewait"));
 		return;
 	}else{
 		if(targetSection === 'section-overview-load'){
-			initNodeCompletion();
+			// initNodeCompletion();
 		}
 		finalTarget = targetSection;
 		toastMsg = '';
@@ -1103,7 +1095,7 @@ function initAddressCompletion(){
 			var wname = spl[0];
 			var waddr = spl[1];
 			var wpayid = spl[2];
-			return `<div class="autocomplete-suggestion" data-paymentid="${wpayid}" data-val="${waddr}">${wname.replace(re, "<b>$1</b>")}<br><span class="autocomplete-wallet-addr">${waddr.replace(re, "<b>$1</b>")}<br>Payment ID: ${(wpayid ? wpayid.replace(re, "<b>$1</b>") : 'N/A')}</span></div>`;
+			return `<div class="autocomplete-suggestion" data-paymentid="${wpayid}" data-val="${waddr}">${wname.replace(re, "<b>$1</b>")}<br><span class="autocomplete-wallet-addr">${waddr.replace(re, "<b>$1</b>")}<br>${translateString("addressbook_js_paymentid")}: ${(wpayid ? wpayid.replace(re, "<b>$1</b>") : 'N/A')}</span></div>`;
 		},
 		onSelect: function(e, term, item){			   
 			document.getElementById('input-send-payid').value = item.getAttribute('data-paymentid');
@@ -1160,7 +1152,7 @@ function showInitialPage(){
 	// other initiations here
 	formMessageReset();
 	initSettingVal(); // initial settings value
-	initNodeCompletion(); // initial public node completion list
+	// initNodeCompletion(); // initial public node completion list
 	initAddressCompletion();
 
 	if(!settings.has('firstRun') || settings.get('firstRun') !== 0){
@@ -1173,7 +1165,7 @@ function showInitialPage(){
 	let versionInfo = document.getElementById('walletShellVersion');
 	if(versionInfo) versionInfo.innerHTML = WS_VERSION;
 	let wVersionInfo = document.getElementById('walletVersion');
-	if(wVersionInfo) wVersionInfo.innerHTML = "1.0.3";
+	if(wVersionInfo) wVersionInfo.innerHTML = config.walletVersion;
 	wsmanager.startNode();	
 }
 
@@ -1194,27 +1186,29 @@ function handleSettings(){
 		if (qnodeSubGrpValue == "undefined" || qnodeSubGrpValue == undefined || qnodeSubGrpValue == null) { qnodeSubGrpValue = ""; }
 
 		if(!serviceBinValue.length){
-			formMessageSet('settings','error',`Settings can't be saved, please enter correct values`);
+			formMessageSet('settings','error', translateString("settings-js-unabletosave"));
 			return false;
 		}
 		if(!nodeBinValue.length){
-			formMessageSet('settings','error',`Settings can't be saved, please enter correct values`);
+			formMessageSet('settings','error', translateString("settings-js-unabletosave"));
 			return false;
 		}		
 		
 
 		if(!wsutil.isRegularFileAndWritable(serviceBinValue)){
-			formMessageSet('settings','error',`Unable to find ${config.walletServiceBinaryFilename}, please enter the correct path`);
+			let unableToFind = translateString("settings-js-unabletofind1") + " " + config.walletNodeBinaryFilename + " " + translateString("settings-js-unabletofind2");
+			formMessageSet('settings','error', unableToFind);
 			return false;
 		}
 		if(!wsutil.isRegularFileAndWritable(nodeBinValue)){
-			formMessageSet('settings','error',`Unable to find ${config.walletNodeBinaryFilename}, please enter the correct path`);
+			let unableToFind = translateString("settings-js-unabletofind1") + " " + config.walletNodeBinaryFilename + " " + translateString("settings-js-unabletofind2");
+			formMessageSet('settings','error', unableToFind);
 			return false;
 		}		
 
 		// validate hostname
 		if(!daemonHostValue.length || !Number.isInteger(daemonPortValue)){
-			formMessageSet('settings','error',`Please enter enter a valid daemon address & port`);
+			formMessageSet('settings','error', translateString("settings-js-invalidnode"));
 			return false;
 		}
 
@@ -1225,13 +1219,13 @@ function handleSettings(){
 			if(domRe.test(daemonHostValue)) validHost = true;
 		}
 		if(!validHost){
-			formMessageSet('settings','error',`Invalid daemon/node address!`);
+			formMessageSet('settings','error', translateString("settings-js-invalidnode"));
 			return false;
 		}
 
 		// validate port
 		if(daemonPortValue <= 0 || daemonPortValue > 65534){
-			formMessageSet('settings','error',`Invalid daemon/node port number!`);
+			formMessageSet('settings','error', translateString("settings-js-invalidnode"));
 			return false;
 		}
 
@@ -1251,10 +1245,10 @@ function handleSettings(){
 		loadLanguage(settingsLanguage);
 		remote.app.checkUpdateConfig(); // re-check config format
 		formMessageReset();
-		initNodeCompletion();
+		// initNodeCompletion();
 		let goTo = wsession.get('loadedWalletAddress').length ? 'section-overview' : 'section-welcome';
 		changeSection(goTo, true);
-		wsutil.showToast('Settings has been updated.',8000);
+		wsutil.showToast(translateString("settings-js-updated"), 8000);
 	});
 }
 
@@ -1276,8 +1270,8 @@ function listenToAddressBookEvents() {
 				addressBookInputUpdate.value = 0;
 
 				setTimeout(function() {
-					if (confirm(`Are you sure you want to delete ${item.dataset.address} from the address book?`)) {
-						wsutil.showToast('Address book entry was deleted.',5000);
+					if (confirm(`${translateString("addressbook_js_areyousure1")} ${item.dataset.address} ${translateString("addressbook_js_areyousure2")}`)) {
+						wsutil.showToast(translateString("addressbook_js_addr_deleted"),5000);
 						abook.delete(item.dataset.key);
 						listAddressBook(true);
 					}
@@ -1310,9 +1304,9 @@ function listAddressBook(force, sortBy){
 				<div class="address">${item.address}</div>
 				<div class="actions">
 					<select>
-						<option>Select an action</option>
-						<option value="edit">Edit</option>
-						<option value="delete">Delete</option>
+						<option>${translateString("addressbook_js_select")}</option>
+						<option value="edit">${translateString("addressbook_js_edit")}</option>
+						<option value="delete">${translateString("addressbook_js_delete")}</option>
 					</select>
 				</div>
 			</div>
@@ -1359,18 +1353,18 @@ function handleAddressBook() {
 		let isUpdate = addressBookInputUpdate.value ? addressBookInputUpdate.value : 0;
 
 		if (!nameValue || !addressValue) {
-			formMessageSet('addressbook','error',"Address of contact and Label can not be left empty!");
+			formMessageSet('addressbook','error', translateString("addressbook_js_addr_empty"));
 			return;
 		}
 
 		if (!wsutil.validateAddress(addressValue)) {
-			formMessageSet('addressbook','error',`Invalid ${config.assetName} address`);
+			formMessageSet('addressbook','error', `${translateString("addressbook_js_addr_invalid")} ${config.assetName} ${translateString("addressbook_js_addr")}`);
 			return;
 		}
 
 		if (paymentIdValue.length) {
 			if (!wsutil.validatePaymentId(paymentIdValue)) {
-				formMessageSet('addressbook','error',"Invalid Payment ID");
+				formMessageSet('addressbook','error', translateString("addressbook_js_invalid_paymentid"));
 				return;
 			}
 		}
@@ -1378,7 +1372,7 @@ function handleAddressBook() {
 		if (addressValue.length > 99) paymentIdValue.value = '';
 
 		if (abook.has(entryHash) && !isUpdate) {
-			formMessageSet('addressbook','error',"This combination of address and payment ID already exist, please enter new address or different payment id.");
+			formMessageSet('addressbook','error', translateString("addressbook_js_addr_exists"));
 			return;
 		}
 
@@ -1393,7 +1387,7 @@ function handleAddressBook() {
 			qrCode: wsutil.genQrDataUrl(addressValue)
 		};
 		abook.set(entryHash, newAddr);
-		formMessageSet('addressbook', 'success', `The address book contact has been saved!`);
+		formMessageSet('addressbook', 'success', translateString("addressbook_js_addr_saved"));
 
 		addressBookInputWallet.value = '';
 		addressBookInputName.value = '';
@@ -1412,7 +1406,6 @@ function handleAddressBook() {
 			listAddressBook(true);
 		}
 	});
-
 	listAddressBook();
 }
 
@@ -1438,7 +1431,7 @@ function handleWalletOpen(){
 
 		// validate hostname
 		if(!daemonHostValue.length || !Number.isInteger(daemonPortValue)){
-			formMessageSet('load','error',`Please enter enter a valid daemon address & port`);
+			formMessageSet('load','error', translateString("system_opening_node_warning"));
 			return false;
 		}
 
@@ -1449,19 +1442,19 @@ function handleWalletOpen(){
 			if(domRe.test(daemonHostValue)) validHost = true;
 		}
 		if(!validHost){
-			formMessageSet('load','error',`Invalid daemon/node address!`);
+			formMessageSet('load','error', translateString("system_invalid_node_addr"));
 			return false;
 		}
 
 		// validate port
 		if(daemonPortValue <= 0 || daemonPortValue > 65534){
-			formMessageSet('load','error',`Invalid daemon/node port number!`);
+			formMessageSet('load','error', translateString("system_invalid_node_port"));
 			return false;
 		}
 
 		// validate password
 		if(!walletOpenInputPassword.value){
-			formMessageSet('load','error', `Please enter the password of the wallet!`);
+			formMessageSet('load','error', translateString("system_invalid_password"));
 			return;
 		}
 
@@ -1477,11 +1470,11 @@ function handleWalletOpen(){
 			tray_close: settings.get('tray_close')
 		};
 		initSettingVal(settingVals);
-		initNodeCompletion();
+		// initNodeCompletion();
 
 		// actually open wallet
 		if(!walletOpenInputPath.value){
-			formMessageSet('load','error', "Invalid wallet file path");
+			formMessageSet('load','error', translateString("system_invalid_wallet_path"));
 			WALLET_OPEN_IN_PROGRESS = false;
 			setOpenButtonsState(0);
 			return;
@@ -1490,7 +1483,7 @@ function handleWalletOpen(){
 		function onError(err){
 			formMessageReset();
 			if (err == 'Failed to load your wallet, please check your password') {
-				formMessageSet('load','error', 'Unable to open the wallet.<br />The password you provided is incorrect!');
+				formMessageSet('load','error', translateString("system_invalid_unable_to_open1") + '<br />' + translateString("system_invalid_unable_to_open2"));
 			} else {
 				formMessageSet('load','error', err);
 			}
@@ -1518,7 +1511,7 @@ function handleWalletOpen(){
 
 		fs.access(walletFile, fs.constants.R_OK, (err) => {
 			if(err){
-				formMessageSet('load','error', "Invalid wallet file path");
+				formMessageSet('load','error', translateString("system_invalid_wallet_path"));
 				setOpenButtonsState(0);
 				WALLET_OPEN_IN_PROGRESS = false;
 				return false;
@@ -1528,17 +1521,17 @@ function handleWalletOpen(){
 			WALLET_OPEN_IN_PROGRESS = true;
 			settings.set('recentWallet', walletFile);
 			settings.set('recentWalletDir', path.dirname(walletFile));
-			formMessageSet('load','warning', "Accessing wallet...<br><progress></progress>");
+			formMessageSet('load','warning', translateString("system_accessing_wallet") + "<br><progress></progress>");
 			wsmanager.stopService().then(() => {
 
-				formMessageSet('load','warning', "Starting wallet service...<br><progress></progress>");
+				formMessageSet('load','warning', translateString("system_starting_wallet_service") + "<br><progress></progress>");
 				setTimeout(() => {
-					formMessageSet('load','warning', "Opening wallet, please be patient...<br><progress></progress>");
+					formMessageSet('load','warning', translateString("system_opening") + "<br><progress></progress>");
 					wsmanager.startService(walletFile, walletPass, onError, onSuccess, onDelay);
 				},800);
 			}).catch((err) => {
 				console.log(err);
-				formMessageSet('load','error', "Unable to start service");
+				formMessageSet('load','error', translateString("system_error_wallet_service"));
 				WALLET_OPEN_IN_PROGRESS = false;
 				setOpenButtonsState(0);
 				return false;
@@ -1550,10 +1543,10 @@ function handleWalletOpen(){
 function handleWalletClose(){
 	overviewWalletCloseButton.addEventListener('click', (event) => {
 		event.preventDefault();
-		if(!confirm('Are you sure want to close your wallet?')) return;
+		if(!confirm(translateString("system_wallet_close_confirm"))) return;
 
 		let dialog = document.getElementById('main-dialog');
-		let htmlStr = '<div class="div-save-main" style="text-align: center;padding:1rem;"><i class="fas fa-spinner fa-pulse"></i><span style="padding:0px 10px;">Saving &amp; closing your wallet...</span></div>';
+		let htmlStr = '<div class="div-save-main" style="text-align: center;padding:1rem;"><i class="fas fa-spinner fa-pulse"></i><span style="padding:0px 10px;">' + translateString("system_wallet_saving_msg") + '</span></div>';
 		wsutil.innerHTML(dialog, htmlStr);
 
 		dialog = document.getElementById('main-dialog');
@@ -1613,7 +1606,7 @@ function handleWalletCreate(){
 		wsutil.validateWalletPath(filePathValue, DEFAULT_WALLET_PATH).then((finalPath)=>{
 			// validate password
 			if(!passwordValue.length){
-				formMessageSet('create','error', `Please enter a password, creating wallet without a password will not be supported!`);
+				formMessageSet('create','error', translateString("system_wallet_create_passblank"));
 				return;
 			}
 
@@ -1626,13 +1619,11 @@ function handleWalletCreate(){
 					let ts = new Date().getTime();
 					let backfn = `${finalPath}.bak.${ts}`;
 					fs.renameSync(finalPath, backfn);
-					//fs.unlinkSync(finalPath);
 				}catch(err){
-				   formMessageSet('create','error', `Unable to overwrite existing file, please enter new wallet file path`);
+				   formMessageSet('create','error', translateString("system_wallet_create_unableoverwrite"));
 				   return;
 				}
 		   }
-
 			// create
 			wsmanager.createWallet(
 				finalPath,
@@ -1641,7 +1632,7 @@ function handleWalletCreate(){
 				settings.set('recentWallet', walletFile);
 				walletOpenInputPath.value = walletFile;
 				changeSection('section-overview-load');
-				wsutil.showToast('Wallet has been created, you can now open your wallet!',12000);
+				wsutil.showToast(translateString("system_wallet_created"),12000);
 			}).catch((err) => {
 				formMessageSet('create', 'error', err.message);
 				return;
@@ -1665,28 +1656,28 @@ function handleWalletImportKeys(){
 		// validate path
 		wsutil.validateWalletPath(filePathValue, DEFAULT_WALLET_PATH).then((finalPath)=>{
 			if(!passwordValue.length){
-				formMessageSet('import','error', `Please enter a password, creating wallet without a password will not be supported!`);
+				formMessageSet('import','error', translateString("system_wallet_create_passblank"));
 				return;
 			}
 
 			if(scanHeightValue < 0 || scanHeightValue.toPrecision().indexOf('.') !== -1){
-				formMessageSet('import','error', 'Invalid scan height!');
+				formMessageSet('import','error', translateString("system_wallet_invalid_scanheight"));
 				return;
 			}
 
 			// validate viewKey
 			if(!viewKeyValue.length || !spendKeyValue.length){
-				formMessageSet('import','error', 'View Key and Spend Key can not be left blank!');
+				formMessageSet('import','error', translateString("system_wallet_blank_key"));
 				return;
 			}
 	
 			if(!wsutil.validateSecretKey(viewKeyValue)){
-				formMessageSet('import','error', 'Invalid view key!');
+				formMessageSet('import','error', translateString("system_wallet_invalid_viewkey"));
 				return;
 			}
 			// validate spendKey
 			if(!wsutil.validateSecretKey(spendKeyValue)){
-				formMessageSet('import','error', 'Invalid spend key!');
+				formMessageSet('import','error', translateString("system_wallet_invalid_spendkey"));
 				return;
 			}
 
@@ -1699,9 +1690,8 @@ function handleWalletImportKeys(){
 					let ts = new Date().getTime();
 					let backfn = `${finalPath}.bak.${ts}`;
 					fs.renameSync(finalPath, backfn);
-					//fs.unlinkSync(finalPath);
 				}catch(err){
-				formMessageSet('import','error', `Unable to overwrite existing file, please enter new wallet file path`);
+				formMessageSet('import','error', translateString("system_wallet_create_unableoverwrite"));
 				return;
 				}
 			}
@@ -1715,7 +1705,7 @@ function handleWalletImportKeys(){
 				settings.set('recentWallet', walletFile);
 				walletOpenInputPath.value = walletFile;
 				changeSection('section-overview-load');
-				wsutil.showToast('Wallet has been imported, you can now open your wallet!', 12000);
+				wsutil.showToast(translateString("system_wallet_imported"), 12000);
 			}).catch((err) => {
 				formMessageSet('import', 'error', err);
 				return;
@@ -1740,7 +1730,7 @@ function handleWalletImportSeed(){
 		wsutil.validateWalletPath(filePathValue, DEFAULT_WALLET_PATH).then((finalPath)=>{
 			// validate password
 			if(!passwordValue.length){
-				formMessageSet('import-seed','error', `Please enter a password, creating wallet without a password will not be supported!`);
+				formMessageSet('import-seed','error', translateString("system_wallet_create_passblank"));
 				return;
 			}
 
@@ -1765,7 +1755,7 @@ function handleWalletImportSeed(){
 					fs.renameSync(finalPath, backfn);
 					//fs.unlinkSync(finalPath);
 				}catch(err){
-				   formMessageSet('import-seed','error', `Unable to overwrite existing file, please enter new wallet file path`);
+				   formMessageSet('import-seed','error', translateString("system_wallet_create_unableoverwrite"));
 				   return;
 				}
 			}
@@ -1779,7 +1769,7 @@ function handleWalletImportSeed(){
 				settings.set('recentWallet', walletFile);
 				walletOpenInputPath.value = walletFile;
 				changeSection('section-overview-load');
-				wsutil.showToast('Wallet has been imported, you can now open your wallet!', 12000);
+				wsutil.showToast(translateString("system_wallet_imported"), 12000);
 			}).catch((err) => {
 				formMessageSet('import-seed', 'error', err);
 				return;
@@ -1801,7 +1791,7 @@ function handleWalletExport(){
 			showkeyInputSpendKey.value = keys.spendSecretKey;
 			showkeyInputSeed.value = keys.mnemonicSeed;
 		}).catch((err) => {
-			formMessageSet('secret','error', "Failed to get key, please try again in a few seconds");
+			formMessageSet('secret','error', translateString("system_wallet_failedkey"));
 		});
 	});
 
@@ -1821,12 +1811,12 @@ function handleWalletExport(){
 				textContent += `${os.EOL}Mnemonic Seed:${os.EOL}${keys.mnemonicSeed}${os.EOL}`;
 				try{
 					fs.writeFileSync(filename, textContent);
-					formMessageSet('secret','success', 'Your keys have been exported, please keep the file secret!');
+					formMessageSet('secret','success', translateString("system_wallet_keys_exported"));
 				}catch(err){
-					formMessageSet('secret','error', "Failed to save your keys, please check that you have write permission to the file");
+					formMessageSet('secret','error', translateString("system_wallet_keys_exported_fail"));
 				}
 			}).catch(() => {
-				formMessageSet('secret','error', "Failed to get keys, please try again in a few seconds");
+				formMessageSet('secret','error', translateString("system_wallet_failedkey"));
 			});
 		}
 	});
@@ -1869,12 +1859,12 @@ function handleSendTransfer(){
 
 		let recipientAddress = sendInputAddress.value ? sendInputAddress.value.trim() : '';
 		if(!recipientAddress.length || !wsutil.validateAddress(recipientAddress)){
-			formMessageSet('send','error',`Invalid ${config.assetName} address`);
+			formMessageSet('send','error', `${translateString("send_addr_error1")} ${config.assetName} ${translateString("send_addr_error2")}`);
 			return;
 		}
 
 		if(recipientAddress === wsession.get('loadedWalletAddress')){
-			formMessageSet('send','error',"Sorry, can't send to your own address");
+			formMessageSet('send','error', translateString("send_addr_error3"));
 			return;
 		}
 
@@ -1883,7 +1873,7 @@ function handleSendTransfer(){
 			paymentId = '';
 		}else if(paymentId.length){
 			if(!wsutil.validatePaymentId(paymentId)){
-				formMessageSet('send','error','Sorry, invalid Payment ID');
+				formMessageSet('send','error', translateString("send_addr_error4"));
 				return;
 			}
 		}
@@ -1891,12 +1881,12 @@ function handleSendTransfer(){
 		let total = 0;
 		let amount = sendInputAmount.value ? parseFloat(sendInputAmount.value) : 0;
 		if (amount <= 0) {
-			formMessageSet('send','error','Sorry, invalid amount');
+			formMessageSet('send','error', translateString("send_addr_error5"));
 			return;
 		}
 
 		if (precision(amount) > config.decimalPlaces) {
-			formMessageSet('send','error',`Amount can't have more than ${config.decimalPlaces} decimal places`);
+			formMessageSet('send','error', `${translateString("send_addr_error5")} ${config.decimalPlaces} ${translateString("send_addr_error6")}`);
 			return;
 		}
 
@@ -1907,12 +1897,12 @@ function handleSendTransfer(){
 		let fee = sendInputFee.value ? parseFloat(sendInputFee.value) : 0;
 		let minFee = config.minimumFee / config.decimalDivisor;
 		if (precision(fee) < minFee) {
-			formMessageSet('send','error',`Fee can't be less than ${wsutil.amountForMortal(minFee)}`);
+			formMessageSet('send','error',`${translateString("send_addr_error7")} ${wsutil.amountForMortal(minFee)}`);
 			return;
 		}
 
 		if (precision(fee) > config.decimalPlaces) {
-			formMessageSet('send','error',`Fee can't have more than  ${config.decimalPlaces} decimal places`);
+			formMessageSet('send','error',`${translateString("send_addr_error8")} ${config.decimalPlaces} ${translateString("send_addr_error6")}`);
 			return;
 		}
 
@@ -1929,7 +1919,7 @@ function handleSendTransfer(){
 			formMessageSet(
 				'send',
 				'error', 
-				`Sorry, you don't have enough funds to process this transfer. Transfer amount+fees: ${(txTotal)}`
+				`${translateString("send_addr_error9")}: ${(txTotal)} ${config.assetName}`
 			);
 			return;
 		}
@@ -1943,26 +1933,26 @@ function handleSendTransfer(){
 		if(paymentId.length) tx.paymentId = paymentId;
 		let tpl = `
 			<div class="div-transaction-panel">
-				<h4>Transfer Confirmation</h4>
+				<h4>${translateString("send_js_transfer_confirmation")}</h4>
 				<div class="transferDetail">
-					<p>Please confirm that you have everything entered correctly.</p>
+					<p>${translateString("send_js_transfer_plzconfirm")}</p>
 					<dl>
-						<dt class="dt-ib">Recipient address:</dt>
+						<dt class="dt-ib">${translateString("send_js_transfer_recipient")}:</dt>
 						<dd class="dd-ib">${tx.address}</dd>
-						<dt class="${paymentId.length ? 'dt-ib' : 'hidden'}">Payment ID:</dt>
+						<dt class="${paymentId.length ? 'dt-ib' : 'hidden'}">${translateString("send_js_paymentid")}:</dt>
 						<dd class="${paymentId.length ? 'dd-ib' : 'hidden'}">${paymentId.length ? paymentId : 'N/A'}</dd>
-						<dt class="dt-ib">Amount:</dt>
+						<dt class="dt-ib">${translateString("send_js_transfer_amount")}:</dt>
 						<dd class="dd-ib">${amount} ${config.assetTicker}</dd>
-						<dt class="dt-ib">Transaction Fee:</dt>
+						<dt class="dt-ib">${translateString("send_js_transfer_fee")}:</dt>
 						<dd class="dd-ib">${fee} ${config.assetTicker}</dd>
-						<dt class="dt-ib">Total:</dt>
+						<dt class="dt-ib">${translateString("send_js_transfer_total")}:</dt>
 						<dd class="dd-ib">${total} ${config.assetTicker}</dd>
 					</dl>
 				</div>
 			</div>
 			<div class="div-panel-buttons">
-				<button data-target='#tf-dialog' type="button" class="form-bt button-gray dialog-close-default" id="button-send-ko">Cancel</button>
-				<button data-target='#tf-dialog' type="button" class="form-bt button-blue" id="button-send-ok">OK, Send it!</button>
+				<button data-target='#tf-dialog' type="button" class="form-bt button-gray dialog-close-default" id="button-send-ko">${translateString("send_js_cancel_button")}</button>
+				<button data-target='#tf-dialog' type="button" class="form-bt button-blue" id="button-send-ok">${translateString("send_js_send_button")}</button>
 			</div>`;
 
 		let dialog = document.getElementById('tf-dialog');
@@ -1975,11 +1965,11 @@ function handleSendTransfer(){
 		sendBtn.addEventListener('click', (event) => {
 			let md = document.querySelector(event.target.dataset.target);
 			md.close();
-			formMessageSet('send', 'warning', 'Sending transaction, please wait...<br><progress></progress>');
+			formMessageSet('send', 'warning', translateString("send_js_sending_wait") + '<br><progress></progress>');
 			wsmanager.sendTransaction(tx).then((result) => {
 				formMessageReset();
-				let txhashUrl = `<a class="external" title="view in block explorer" href="${config.blockExplorerTransactionUrl.replace('[[TX_HASH]]', result.transactionHash)}">${result.transactionHash}</a>`;
-				let okMsg = `Transaction sent!<br>Tx. hash: ${txhashUrl}.<br>Your balance may appear incorrect while transaction(s) not fully confirmed.`;
+				let txhashUrl = `<a class="external" title="${translateString("send_js_sent_viewexplorer")}" href="${config.blockExplorerTransactionUrl.replace('[[TX_HASH]]', result.transactionHash)}">${result.transactionHash}</a>`;
+				let okMsg = `${translateString("send_js_sent_confirmed")}<br>TX: ${txhashUrl}.<br>${translateString("send_js_sent_balancewrong")}`;
 				formMessageSet('send', 'success', okMsg);
 				// check if it's new address, if so save it
 				let newId = wsutil.b2sSum(recipientAddress);
@@ -1998,7 +1988,7 @@ function handleSendTransfer(){
 				sendInputPaymentId.value = '';
 				sendInputAmount.value = '';
 			}).catch((err) => {
-				formMessageSet('send', 'error', `Failed to send transaction:<br><small>${err}</small>`);
+				formMessageSet('send', 'error', `${translateString("send_js_sent_failed")}:<br><small>${err}</small>`);
 			});
 			wsutil.clearChild(md);
 		});
@@ -2015,21 +2005,21 @@ function handleSendTransfer(){
 
 		let bridgeChainID = bridgeInputChainID.value ? bridgeInputChainID.value.trim() : '';
 		if(!bridgeChainID.length){
-			formMessageSet('send','error2', 'Invalid Chain ID');
+			formMessageSet('send','error2', translateString("send_js_bridge_badchain"));
 			return;
 		}		
 		let recipientAddress = bridgeInputToAddr.value ? bridgeInputToAddr.value.trim() : '';
 		if(!recipientAddress.length || !wsutil.validateEthAddress(recipientAddress)){
-			formMessageSet('send','error2', 'Invalid ETH address');
+			formMessageSet('send','error2', translateString("send_js_bridge_badaddr1"));
 			return;
 		}
 		let amount = bridgeInputAmount.value ? parseFloat(bridgeInputAmount.value) : 0;
 		if (amount <= 0) {
-			formMessageSet('send','error2','Sorry, invalid amount');
+			formMessageSet('send','error2', translateString("send_js_bridge_badamount"));
 			return;
 		}
 		if (precision(amount) > config.decimalPlaces) {
-			formMessageSet('send','error2',`Amount can't have more than ${config.decimalPlaces} decimal places`);
+			formMessageSet('send','error2', `${translateString("send_js_bridge_decimals1")} ${config.decimalPlaces} ${translateString("send_js_bridge_decimals2")}`);
 			return;
 		}		
 		amount = (amount * 1000000000)			// Make sure the Amount is always 9 Decimals
@@ -2064,7 +2054,7 @@ function handleSendTransfer(){
 					formMessageSet(
 						'send',
 						'error2', 
-						`Sorry, you don't have enough funds to process this transfer. Transfer amount+fees: ${(formattedTxTotal)} DNX`
+						`${translateString("send_addr_error9")}: ${(formattedTxTotal)} ${config.assetName}`
 					);
 					return;
 				}
@@ -2093,26 +2083,26 @@ function handleSendTransfer(){
 
 				let tpl = `
 					<div class="div-transaction-panel">
-						<h4>Bridge Confirmation</h4>
+						<h4>${translateString("send_js_bridge_plzconfirm")}</h4>
 						<div class="transferDetail">
-							<p>Please confirm that you have everything entered correctly.</p>
+							<p>${translateString("send_js_bridge_chain")}</p>
 							<dl>
-								<dt class="dt-ib">Chain:</dt>
+								<dt class="dt-ib">${translateString("send_js_bridge_chain")}:</dt>
 								<dd class="dd-ib">${tx.chain_name}</dd>
-								<dt class="dt-ib">Chain Wallet ID:</dt>
+								<dt class="dt-ib">${translateString("send_js_bridge_chainid")}:</dt>
 								<dd class="dd-ib">${tx.wrapped_address}</dd>
-								<dt class="dt-ib">Amount:</dt>
+								<dt class="dt-ib">${translateString("send_js_bridge_amount")}:</dt>
 								<dd class="dd-ib">${formattedAmount} ${config.assetTicker}</dd>
-								<dt class="dt-ib">Transaction Fee:</dt>
+								<dt class="dt-ib">${translateString("send_js_bridge_fee")}:</dt>
 								<dd class="dd-ib">${formattedTxFee} ${config.assetTicker}</dd>
-								<dt class="dt-ib">Total:</dt>
+								<dt class="dt-ib">${translateString("send_js_bridge_total")}:</dt>
 								<dd class="dd-ib">${formattedTxTotal} ${config.assetTicker}</dd>
 							</dl>
 						</div>
 					</div>
 					<div class="div-panel-buttons">
-						<button data-target='#tf-dialog' type="button" class="form-bt button-gray dialog-close-default" id="button-send-bridge-ko">Cancel</button>
-						<button data-target='#tf-dialog' type="button" class="form-bt button-blue" id="button-send-bridge-ok">OK, Bridge it!</button>
+						<button data-target='#tf-dialog' type="button" class="form-bt button-gray dialog-close-default" id="button-send-bridge-ko">${translateString("send_js_bridge_cancel_button")}</button>
+						<button data-target='#tf-dialog' type="button" class="form-bt button-blue" id="button-send-bridge-ok">${translateString("send_js_bridge_send_button")}</button>
 					</div>`;
 
 				let dialog = document.getElementById('tf-dialog');
@@ -2124,18 +2114,19 @@ function handleSendTransfer(){
 				bridgeSendBtn.addEventListener('click', (event) => {
 					let md = document.querySelector(event.target.dataset.target);
 					md.close();
-					formMessageSet('send', 'warning2', 'Sending bridge transaction, please wait...<br><progress></progress>');
+					formMessageSet('send', 'warning2', translateString("send_js_bridge_sending_wait") + '<br><progress></progress>');
 					wsmanager.sendTransaction(tx).then((result) => {
-						formMessageReset();
-						let txhashUrl = `<a class="external" title="view in block explorer" href="${config.blockExplorerTransactionUrl.replace('[[TX_HASH]]', result.transactionHash)}">${result.transactionHash}</a>`;
-						let okMsg = `Transaction sent!<br>Tx. hash: ${txhashUrl}.<br>Your balance may appear incorrect while transaction(s) not fully confirmed.`;
+						formMessageReset();					
+						let txhashUrl = `<a class="external" title="${translateString("send_js_bridge_sent_viewexplorer")}" href="${config.blockExplorerTransactionUrl.replace('[[TX_HASH]]', result.transactionHash)}">${result.transactionHash}</a>`;
+						let okMsg = `${translateString("send_js_bridge_sent_confirmed")}<br>TX: ${txhashUrl}.<br>${translateString("send_js_bridge_sent_balancewrong")}`;						
+						
 						formMessageSet('send', 'success2', okMsg);
 						// After Bridge Succesful transaction - Reset the values to blank for next bridge transaction
 						bridgeInputChainID.value = 1;
 						bridgeInputToAddr.value = '';
 						bridgeInputAmount.value = '';
 					}).catch((err) => {
-						formMessageSet('send', 'error2', `Failed to send bridge transaction:<br><small>${err}</small>`);
+						formMessageSet('send', 'error2', `${translateString("send_js_bridge_sent_failed")}:<br><small>${err}</small>`);
 					});
 					wsutil.clearChild(md);
 				});
@@ -2147,17 +2138,17 @@ function handleSendTransfer(){
 
 	sendOptimize.addEventListener('click', () => {
 		if(!wsession.get('synchronized', false)){
-			wsutil.showToast('Synchronization is in progress, please wait.');
+			wsutil.showToast(translateString("system_synchronization"));
 			return;
 		}
 
         if (wsession.get('fusionProgress')) {
-            wsutil.showToast('Wallet optimization in progress, please wait');
+            wsutil.showToast(translateString("system_optimization"));
             return;
         }
 
-		if(!confirm('You are about to perform wallet optimization. This process may take a while to complete, are you sure?')) return;
-		wsutil.showToast('Optimization started, your balance may appear incorrect during the process', 3000);
+		if(!confirm(translateString("system_optimization_confirm"))) return;
+		wsutil.showToast(translateString("system_optimization_started"), 3000);
 		//FUSION_IN_PROGRESS = true;
 		let fusionProgressBar = document.getElementById('fusion-progress');
 		fusionProgressBar.classList.remove('hidden');
@@ -2259,11 +2250,11 @@ function handleTransactions(){
 			
 			return d.getDate() + ' ' + m[d.getMonth()] + ' ' + d.getFullYear() + ' - ' + hours + ':' + minutes + ':' + seconds;
 		})();
-		let status = item.txType == 'in' ? '<span class="rcv">Received</span><img src="../assets/transactions/arrow-down-green.png" />' : '<span class="snt">Sent</span><img src="../assets/transactions/arrow-up-red.png" />';
+		let status = item.txType == 'in' ? '<span class="rcv">' + translateString("transactions_js_received") + '</span><img src="../assets/transactions/arrow-down-green.png" />' : '<span class="snt">' + translateString("transactions_js_sent") + '</span><img src="../assets/transactions/arrow-up-red.png" />';
 		let hash = item.transactionHash.substring(0, 10) + '...' + item.transactionHash.slice(-10);
 		let paymentId = "";
 		if (item.paymentId != '-') { paymentId = item.paymentId.substring(0, 10) + '...' + item.paymentId.slice(-10); }
-		return `<tr title="click for detail..." class="txlist-item">
+		return `<tr title="${translateString("transactions_js_click_details")}" class="txlist-item">
 			<td class="tx-date">
 				<img src="../assets/general/arrow-left-white.png" /><span>${tDate}</span>
 			</td>
@@ -2295,22 +2286,22 @@ function handleTransactions(){
 	async function showTransaction(el){
 		let tx = (el.name === "tr" ? el : el.closest('tr'));
 		let txdate = new Date(tx.dataset.timestamp*1000).toUTCString();
-		let txhashUrl = `<a class="external form-bt button-blue" title="view in block explorer" href="${config.blockExplorerTransactionUrl.replace('[[TX_HASH]]', tx.dataset.rawhash)}">View in block explorer</a>`;
-		let txTypeBtn = tx.dataset.txtype == 'in' ? `<a class="tx-type-btn tx-type-in">Received<img src="../assets/transactions/right-blue-arrow.png" /></a>` : `<a class="tx-type-btn tx-type-out">Sent<img src="../assets/transactions/arrow-up-red.png" /></a>`;
+		let txhashUrl = `<a class="external form-bt button-blue" title="${translateString("transactions_js_viewin_blockexplorer")}" href="${config.blockExplorerTransactionUrl.replace('[[TX_HASH]]', tx.dataset.rawhash)}">${translateString("transactions_js_viewin_blockexplorer")}</a>`;
+		let txTypeBtn = tx.dataset.txtype == 'in' ? `<a class="tx-type-btn tx-type-in">${translateString("transactions_js_received")}<img src="../assets/transactions/right-blue-arrow.png" /></a>` : `<a class="tx-type-btn tx-type-out">${translateString("transactions_js_sent")}<img src="../assets/transactions/arrow-up-red.png" /></a>`;
 		let address = tx.dataset.txtype == 'in' ? wsession.get('loadedWalletAddress') : tx.dataset.destinationaddress;
 		var extraDataDecoded = await getNonPrivacyInformation(tx.dataset.rawhash);
 		var confirmationNumber = tx.dataset.confirmations;
-		if (tx.dataset.confirmations > 8) { confirmationNumber = '<span class="cyan">Confirmed</span>'; }
+		if (tx.dataset.confirmations > 8) { confirmationNumber = '<span class="cyan">' + translateString("transactions_js_confirmed") + '</span>'; }
 		
 		let dialogTpl = `
 				<div class="div-transactions-panel">
 					<div class="clearfix">
-						<button data-target="#tx-dialog" type="button" class="form-bt button-blue dialog-close-default" id="button-transactions-panel-close">Back</button>
+						<button data-target="#tx-dialog" type="button" class="form-bt button-blue dialog-close-default" id="button-transactions-panel-close">${translateString("transactions_js_back")}</button>
 
 						<div class="div-title clearfix">
 							<img src="../assets/transactions/title.png" />
-							<h2 class="title">Transaction Detail</h2>
-							<div class="subtitle">Blockchain Information</div>
+							<h2 class="title">${translateString("transactions_js_transaction_detail")}</h2>
+							<div class="subtitle">${translateString("transactions_js_chain_info")}</div>
 						</div>
 					</div>
 
@@ -2318,35 +2309,35 @@ function handleTransactions(){
 						<table class="custom-table" id="transactions-panel-table">
 							<tbody>
 								<tr>
-									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" /><span class="opa50">TX Hash</span></th>
+									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" /><span class="opa50">TX</span></th>
 									<td><span class="opa50 tctcl" data-cplabel="Tx. hash">${tx.dataset.rawhash}</span></td>
 								</tr>
 								<tr>
-									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" /><span class="opa50">Timestamp</span></th>
+									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" /><span class="opa50">${translateString("transactions_js_timestamp")}</span></th>
 									<td><span class="opa50 tctcl" data-cplabel="Tx. date">${tx.dataset.timestamp} (${txdate})</span></td>
 								</tr>
 								<tr>
-									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" /><span class="opa50">Block Height</span></th>
+									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" /><span class="opa50">${translateString("transactions_js_height")}</span></th>
 									<td><span class="opa50 tctcl" data-cplabel="Tx. block index">${tx.dataset.blockindex}</span></td>
 								</tr>
 								<tr>
-									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" /><span class="opa50">Confirmations</span></th>
+									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" /><span class="opa50">${translateString("transactions_js_confirmations")}</span></th>
 									<td><span class="opa50">${confirmationNumber}</span></td>
 								</tr>								
 								<tr>
-									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" />Total Amount</th>
+									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" />${translateString("transactions_js_amount")}</th>
 									<td data-cplabel="Tx. amount" class="tctcl">${tx.dataset.rawamount} ${config.assetTicker}</td>
 								</tr>
 								<tr>
-									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" />Fee</th>
+									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" />${translateString("transactions_js_fee")}</th>
 									<td  data-cplabel="Tx. fee" class="tctcl">${tx.dataset.rawfee} ${config.assetTicker}</td>
 								</tr>
 								<tr>
-									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" />Address (From)</th>
+									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" />${translateString("transactions_js_addr_from")}</th>
 									<td data-cplabel="Address" class="tctcl" id="tx_addr_from">${extraDataDecoded.transaction.address_from}</td>
 								</tr>
 								<tr>
-									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" />Address (To)</th>
+									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" />${translateString("transactions_js_addr_to")}</th>
 									<td data-cplabel="Address" class="tctcl" id="tx_addr_to">									
 			`;	
 							// Dynex Non Privacy Upgrade
@@ -2356,7 +2347,7 @@ function handleTransactions(){
 									const elementAddrTo = extraDataDecoded['transaction']['address_to'][index];
 									const elementAmount = hexToBinaryAndDecimal(extraDataDecoded['transaction']['amount'][index]);
 									dialogTpl += `<div style="float: left; width: 90%; font-size: 13px; vertical-align: middle;">${elementAddrTo}</div>`;
-									dialogTpl += `<div style="float: right; width: 10%; font-size: 13px; vertical-align: middle;">${elementAmount.dnx} DNX</div>`;
+									dialogTpl += `<div style="float: right; width: 10%; font-size: 13px; vertical-align: middle;">${elementAmount.dnx} ${config.assetTicker}</div>`;
 								}
 							} else {
 								// Detected Only 1 Address_To 
@@ -2369,7 +2360,7 @@ function handleTransactions(){
 									<td><span class="opa50 tctcl" data-cplabel="Tx. extra">${tx.dataset.extra}</span></td>
 								</tr>
 								<tr>
-									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" /><span class="opa50">Payment Id</span></th>
+									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" /><span class="opa50">${translateString("transactions_js_paymentid")}</span></th>
 									<td><span class="opa50 tctcl" data-cplabel="Payment ID">${tx.dataset.rawpaymentid}</span></td>
 								</tr>
 							</tbody>
@@ -2446,7 +2437,7 @@ function handleTransactions(){
 		mode = mode || 'all';
 		let recentDir = settings.get('recentWalletDir', remote.app.getPath('documents'));
 		let filename = remote.dialog.showSaveDialog({
-			title: "Export transactions as scv...",
+			title: "Export transactions as csv...",
 			defaultPath: recentDir,
 			filters: [
 				{ name: 'CSV files', extensions: ['csv'] }
@@ -2486,17 +2477,17 @@ function handleTransactions(){
 			case 'in':
 				let txin = txlist.filter( (obj) => {return obj.txType === "in";});
 				if(!txin.length){
-					wsutil.showToast('Transaction export failed, incoming transactions not available!');
+					wsutil.showToast(translateString("transactions_js_export_failed"));
 					if(dialog.hasAttribute('open')) dialog.close();
 					return;
 				}
 
 				csvWriter.writeRecords(txin).then(()=>{
 					if(dialog.hasAttribute('open')) dialog.close();
-					wsutil.showToast(`Transaction list exported to ${filename}`);
+					wsutil.showToast(`${translateString("transactions_js_exportedto")} ${filename}`);
 				}).catch((err) => {
 					if(dialog.hasAttribute('open')) dialog.close();
-					wsutil.showToast(`Transaction export failed, ${err.message}`);
+					wsutil.showToast(`${translateString("transactions_js_exportedto_fail")}, ${err.message}`);
 				});
 				break;
 			case 'out':
@@ -2509,19 +2500,19 @@ function handleTransactions(){
 
 				csvWriter.writeRecords(txout).then(()=>{
 					if(dialog.hasAttribute('open')) dialog.close();
-					wsutil.showToast(`Transaction list exported to ${filename}`);
+					wsutil.showToast(`${translateString("transactions_js_exportedto")} ${filename}`);
 				}).catch((err) => {
 					if(dialog.hasAttribute('open')) dialog.close();
-					wsutil.showToast(`Transaction export failed, ${err.message}`);
+					wsutil.showToast(`${translateString("transactions_js_exportedto_fail")}, ${err.message}`);
 				});
 				break;
 			default:
 				csvWriter.writeRecords(txlist).then(()=>{
 					if(dialog.hasAttribute('open')) dialog.close();
-					wsutil.showToast(`Transaction list exported to ${filename}`);
+					wsutil.showToast(`${translateString("transactions_js_exportedto")} ${filename}`);
 				}).catch((err) => {
 					if(dialog.hasAttribute('open')) dialog.close();
-					wsutil.showToast(`Transaction export failed, ${err.message}`);
+					wsutil.showToast(`${translateString("transactions_js_exportedto_fail")}, ${err.message}`);
 				});
 				break;
 		}
@@ -2534,12 +2525,12 @@ function handleTransactions(){
 
 	txButtonExport.addEventListener('click', () => {
 		let dialogTpl = `<div class="transaction-panel">
-			<h4>Export Transactions to CSV:</h4>
+			<h4>${translateString("transactions_js_exportto_csv")}:</h4>
 			<div class="div-panel-buttons">
-				<button data-txtype="all" type="button" class="button-blue export-txtype">All Transfers</button>
-				<button data-txtype="in" type="button" class="button-blue export-txtype">Incoming Transfers</button>
-				<button data-txtype="out" type="button" class="button-blue export-txtype">Outgoing Transfers</button>
-				<button data-target="#ab-dialog" type="button" class="button-gray dialog-close-default">Cancel</button>
+				<button data-txtype="all" type="button" class="button-blue export-txtype">${translateString("transactions_js_export_alltransfers")}</button>
+				<button data-txtype="in" type="button" class="button-blue export-txtype">${translateString("transactions_js_export_incoming")}</button>
+				<button data-txtype="out" type="button" class="button-blue export-txtype">${translateString("transactions_js_export_outgoing")}</button>
+				<button data-target="#ab-dialog" type="button" class="button-gray dialog-close-default">${translateString("transactions_js_export_cancel")}</button>
 			</div>
 		`;
 		let dialog = document.getElementById('ab-dialog');
@@ -2642,9 +2633,9 @@ async function handleMempool() {
                     amountTotal += binaryDecimal.dnx;
                 }
 				// Being Sent or Received?
-                let inOut = '<span class="rcv">Received</span>&nbsp;&nbsp;<img src="../assets/transactions/arrow-down-green.png">';
+                let inOut = '<span class="rcv">' + translateString("transactions_js_received") + '</span>&nbsp;&nbsp;<img src="../assets/transactions/arrow-down-green.png">';
                 if (extraDataDecoded['transaction']['address_from'] === walletAddr) {
-                    inOut = '<span class="snt">Sent</span>&nbsp;&nbsp;<img src="../assets/transactions/arrow-up-red.png">';
+                    inOut = '<span class="snt">' + translateString("transactions_js_sent") + '</span>&nbsp;&nbsp;<img src="../assets/transactions/arrow-up-red.png">';
                 }
                 // Create a new table row
                 let newRow = document.createElement('tr');
@@ -2653,9 +2644,9 @@ async function handleMempool() {
                 txCell.innerHTML = mempoolTx.substring(0, 10) + '...' + mempoolTx.slice(-10);
                 // Setup the table row cells
                 let amountCell = document.createElement('td');
-                amountCell.innerHTML = amountTotal + ' DNX';              
+                amountCell.innerHTML = amountTotal + ' ' + config.assetTicker;              
                 let feeCell = document.createElement('td');
-                feeCell.innerHTML = parseFloat(extraDataDecoded['transaction']['fee'] / 1000000000) + ' DNX';
+                feeCell.innerHTML = parseFloat(extraDataDecoded['transaction']['fee'] / 1000000000) + ' ' + config.assetTicker;
                 let inOutCell = document.createElement('td');
                 inOutCell.innerHTML = inOut;
                 // Append the cells to the new row
@@ -2687,61 +2678,21 @@ function handleNetworkChange(){
 	});
 }
 
-// Array of CSS classes to exempt from adaptive text resizing
-const adaptiveTextExemptions = ['form-help', 'welcome-intro-title', 'welcome-intro'];
+// load language pack
 async function loadLanguage(lang) {
-	// Function to load the selected language JSON file
-	try {
-		const response = await fetch(`../../resources/lang/${lang}.json`);
-		if (!response.ok) throw new Error(`Language file ${lang} not found.`);
-		const translations = await response.json();
-		applyTranslations(translations);
-		applyAdaptiveTextSize(); // Ensure text size is adjusted after applying translations
-		log.debug("[dnx-lang] set language:", settings.get('language'));
-	} catch (error) {
-		log.debug('[dnx-lang] Error loading language:', error);
-	}
-}
-function applyTranslations(translations) {
-	// Function to apply translations to the DOM
-	document.querySelectorAll('[data-i18n]').forEach(element => {
-		const key = element.getAttribute('data-i18n');
-		if (translations[key]) {
-			element.innerHTML = translations[key];
-		}
-	});
-}
-function applyAdaptiveTextSize() {
-	// Generate the selector dynamically from the adaptiveTextExemptions array
-	const exemptionSelector = adaptiveTextExemptions.map(cls => `:not(.${cls})`).join('');
-	
-	// Function to adapt text size to fit within parent elements
-	document.querySelectorAll(`[data-i18n]${exemptionSelector}`).forEach(element => {
-		// Exclude elements with the specified classes
-		const parent = element.parentElement || element; // Use parent or fallback to self if no parent
-		if (parent) {
-			adjustTextSize(element, parent);
-		}
-	});
-}
-function adjustTextSize(element, parent) {
-	// Function to adjust text size
-	const maxFontSize = 16; // Set a maximum font size
-	const minFontSize = 13; // Set a minimum font size
-	let fontSize = maxFontSize;
-
-	element.style.fontSize = `${fontSize}px`;
-	while (
-		(element.scrollWidth > parent.clientWidth || element.scrollHeight > parent.clientHeight) &&
-		fontSize > minFontSize
-	) {
-		fontSize--;
-		element.style.fontSize = `${fontSize}px`;
-	}
-
-	if (fontSize === minFontSize && (element.scrollWidth > parent.clientWidth || element.scrollHeight > parent.clientHeight)) {
-		log.debug('[dnx-lang] Warning: Text still overflowing at minimum size for', element);
-	}
+    // Function to load the selected language JSON file
+    try {
+        const response = await fetch(`../../resources/lang/${lang}.json`);
+        if (!response.ok) throw new Error(`Language file ${lang} not found.`);
+        
+        const translations = await response.json();
+        setTranslations(translations); // Update translations cache globally
+        applyTranslations(translations);
+        applyAdaptiveTextSize();
+        console.debug("[dnx-lang] set language:", lang);
+    } catch (error) {
+        console.debug('[dnx-lang] Error loading language:', error);
+    }
 }
 
 // event handlers
@@ -2799,7 +2750,7 @@ function initHandlers(){
 		let el = event.target;
 		let wv = el.value ? el.value.trim() : '';
 		let cplabel = el.dataset.cplabel ? el.dataset.cplabel : '';
-		let cpnotice = cplabel ? `${cplabel} copied to clipboard!` : 'Copied to clipboard';
+		let cpnotice = cplabel ? `${cplabel} $(translateString("system_copy_toclipboard"))` : translateString("system_copy_toclipboard");
 		el.select();
 		if(!wv.length) return;
 		clipboard.writeText(wv);
@@ -2810,7 +2761,7 @@ function initHandlers(){
 		let el = event.target;
 		let wv = el.textContent.trim();
 		let cplabel = el.dataset.cplabel ? el.dataset.cplabel : '';
-		let cpnotice = cplabel ? `${cplabel} copied to clipboard!` : 'Copied to clipboard';
+		let cpnotice = cplabel ? `${cplabel} $(translateString("system_copy_toclipboard"))` : translateString("system_copy_toclipboard");
 		wsutil.selectText(el);
 		if(!wv.length) return;
 		clipboard.writeText(wv);
@@ -2825,7 +2776,7 @@ function initHandlers(){
 		let origInfo = clipInfo.value;
 		if(wv.length >= 10){
 			clipboard.writeText(wv.trim());
-			clipInfo.textContent = "Address copied to clipboard!";
+			clipInfo.textContent = translateString("system_copy_addr_toclipboard");
 			clipInfo.classList.add('help-hl');
 			setTimeout(function(){
 				clipInfo.textContent = origInfo;
@@ -2839,11 +2790,11 @@ function initHandlers(){
 		let generatedQrCode = document.getElementById('qr-gen-img').getAttribute('src');
 		let dialogTpl = `<div class="transaction-panel">
 			<div class="text-center">
-				<h4>The QR code of your address:</h4>
+				<h4>$(translateString("system_wallet_qrcode")):</h4>
 				<img src="${generatedQrCode}" width="245" />
 			</div>
 			<div class="div-panel-buttons">
-				<button data-target="#ab-dialog" type="button" class="button-gray dialog-close-default">Close</button>
+				<button data-target="#ab-dialog" type="button" class="button-gray dialog-close-default">$(translateString("system_close_button"))</button>
 			</div>
 		`;
 		let dialog = document.getElementById('ab-dialog');
@@ -3064,7 +3015,7 @@ function initKeyBindings(){
 	Mousetrap.bind(['ctrl+o','command+o'], () => {
 		walletOpened = wsession.get('serviceReady') || false;
 		if(walletOpened){
-			wsutil.showToast('Please close current wallet before opening another wallet!');
+			wsutil.showToast(translateString("system_wallet_alreadyopen"));
 			return;
 		}
 		return changeSection('section-overview-load');
@@ -3072,7 +3023,7 @@ function initKeyBindings(){
 	Mousetrap.bind(['ctrl+x','command+x'], () => {
 		walletOpened = wsession.get('serviceReady') || false;
 		if(!walletOpened){
-			wsutil.showToast('No wallet is currently opened');
+			wsutil.showToast(translateString("system_wallet_notopened"));
 			return;
 		}
 		overviewWalletCloseButton.dispatchEvent(new Event('click'));
@@ -3087,7 +3038,7 @@ function initKeyBindings(){
 	Mousetrap.bind(['ctrl+n','command+n'], ()=> {
 		walletOpened = wsession.get('serviceReady') || false;
 		if(walletOpened){
-			wsutil.showToast('Please close current wallet before creating/importing new wallet');
+			wsutil.showToast(translateString("system_wallet_pleaseclose"));
 			return;
 		}
 		return changeSection('section-overview-create');
@@ -3096,7 +3047,7 @@ function initKeyBindings(){
 	Mousetrap.bind(['ctrl+i','command+i'],() => {
 		walletOpened = wsession.get('serviceReady') || false;
 		if(walletOpened){
-			wsutil.showToast('Please close current wallet before creating/importing new wallet');
+			wsutil.showToast(translateString("system_wallet_pleaseclose"));
 			return;
 		}
 		return changeSection('section-overview-import-key');
@@ -3105,7 +3056,7 @@ function initKeyBindings(){
 	Mousetrap.bind(['ctrl+t','command+t'],() => {
 		walletOpened = wsession.get('serviceReady') || false;
 		if(!walletOpened){
-			wsutil.showToast('Please open your wallet to view your transactions');
+			wsutil.showToast(translateString("system_wallet_pleaseopen_transactions"));
 			return;
 		}
 		return changeSection('section-transactions');
@@ -3114,7 +3065,7 @@ function initKeyBindings(){
 	Mousetrap.bind(['ctrl+s','command+s'],() => {
 		walletOpened = wsession.get('serviceReady') || false;
 		if(!walletOpened){
-			wsutil.showToast('Please open your wallet to make a transfer');
+			wsutil.showToast(translateString("system_wallet_pleaseopen_transfer"));
 			return;
 		}
 		return changeSection('section-send');
@@ -3123,7 +3074,7 @@ function initKeyBindings(){
 	Mousetrap.bind(['ctrl+shift+i','command+shift+i'], () => {
 		walletOpened = wsession.get('serviceReady') || false;
 		if(walletOpened){
-			wsutil.showToast('Please close current wallet before creating/importing new wallet');
+			wsutil.showToast(translateString("system_wallet_pleaseclose"));
 			return;
 		}
 		return changeSection('section-overview-import-seed');

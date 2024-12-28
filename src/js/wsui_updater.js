@@ -4,6 +4,7 @@ const Store = require('electron-store');
 const wsutil = require('./ws_utils');
 const WalletShellSession = require('./ws_session');
 const config = require('./ws_config');
+const { setTranslations, translateString, applyTranslations, applyAdaptiveTextSize } = require('./ws_translation');
 
 const brwin = remote.getCurrentWindow();
 const settings = new Store({name: 'Settings'});
@@ -62,7 +63,7 @@ function updateSyncProgress(data){
     let statusText = '';
 
     if(knownBlockCount === SYNC_STATUS_NET_CONNECTED){
-        statusText = 'RESUMING WALLET SYNC...';
+        statusText = translateString("system_wallet_sync_resume");
 		connInfoDiv.innerHTML = statusText;
 
         // sync sess flags
@@ -70,7 +71,7 @@ function updateSyncProgress(data){
         wsession.set('synchronized', false);
         brwin.setProgressBar(-1);
     }else if(knownBlockCount === SYNC_STATUS_NET_DISCONNECTED){
-        statusText = 'PAUSED, NETWORK DISCONNECTED';
+        statusText = translateString("system_wallet_sync_paused");
 		connInfoDiv.innerHTML = statusText;
 
         // sync sess flags
@@ -78,7 +79,7 @@ function updateSyncProgress(data){
         wsession.set('synchronized', false);
         brwin.setProgressBar(-1);
     }else if(knownBlockCount === SYNC_STATUS_IDLE){
-        statusText = 'IDLE';
+        statusText = translateString("system_wallet_sync_idle");
 		connInfoDiv.innerHTML = statusText;
 
         // sync sess flags
@@ -90,7 +91,7 @@ function updateSyncProgress(data){
         // no node connected
         wsession.set('connectedNode', '');
     }else if(knownBlockCount === SYNC_STATUS_NODE_ERROR){
-        statusText = 'RESUMING WALLET SYNC';
+        statusText = translateString("system_wallet_sync_resume");
 		connInfoDiv.innerHTML = statusText;
 
         wsession.set('connectedNode', '');
@@ -143,7 +144,7 @@ function updateBalance(data){
         inputSendAmountField.value = 0;
         inputSendAmountField.setAttribute('max','0.0000');
         inputSendAmountField.setAttribute('disabled','disabled');
-        maxSendFormHelp.innerHTML = "You don't have any funds to be sent.";
+        maxSendFormHelp.innerHTML = translateString("system_wallet_sync_nofunds");
         maxSendFormHelp.classList.add('warning');
         sendMaxAmount.dataset.maxsend = 0;
         sendMaxAmount.classList.add('hidden');
@@ -166,7 +167,7 @@ function updateBalance(data){
 			sendOptimize.classList.remove('hidden');
             wsession.set('fusionStarted', false);
             wsession.set('fusionProgress', false);
-            wsutil.showToast('Optimization completed. You may need to repeat the process until your wallet is fully optimized.', 5000);
+            wsutil.showToast(translateString("system_wallet_sync_fusioncomplete"), 5000);
 			log.debug(`Wallet optimization completed`);
         } else {
             if (parseInt(bLocked, 10) > 0) {
@@ -183,7 +184,7 @@ function updateBalance(data){
 		let maxSend = (maxSendRaw).toFixed(config.decimalPlaces);
         inputSendAmountField.setAttribute('max',maxSend);
         inputSendAmountField.removeAttribute('disabled');
-        maxSendFormHelp.innerHTML = `Enter the amount you would like to send`;
+        maxSendFormHelp.innerHTML = translateString("system_wallet_sync_enteramount");
 		maxSendFormHelp.classList.remove('warning');
         sendMaxAmount.dataset.maxsend = maxSend;
         sendMaxAmount.classList.remove('hidden');
@@ -254,10 +255,10 @@ function updateTransactions(result){
     if(notify){
         settings.set('last_notification', newLastHash);
         let notiOptions = {
-            'body': `Amount: ${(newTxAmount)} ${config.assetTicker}\nHash: ${newLastHash.substring(24,-0)}...`,
+            'body': `$(translateString("system_wallet_sync_amount")): ${(newTxAmount)} ${config.assetTicker}\n$(translateString("system_wallet_sync_hash")): ${newLastHash.substring(24,-0)}...`,
             'icon': '../assets/walletshell_icon.png'
         };
-        let itNotification = new Notification('Incoming Transfer', notiOptions);
+        let itNotification = new Notification(translateString("system_wallet_sync_incomingtx"), notiOptions);
         itNotification.onclick = (event) => {
             event.preventDefault();
             let  txNotifyFiled = document.getElementById('transaction-notify');
@@ -273,11 +274,11 @@ function updateTransactions(result){
 			// Play the pirate MP3 sound clip
 			try {
 				let audio = new Audio('../../src/assets/audio/2.mp3');
-				audio.play().catch(err => console.error("Error playing audio: ", err));
+				audio.play().catch(err => log.debug("Error playing audio: ", err));
 			} catch (error) {
-				console.log("Audio playback failed, possibly no audio device available: ", error);
+				log.debug("Audio playback failed, possibly no audio device available: ", error);
 			}
-		}		
+		}
 		
     }
 }
@@ -302,7 +303,7 @@ function updateQr(address){
         qrBox.prepend(qrImg);
     }
 
-	connInfoDiv.innerHTML = 'CONNECTED';
+	connInfoDiv.innerHTML = translateString("system_wallet_sync_connected");
 }
 
 function resetFormState(){

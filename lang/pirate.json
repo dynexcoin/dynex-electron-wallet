@@ -203,5 +203,7 @@
 	"about-license-p1": "Copyright Dynex Shipwrights",
 	"about-license-p2": "Ye be free t’ use, copy, or modify this software fer any purpose, with or without fee, as long as this notice remains",
 	"about-license-p3": "THIS SOFTWARE BE AS IS! THE CREATORS DISCLAIM ALL WARRANTIES, EVEN IMPLIED ONES. THEY BE NOT LIABLE FER DAMAGES CAUSED BY USIN’ THIS SOFTWARE, WHETHER DIRECT, INDIRECT, OR CONSEQUENTIAL.",
-	"about-back-button": "Return t’ Port"	
+	"about-back-button": "Return t’ Port",
+	
+	"settings-js-updated": "Settings be updated, ye scallywag"
 }
