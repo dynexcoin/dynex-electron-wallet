@@ -1,0 +1,25 @@
+<template>
+	<section class="section" id="section-lockscreen">
+		<div class="section-contents section-wallet-setup darkened">
+			<div class="div-title">
+				<h2 class="section-wallet-setup-title" data-i18n="">Wallet Locked</h2>
+			</div>
+			<div class="div-input">
+				<div class="input-wrap">
+					<h4 class="text-spaced input-required" data-i18n="open-wallet-password">Wallet Password</h4>
+					<input required="required" autofocus="true" tabindex="0" type="password" class="text-block" id="input-unlock-password" placeholder="Password to unlock this wallet..." />
+					<button tabindex="-1" class="togpass notabindex" data-pf="input-unlock-password"><i class="fas fa-eye"></i></button>
+				</div>
+				<div class="input-wrap" id="walletUnlockButtons">
+				   <button type="button" class="form-bt button-blue button-block" id="button-unlock-load" data-i18n="">Unlock Wallet</button>
+				</div>
+				
+				<div class="input-wrap">
+					<span class="form-ew form-msg text-spaced-error text-center" id="text-unlock-error"></span>
+					<span class="form-ew form-msg text-spaced-warning text-center" id="text-unlock-warning"></span>
+					<span class="form-ew form-msg text-spaced-success text-center" id="text-unlock-success"></span>
+				</div>
+			</div>
+		</div>
+	</section>
+</template>

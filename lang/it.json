@@ -116,7 +116,7 @@
 	"dhip-sortby-date": "Data",
 	"dhip-sortby-tx": "Hash della transazione",
 	
-	"qnodes-title": "QNodes", \\NodiQ or Nodi Quantistici
+	"qnodes-title": "QNodes", \\NodiQ or Nodi Quantistici or leave Qnodes
 	"qnodes-node-overview": "Stato Nodi Quantistici",	
 	"qnodes-send-collateral": "Invia collaterale", \\To understand exactly in english the action.
 	"qnodes-quantum-nodes": "Nodi Quantistici",
@@ -203,6 +203,176 @@
 	"about-license": "Licenze",
 	"about-license-p1": "Copyright Sviluppatori Dynex",
 	"about-license-p2": "Il permesso di usare, copiare, modificare e/o distribuire questo software per qualsiasi scopo, con o senza commissioni, è qui concesso, a condizione che l'avviso di copyright sopra riportato e questo avviso di permesso appaiano in tutte le copie.",
-	"about-license-p3": "IL SOFTWARE VIENE FORNITO "COSÌ COM'È" E L'AUTORE DECLINA QUALSIASI GARANZIA RELATIVA A QUESTO SOFTWARE, INCLUSE TUTTE LE GARANZIE IMPLICITE DI COMMERCIABILITÀ E IDONEITÀ. IN NESSUN CASO L'AUTORE SARÀ RESPONSABILE PER QUALSIASI DANNO SPECIALE, DIRETTO, INDIRETTO O CONSEQUENZIALE, O PER QUALSIASI DANNO DERIVANTE DALLA PERDITA DI UTILIZZO, DATI O PROFITTI, SIA IN UN'AZIONE CONTRATTUALE, NEGLIGENZA O ALTRO ATTO ILLECITO, DERIVANTE DA O IN CONNESSIONE CON L'USO O LE PRESTAZIONI DI QUESTO SOFTWARE.",
-	"about-back-button": "Indietro"
+	"about-license-p3": "IL SOFTWARE VIENE FORNITO COSÌ COM'È E L'AUTORE DECLINA QUALSIASI GARANZIA RELATIVA A QUESTO SOFTWARE, INCLUSE TUTTE LE GARANZIE IMPLICITE DI COMMERCIABILITÀ E IDONEITÀ. IN NESSUN CASO L'AUTORE SARÀ RESPONSABILE PER QUALSIASI DANNO SPECIALE, DIRETTO, INDIRETTO O CONSEQUENZIALE, O PER QUALSIASI DANNO DERIVANTE DALLA PERDITA DI UTILIZZO, DATI O PROFITTI, SIA IN UN'AZIONE CONTRATTUALE, NEGLIGENZA O ALTRO ATTO ILLECITO, DERIVANTE DA O IN CONNESSIONE CON L'USO O LE PRESTAZIONI DI QUESTO SOFTWARE.",
+	"about-back-button": "Indietro",
+	
+	"settings-js-updated": "Le impostazioni sono state aggiornate",
+	"settings-js-invalidnode": "Numero di porta daemon/node non valido"
+	"settings-js-unabletofind1": "Impossibile da trovare",
+	"settings-js-unabletofind2": "Cortesemente, inserisci il corretto percorso",
+	"settings-js-unabletosave": "Le impostazioni non possono essere salvate, per favore inserisci valori corretti",
+	
+    "qnode_js_online": "Online",
+    "qnode_js_offline": "Offline",
+    "qnode_js_working": "In Funzione",
+    "qnode_js_mining": "Mining",
+    "qnode_js_nodes": "Nodo/i",
+    "qnode_js_power": "Consumo", \\If Is what consume, in the case is Consumo or Assorbimento. Power is transalted in Potenza, but Power is like 700HP
+    "qnode_js_lastupdate": "Ultimo Aggiornamento", \\Is like update? or look if is updated or what?
+	
+    "addressbook_js_paymentid": "ID Pagamento",
+    "addressbook_js_areyousure1": "Sei sicuro che lo vuoi cancellare?",
+    "addressbook_js_areyousure2": "Dalla rubrica?",
+    "addressbook_js_addr": "Indirizzo",
+    "addressbook_js_addr_deleted": "La voce della rubrica è stata cancellata", \\If for entry you mean a contact inside the address book, please swap in this row, La voce with Il contatto
+    "addressbook_js_addr_empty": "L'indirizzo del contatto e l'etichetta non possono essere lasciati vuoti",
+    "addressbook_js_addr_invalid": "Non Valido",
+    "addressbook_js_addr_exists": "Questa combinazione di indirizzo e ID di pagamento esiste già, per favore inserisci un nuovo indirizzo o un ID di pagamento diverso",
+	"addressbook_js_addr_saved": "Il contatto è stato salvato nella rubrica",	
+    "addressbook_js_invalid_paymentid": "ID Pagamento non valido",
+    "addressbook_js_select": "Seleziona un azione",
+    "addressbook_js_edit": "Modifica",
+    "addressbook_js_delete": "Cancella",
+	
+    "keybindings_title": "Associazione dei tasti disponibile",
+    "keybindings_subtitle": "Portafoglio Dynex", \\you can leave Wallet. Remeber to do in all file, like you want
+    "keybinding_overview": "Passare alla schermata <strong>Principale</strong>", \\to check at runtime
+    "keybinding_next_screen": "Passare alla <strong>Prossima schermata</strong>", \\to check at runtime
+    "keybinding_new_wallet": "Passare alla schermata <strong>Crea nuovo portafoglio</strong>", \\to check at runtime
+    "keybinding_open_wallet": "Passare alla schermata <strong>Apri il portafoglio</strong>", \\to check at runtime
+    "keybinding_import_private_keys": "Passare alla schermata <strong>Importa portafoglio dalle chiavi private</strong>", \\to check at runtime
+    "keybinding_import_mnemonic_seed": "Passare alla schermata <strong>Importa portafoglio dalla frase mnemonica</strong>", \\to check at runtime
+    "keybinding_export_keys": "Passare alla schermata <strong>Esporta frase/chiave privata</strong>(quando il wallet è aperto)", \\to check at runtime
+    "keybinding_transactions": "Passare alla schermata <strong>Transazioni</strong>(quando il wallet è aperto)", \\to check at runtime
+    "keybinding_send_transfer": "Passare alla schermata <strong>Invia/Trasferisci</strong>(quando il wallet è aperto)", \\to check at runtime
+    "keybinding_close_wallet": "Chiudi portafoglio",
+    "keybinding_shortcut_info": "Visualizza le informazioni sui tasti di scelta rapida (questa finestra di dialogo)",
+    "keybinding_close_dialog": "Chiudi qualsiasi finestra di dialogo aperta (come questa finestra di dialogo)",
+    "keybinding_close_button": "Chiudi",
+	
+    "paymentid_generate": "Genera ID Pagamento",
+    "paymentid_paymentid": "ID Pagamento",
+    "paymentid_click_tocopy": "Cliccca per copiare",
+    "paymentid_close_button": "Chiudi",
+	
+    "send_addr_error1": "Non Valido",
+    "send_addr_error2": "Indirizzo",
+    "send_addr_error3": "Attento, non puoi inviarlo al tuo stesso indirizzo",
+    "send_addr_error4": "Attento, ID Pagamento non valido",
+    "send_addr_error5": "La quantità non può essere più di", \\not sure to translate correctly.. Could be the case that you want to send more Dynex that how many you have in your wallet? However is not good translation.. I need to understand better
+    "send_addr_error6": "Decimale", \\to understand the error in order to give the correct messagge. Explain better
+    "send_addr_error7": "Le commissioni non possono essere meno di",
+    "send_addr_error8": "Le commissioni non possono essere più di",
+    "send_addr_error9": "Spiacente, non hai fondi sufficienti per elaborare questo trasferimento. Quantità da trasferire + commissioni",
+    "send_js_transfer_confirmation": "Conferma di trasferimento",
+    "send_js_transfer_plzconfirm": "Per favore, conferma di aver inserito tutto correttamente",
+    "send_js_transfer_recipient": "Indirizzo del destinatario",
+    "send_js_transfer_amount": "Quantità",
+    "send_js_transfer_fee": "Commissioni di transazione",
+    "send_js_transfer_total": "Totale",
+    "send_js_paymentid": "ID Pagamento",
+    "send_js_cancel_button": "Cancella",
+    "send_js_send_button": "OK, Invia",
+    "send_js_sending_wait": "Inviando la transazione, attendi cortesemente...",
+    "send_js_sent_viewexplorer": "Guarda nel block explorer",
+    "send_js_sent_confirmed": "Transazione inviata",
+    "send_js_sent_balancewrong": "Il tuo saldo potrebbe apparire errato mentre la/le transazione/i non è/sono completamente confermata/e",
+    "send_js_sent_failed": "Transazione non riuscita",
+	
+    "send_js_bridge_badchain": "Chain ID non valido",
+    "send_js_bridge_badaddr1": "Indirizzo ETH non valido",
+    "send_js_bridge_badaddr2": "Indirizzo BASE non valido",
+    "send_js_bridge_badamount": "Attento, quantità non valida",
+    "send_js_bridge_decimals1": "La quantità non può essere più di",
+    "send_js_bridge_confirmation": "Conferma Bridging",
+    "send_js_bridge_plzconfirm": "Si prega di confermare che tutto è stato inserito correttamentePlease confirm that you have everything entered correctly",	
+    "send_js_bridge_chain": "Chain", \\Leave like this
+    "send_js_bridge_chainid": "Chain Wallet ID", \\leave like this
+	"send_js_bridge_amount": "Quantità",
+	"send_js_bridge_fee": "Commissioni di transazione",
+	"send_js_bridge_total": "Totale",	
+    "send_js_bridge_cancel_button": "Cancella",
+    "send_js_bridge_send_button": "OK, effettua il Bridge",	
+	"send_js_bridge_sending_wait": "Invio del transazione al Bridge, attendere prego", \\we are sending the transaction to the bridge?
+	"send_js_bridge_sent_viewexplorer": "Guarda nel block explorer",
+    "send_js_bridge_sent_confirmed": "Transazione inviata",
+    "send_js_bridge_sent_balancewrong": "Il tuo saldo potrebbe apparire errato mentre la/le transazione/i non è/sono completamente confermata/e",
+    "send_js_bridge_sent_failed": "Fallita la transazione verso il bridge",
+	
+    "transactions_js_received": "Ricevuta",
+    "transactions_js_sent": "Inviata",
+    "transactions_js_confirmed": "Confermata",
+    "transactions_js_click_details": "Clicca per maggiori dettagli",
+    "transactions_js_viewin_blockexplorer": "Guarda nel block explorer",
+    "transactions_js_back": "Indietro",
+    "transactions_js_transaction_detail": "Dettagli della transazione",
+    "transactions_js_chain_info": "Informazioni Blockchain",
+    "transactions_js_timestamp": "Data ed Ora",
+    "transactions_js_height": "Altezza del Blocco",
+    "transactions_js_confirmations": "Numero Conferme", \\Also put only Conferme, you can choose from number confirmation
+    "transactions_js_amount": "Quantità totale",
+    "transactions_js_fee": "Commissioni",
+    "transactions_js_addr_from": "Indirizzo del Mittente",
+    "transactions_js_addr_to": "Indirizzo del Destinatario",
+    "transactions_js_paymentid": "ID Pagamento",
+    "transactions_js_export_failed": "Esportazione della transazione fallita, transazioni in arrivo non disponibili.",
+    "transactions_js_exportedto": "Lista delle transazioni esportata su",
+    "transactions_js_exportedto_fail": "Esportazione della transazione fallita",
+    "transactions_js_exportto_csv": "Esporta transazioni in CSV",
+    "transactions_js_export_alltransfers": "Tutti i trasferimenti",
+    "transactions_js_export_incoming": "Trasferimenti in Arrivo", 
+    "transactions_js_export_outgoing": "Trasferimenti in uscita",
+    "transactions_js_export_cancel": "Cancella",
+	
+    "system_wallet_sync_connected": "CONNESSO",
+    "system_wallet_sync_resume": "RIPRESA SINCRONIZZAZIONE DEL PORTAGLIO...",
+    "system_wallet_sync_paused": "IN PAUSA, RETE DISCONNESSA",
+    "system_wallet_sync_idle": "INATTIVO", \\YOU WANT TO SAY INACTIVE OR FREE FROM USE ?
+    "system_wallet_sync_nofunds": "Non hai fondi da inviare",
+    "system_wallet_sync_fusioncomplete": "Ottimizzazione completata. Potrebbe essere necessario ripetere il processo fino a quando il tuo portafoglio non sarà completamente ottimizzato",
+    "system_wallet_sync_enteramount": "Inserisci l'importo che desideri inviare",
+    "system_wallet_sync_amount": "Quantità",
+    "system_wallet_sync_hash": "Hash",
+    "system_wallet_sync_incomingtx": "Trasferimenti in Arrivo",
+	
+    "system_wallet_alreadyopen": "Si prega di chiudere il portafoglio attuale prima di aprirne un altro",
+    "system_wallet_notopened": "Nessun portafoglio è attualmente aperto",
+    "system_wallet_pleaseclose": "Si prega di chiudere il portafoglio attuale prima di creare/importare un nuovo portafoglio",
+    "system_wallet_pleaseopen_transactions": "Si prega di aprire il portafoglio per visualizzare le tue transazioni",
+    "system_wallet_pleaseopen_transfer": "Si prega di aprire il portafoglio per effettuare un trasferimento",
+    "system_synchronization": "La sincronizzazione è in corso, si prega di attendere",
+    "system_optimization": "Ottimizzazione del portafoglio in corso, si prega di attendere",
+    "system_optimization_confirm": "Stai per eseguire l'ottimizzazione del portafoglio. Questo processo potrebbe richiedere un po' di tempo per essere completato, sei sicuro?",
+    "system_optimization_started": "Ottimizzazione avviata, il tuo saldo potrebbe apparire errato durante il processo",
+    "system_copy_toclipboard": "Copiato negli appunti",
+    "system_copy_addr_toclipboard": "Indirizzo Copiato negli appunti",
+    "system_invalid_node_addr": "Indirizzo demone/nodo non valido",
+    "system_invalid_node_port": "Numero porta demone/nodo non valido",
+    "system_invalid_password": "Si prega di inserire la password del portafoglio",
+    "system_invalid_wallet_path": "Percorso del file del portafoglio non valido",
+    "system_invalid_unable_to_open1": "Impossibile aprire il portafoglio",
+    "system_invalid_unable_to_open2": "La password che hai fornito è errata",
+    "system_accessing_wallet": "Accesso al portafoglio in corso...",
+    "system_starting_wallet_service": "Avvio del servizio del portafoglio...",
+    "system_error_wallet_service": "Impossibile avviare il servizio",
+    "system_opening": "Apertura del portafoglio in corso, si prega di attendere...",
+    "system_opening_node_warning": "Si prega di inserire un indirizzo daemon e una porta validi",
+    "system_create": "Si prega di creare/aprire il tuo portafoglio.",
+    "system_pleasewait": "Si prega di attendere fino al completamento della sincronizzazione",
+    "system_walletfusion_inprogress": "Ottimizzazione del portafoglio in corso, si prega di attendere",
+    "system_wallet_created": "Il portafoglio è stato creato, ora puoi aprire il tuo portafoglio",
+    "system_wallet_imported": "Il portafoglio è stato importato, ora puoi aprire il tuo portafoglio",
+    "system_wallet_create_passblank": "Si prega di inserire una password, la creazione del portafoglio senza una password non è supportata",
+    "system_wallet_create_unableoverwrite": "Impossibile sovrascrivere il file esistente, si prega di inserire un nuovo percorso del file del portafoglio",
+    "system_wallet_invalid_scanheight": "Altezza di scansione non valida", \\explain better
+    "system_wallet_blank_key": "La Chiave di Visualizzazione e la Chiave di Spesa non possono essere lasciate vuote.",
+    "system_wallet_invalid_viewkey": "Chiave di visualizzazione non valida",
+    "system_wallet_invalid_spendkey": "Chiave di spesa non valida",
+    "system_wallet_failedkey": "Impossibile ottenere la chiave, per favore riprova tra qualche secondo",
+    "system_wallet_keys_exported": "Le tue chiavi sono state esportate, per favore tieni il file al sicuro e segreto",
+    "system_wallet_keys_exported_fail": "Impossibile salvare le tue chiavi, controlla di avere i permessi di scrittura sul file",
+    "system_wallet_saving_msg": "Salvando e chiudendo il tuo portafoglio...",
+    "system_wallet_close_confirm": "Sei sicuro che vuoi uscire dal tuo portafoglio?",
+    "system_wallet_qrcode": "Il QR Code del tuo indirizzo",
+    "system_close_button": "Chiudi"
 }

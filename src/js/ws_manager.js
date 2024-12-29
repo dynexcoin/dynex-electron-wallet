@@ -35,6 +35,7 @@ var WalletShellManager = function(){
     this.daemonHost = settings.get('daemon_host');
     this.daemonPort = settings.get('daemon_port');
     this.serviceProcess = null;
+    this.nodeProcess = null;
     this.serviceBin = settings.get('service_bin');
     this.nodeBin = settings.get('node_bin');
     this.servicePassword = settings.get('service_password');
@@ -90,6 +91,9 @@ WalletShellManager.prototype._serviceBinExists = function () {
 // check 
 WalletShellManager.prototype.serviceStatus = function(){
     return  (undefined !== this.serviceProcess && null !== this.serviceProcess);
+};
+WalletShellManager.prototype.nodeStatus = function(){
+    return  (undefined !== this.nodeProcess && null !== this.nodeProcess);
 };
 
 WalletShellManager.prototype.isRunning = function () {
@@ -157,52 +161,80 @@ WalletShellManager.prototype.startNode = function(){
 
     let nodeArgs = this.nodeArgsDefault.concat([
         '--enable-cors', '*',		// Required so that Chromium Framework Security doesnt reject requests
-		'--log-level', 0,			// Log Level = 0 (No Logging, to save on RAM usage)
-		'--no-console',				// No output to console, as its embedded
+		'--log-level', 2,			// Log Level = 0 (No Logging, to save on RAM usage)
+		//'--no-console',			// No output to console, as its embedded
 		'--restricted-rpc',			// RPC only needs to be READ VIEW
     ]);
 
-	log.debug('[dnx-node] worker started');
-    this.nodeProcess = childProcess.execFile(this.nodeBin, nodeArgs, (error, stdout, stderr) => {
-		// if(stderr) log.debug(stderr);
-	});
+	log.debug('[dnx-node] worker started');	
+	let wsm = this;
+	this.nodeProcess = childProcess.spawn(wsm.nodeBin, nodeArgs);	
+	this.nodePid = this.nodeProcess.pid;
+	log.debug('[dnx-node] pid: ' + this.nodePid);
 };
-WalletShellManager.prototype.stopNode = function(){
+WalletShellManager.prototype.stopNode = async function(){
     this.init();
-    let wsm = this;
-    return new Promise(function (resolve){
-        // if(wsm.serviceStatus()){
-            // wsm.serviceLastPid = wsm.serviceProcess.pid;
-            // wsm.stopSyncWorker(true);
-            // wsm.serviceApi.save().then(() =>{
-                // try{
-                    // wsm.terminateService(true);
-                    // wsm._reinitSession();
-                    // resolve(true);
-                // }catch(err){
-                    // log.debug(`SIGTERM failed: ${err.message}`);
-                    // wsm.terminateService(true);
-                    // wsm._reinitSession();
-                    // resolve(false);
-                // }
-            // }).catch((err) => {
-                // log.debug(`Failed to save wallet: ${err.message}`);
-                // // try to wait for save to completed before force killing
-                // setTimeout(()=>{
-                    // wsm.terminateService(true); // force kill
-                    // wsm._reinitSession();
-                    // resolve(true);
-                // },10000);
-            // });
-        // } else {
-            // wsm._reinitSession();
-            // resolve(false);
-        // }
-		
-		
-		
-    });	
+    return new Promise(async (resolve) => {
+		this.nodeLastPid = this.nodeProcess.pid;
+		try {
+			await terminateNodeProcess(this.nodeProcess, this.nodeProcess.pid);
+			resolve(true);
+		} catch (err) {
+			log.debug(`[dnx-node] SIGTERM failed: ${err}`);
+			resolve(false);
+		}
+    });
 };
+// Function to cleanly stop the DNX-node process
+async function terminateNodeProcess(nodeProcess, nodePid) {
+    return new Promise((resolve, reject) => {
+        // Check if nodeProcess is defined and has a valid pid
+        if (!nodeProcess || !nodePid) {
+            log.error('[dnx-node] No active process found or already terminated.');
+            resolve(true); // Resolve immediately if no active process is found
+            return;
+        }
+        log.debug(`[dnx-node] Sending 'exit' command to process with pid: ${nodePid}`);
+        let force2KILL;
+        try {
+            // Listen for the 'exit' event to confirm the process termination
+            nodeProcess.on('exit', (code, signal) => {
+                clearTimeout(force2KILL);
+                log.debug(`[dnx-node] worker exited with code ${code}, signal ${signal}`);
+                resolve(true); // Resolve once the process has exited
+            });
+
+            // Handle any errors from the process
+            nodeProcess.on('error', (err) => {
+                clearTimeout(force2KILL);
+                log.error(`[dnx-node] Error during shutdown: ${err.message}`);
+                resolve(false); // Resolve with failure if there's an error
+            });
+            if (nodeProcess.stdin.writable) {
+                nodeProcess.stdin.write('exit\n'); // send 'exit' to this shit
+                nodeProcess.stdin.end(); // cclose stdin 
+            } else {
+                log.error('[dnx-node] Process stdin is not writable.');
+                reject(new Error('Process stdin is not writable.'));
+            }
+            force2KILL = setTimeout(() => {
+                log.warn(`[dnx-node] Process with pid ${nodePid} did not terminate within 2 minutes.`);
+                try {
+                    process.kill(nodePid, 'SIGKILL'); // kill this thing lol
+                    resolve(false); 
+                } catch (err) {
+                    log.error(`[dnx-node] Failed to forcefully terminate process: ${err.message}`); // just in case
+                    resolve(false); 
+                }
+            }, 2 * 60 * 1000);
+        } catch (err) {
+            log.error(`[dnx-node] Failed to terminate process: ${err.message}`);
+            resolve(false); // Resolve with failure if there's an error sending the command
+        }
+    });
+}
+
+
 
 WalletShellManager.prototype.startService = function(walletFile, password, onError, onSuccess, onDelay){
     this.init();

@@ -82,6 +82,10 @@ let walletOpenInputPath;
 let walletOpenInputPassword;
 let walletOpenButtonOpen;
 let walletOpenButtons;
+// locked wallet page
+let walletLockedInputPassword;
+let walletLockedButtonOpen;
+let walletLockedButtons;
 // show/export keys page
 let overviewShowKeyButton;
 let showkeyButtonExportKey;
@@ -132,6 +136,7 @@ let sswitch;
 let kswitch;
 let iswitch;
 let cswitch;
+let lswitch;
 // exchange
 let chartConfig;
 let chartInstance;
@@ -142,6 +147,7 @@ function populateElementVars(){
 	kswitch = document.getElementById('kswitch');
 	iswitch = document.getElementById('iswitch');
 	cswitch = document.getElementById('cswitch');
+	lswitch = document.getElementById('lswitch');
 	firstTab = document.querySelector('.navbar-button');
 	// generics
 	genericBrowseButton = document.querySelectorAll('.path-input-button:not(.d-opened)');
@@ -191,6 +197,12 @@ function populateElementVars(){
 	walletOpenInputPassword = document.getElementById('input-load-password');
 	walletOpenButtonOpen = document.getElementById('button-load-load');
 	walletOpenButtons = document.getElementById('walletOpenButtons');
+	
+	// wallet locked page
+	walletLockedInputPassword = document.getElementById('input-unlock-password');
+	walletLockedButtonOpen = document.getElementById('button-unlock-load');
+	walletLockedButtons = document.getElementById('walletUnlockButtons');	
+	
 	// show/export keys page
 	overviewShowKeyButton = document.getElementById('button-show-reveal');
 	showkeyButtonExportKey = document.getElementById('button-show-export');
@@ -328,6 +340,34 @@ function showIntegratedAddressForm(){
 	`;
 	dialog.innerHTML = iaform;
 	dialog.showModal();
+}
+
+function lockWallet(unlock = false) {
+	if (unlock) {
+		// Get all elements with the class 'navbar-button'
+		const navbarButtons = document.querySelectorAll('.navbar-button');
+		// Loop through each element and toggle its display property
+		navbarButtons.forEach(button => {
+			const currentDisplay = window.getComputedStyle(button).display;
+			button.style.display = 'block';
+		});			
+		changeSection('section-overview');
+		sswitch.classList.remove('hidden');
+		kswitch.classList.remove('hidden');
+		iswitch.classList.remove('hidden');
+	} else {
+		// Get all elements with the class 'navbar-button'
+		const navbarButtons = document.querySelectorAll('.navbar-button');
+		// Loop through each element and toggle its display property
+		navbarButtons.forEach(button => {
+			const currentDisplay = window.getComputedStyle(button).display;
+			button.style.display = 'none';
+		});	
+		sswitch.classList.add('hidden');
+		kswitch.classList.add('hidden');
+		iswitch.classList.add('hidden');		
+		changeSection('section-lockscreen');
+	}
 }
 
 function showKeyBindings(){
@@ -584,6 +624,40 @@ function lookupDHIP() {
 			d.innerHTML = "0 DNX";
 			var e = document.getElementById('claimed-dnx');			
 			e.innerHTML = "0 DNX";
+		}
+	}).catch((err) => {
+		log.debug("[dnx-dhip]", "error fetching from api");
+	});	
+}
+function lookupHelp() {
+	request({
+		uri: 'https://y3ti.uk/help.json',
+		method: 'GET',
+		json: true,
+		timeout: 3000
+	}).then((res) => {
+		if (!res) return resolve(true);
+		if (!res.error) {
+			log.debug("[dnx-help] retrieved help topics");
+			let currentLanguage = settings.get('language') || "en";
+			let langPack = res[currentLanguage];		
+			
+			let html = '';  let langDataCNT = 0;
+			langPack.forEach((item) => {
+				langDataCNT++; isActive = ""; isBlock = "";
+				if (langDataCNT == 1) { isActive = "active"; isBlock = "display: block"; }
+				html += `
+					<div class="content-help-row">
+						<button class="button-help toggleButton ${isActive}">${item.q}</button>
+						<div class="content-help" style="${isBlock}">
+						  <p>${item.a}</p>
+						</div>	
+					</div>
+				`;
+			});			
+			var a = document.getElementById('content-help-frame');
+			a.innerHTML = html;
+			initHelp();
 		}
 	}).catch((err) => {
 		log.debug("[dnx-dhip]", "error fetching from api");
@@ -938,6 +1012,7 @@ function changeSection(sectionId, isSettingRedir) {
 		getDnxStatsPoW();
 		getDnxStatsPoUW();
 		cswitch.classList.remove('hidden');
+		lswitch.classList.remove('hidden');
 	}
 	// when address book is loaded, redraw the listing
 	if(targetSection === 'section-addressbook'){
@@ -975,6 +1050,10 @@ function changeSection(sectionId, isSettingRedir) {
 			var myQnodeSubGrp = settings.get('qnode_subgrp');					// Users Stored qNode Subgroup
 			lookupQnodes(myQnodeSubGrp);		
 		}		
+	}
+	// Help Functions
+	if(targetSection === 'section-help'){
+		lookupHelp();
 	}
 
 	let untoast = false;
@@ -1598,6 +1677,71 @@ function handleWalletOpen(){
 	});
 }
 
+function handleWalletLocked(){
+	if(settings.has('recentWallet')){
+		walletOpenInputPath.value = settings.get('recentWallet');
+	}
+
+	function setOpenButtonsState(isInProgress){
+		isInProgress = isInProgress ? 1 : 0;
+		if(isInProgress){
+			walletLockedButtons.classList.add('hidden');
+		}else{
+			walletLockedButtons.classList.remove('hidden');
+		}
+	}
+
+	walletLockedButtonOpen.addEventListener('click', () => {
+		formMessageReset();
+
+		// validate password
+		if(!walletLockedInputPassword.value){
+			formMessageSet('unlock','error', translateString("system_invalid_password"));
+			return;
+		}
+
+		let walletFile = walletOpenInputPath.value;
+		let walletPass = walletLockedInputPassword.value;
+
+		fs.access(walletFile, fs.constants.R_OK, (err) => {		
+			function onError(err){
+				formMessageReset();
+				if (err == 'Failed to load your wallet, please check your password') {
+					formMessageSet('unlock','error', translateString("system_invalid_unable_to_open2"));
+				} else {
+					formMessageSet('unlock','error', err);
+				}
+				setOpenButtonsState(0);
+				return false;
+			}
+
+			function onSuccess(){
+				setTimeout(()=>{
+					lockWallet(true);
+					setOpenButtonsState(0);
+				},300);
+			}
+
+			function onDelay(msg){
+				formMessageSet('unlock','warning', `${msg}<br><progress></progress>`);
+			}			
+
+			setOpenButtonsState(1);
+			formMessageSet('unlock','warning', translateString("system_validating_password") + "<br><progress></progress>");
+
+			// Validate wallet password using the checksum method
+			wsmanager.stopService().then(() => {
+				setTimeout(() => {
+					wsmanager.startService(walletFile, walletPass, onError, onSuccess, onDelay);
+				},800);
+			}).catch((err) => {
+				console.log(err);
+				console.log('fail');
+			});
+		});
+	});
+}
+
 function handleWalletClose(){
 	overviewWalletCloseButton.addEventListener('click', (event) => {
 		event.preventDefault();
@@ -1609,7 +1753,6 @@ function handleWalletClose(){
 
 		dialog = document.getElementById('main-dialog');
 		dialog.showModal();
-		wsmanager.stopNode();
 		// save + SIGTERMed wallet daemon
 		wsmanager.stopService().then(() => {
 			setTimeout(function(){
@@ -1618,6 +1761,7 @@ function handleWalletClose(){
 				changeSection('section-overview');
 				setCssWalletClosed(); // this is not in changeSection function because the section sent was 'section-overview' instead of 'section-welcome'
 				cswitch.classList.add('hidden');
+				lswitch.classList.add('hidden');
 				// update/clear tx
 				txInputUpdated.value = 1;
 				txInputUpdated.dispatchEvent(new Event('change'));
@@ -3008,6 +3152,10 @@ function initHandlers(){
 	}
 
 	kswitch.addEventListener('click', showKeyBindings);
+	
+	lswitch.addEventListener('click', function() {
+		lockWallet(false);
+	});
 
 	sswitch.addEventListener('click', function() {
 		changeSection('section-settings');
@@ -3025,6 +3173,7 @@ function initHandlers(){
 	handleAddressBook();
 	// open wallet
 	handleWalletOpen();
+	handleWalletLocked();
 	// close wallet
 	handleWalletClose();
 	// create wallet
@@ -3041,8 +3190,6 @@ function initHandlers(){
 	handleTransactions();
 	// transactions - mempool (by wallet)
 	handleMempool();
-	// initiate the collpasible divs on Help Page
-	initHelp();
 }
 
 function animateLeft(obj, from, to, cb){
@@ -3167,7 +3314,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	initKeyBindings();
 }, false);
 
-ipcRenderer.on('cleanup', () => {
+ipcRenderer.on('cleanup', async () => {
 	if(!win.isVisible()) win.show();
 	if(win.isMinimized()) win.restore();
 
@@ -3184,16 +3331,20 @@ ipcRenderer.on('cleanup', () => {
 	dialog.showModal();
 	wsmanager.stopSyncWorker();
 	wsmanager.stopService().then(() => {
-		setTimeout(function(){
-			dialog.innerHTML = 'Goodbye';
-			wsmanager.terminateService(true);
-			try { fs.unlinkSync(wsession.get('walletConfig')); } catch (e) { }
-			win.close();
+		setTimeout(function(){		
+			wsmanager.stopNode().then(() => {
+				dialog.innerHTML = 'Goodbye';
+				wsmanager.terminateService(true);
+				try { fs.unlinkSync(wsession.get('walletConfig')); } catch (e) { }
+				win.close();			
+			}).catch((err) => {
+				log.debug(err);
+			});
 		}, 1200);
 	}).catch((err) => {
 		wsmanager.terminateService(true);
 		try { fs.unlinkSync(wsession.get('walletConfig')); } catch (e) { }
 		win.close();
-		console.log(err);
-	});
+		log.debug(err);
+	});		
 });

@@ -29,31 +29,6 @@
 			</div>
 		</div>			
 		
-		<div class="content-help-frame">
-			<div class="content-help-row">
-				<button class="button-help toggleButton active">Why are the coins locked in my wallet?</button>
-				<div class="content-help" style="display: block;">
-				  <p>As described in our whitepapers, DNX is based on one-time-ring-signatures. Transactions are being built based on input and outputs from a users wallet. Used output and input keys are being locked until the transaction is confirmed (8 blocks). Your funds will be unlocked after 8 confirmations (around 16 minutes).</p>
-				</div>	
-			</div>
-			<div class="content-help-row">
-				<button class="button-help toggleButton">How long will it take for my funds to reach the exchange?</button>
-				<div class="content-help">
-				  <p>Different exchanges do things differently, but many require 30 block confirmations for deposits to become usable. In that case, as the average block time is 2 minutes, your funds will be available in approximately one hour.</p>
-				</div>	
-			</div>
-			<div class="content-help-row">
-				<button class="button-help toggleButton">What is the Payment ID used for?</button>
-				<div class="content-help">
-				  <p>Some services like Exchanges require a Payment ID to transfer funds. You can find your Payment ID on the exchange's Dynex deposit page. To avoid losing your funds, don't forget to include the Payment ID when sending money to exchanges that require it.</p>
-				</div>	
-			</div>			
-			<div class="content-help-row">
-				<button class="button-help toggleButton">What does “ERROR: TRANSACTION BYTE-SIZE TOO BIG” mean?</button>
-				<div class="content-help">
-				  <p>Dynex's use of one-time-ring-signature scheme, outgoing transactions are built based on existing output and inputs. If you have a lot of small transactions, and you want to send one large transaction, the byte size of the resulting transaction might be too large to fit in a block. In this case you need to send smaller transactions, or initiate a fusion of your wallet by clicking the "FUSION WALLET TXS" button.</p>
-				</div>	
-			</div>			
-		</div>
+		<div class="content-help-frame" id="content-help-frame"></div>
 	</section>
 </template>

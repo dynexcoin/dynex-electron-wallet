@@ -3215,6 +3215,13 @@ progress.light{
 	font-size: 12px;
 	opacity: .5;
 }
+.navbar-wallet-version .wallet-beta {
+	position: absolute;
+	top: 37px;
+	right: 30px;
+	font-size: 12px;
+	opacity: .5;
+}
 
 /* markets */
 .div-markets {
@@ -3404,7 +3411,7 @@ body.wallet-opened #section-settings {
 .right-top-buttons img {
 	margin-right: 20px;
 }
-#sswitch, #kswitch, #iswitch, #cswitch{
+#sswitch, #kswitch, #iswitch, #cswitch, #lswitch{
 	background: transparent;
 	color: #ccc;
 	font-size: 0.9rem;
@@ -3420,6 +3427,9 @@ body.wallet-opened #section-settings {
 #sswitch:hover,
 #sswitch:active,
 #sswitch:focus,
+#lswitch:hover,
+#lswitch:active,
+#lswitch:focus,
 #kswitch:hover,
 #kswitch:active,
 #kswitch:focus,
@@ -3434,6 +3444,7 @@ body.wallet-opened #section-settings {
 	transition: color 0.1s linear;
 }
 #sswitch:hover,
+#lswitch:hover,
 #kswitch:hover,
 #iswitch:hover,
 #cswitch:hover{

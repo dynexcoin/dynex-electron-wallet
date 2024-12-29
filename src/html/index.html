@@ -18,6 +18,7 @@
 		<link rel="stylesheet" href="../css/circle.css">
 		<link rel="stylesheet" href="../css/common.css">
 		<!-- HTML pages (each page contains a section) -->
+		<link rel="import" href="./lockscreen.html">
 		<link rel="import" href="./about.html">
 		<link rel="import" href="./welcome.html">
 		<link rel="import" href="./address_book.html">
@@ -42,6 +43,7 @@
 			<div class="navbar-wallet-version">
 				<img src="../assets/left-menu/dynex.png" style="max-width: 90%;" />
 				<div class="wallet-version">v<span id="walletVersion">0.0</span></div>
+				<div class="wallet-beta">BETA</div>
 			</div>
 
 			<button tabindex="-1" title="Wallet Overview" class="form-bt navbar-button navbar-need-connected" data-section="section-overview" id="button-section-overview">
@@ -82,6 +84,7 @@
 
 		<!-- Top-right navbar -->
 		<div class="right-top-buttons">
+			<button tabindex="-1" title="Lock Wallet" id="lswitch" class="hidden"><i class="fas fa-lock"></i></button>
 			<button tabindex="-1" title="Show settings" id="sswitch" class="hidden"><i class="fas fa-cog"></i></button>
 			<button tabindex="-1" title="Show keyboard shortcut" id="kswitch"><i class="fas fa-keyboard"></i></button>
 			<button tabindex="-1" title="Show about info" id="iswitch" class="hidden"><i class="fas fa-info-circle"></i></button>
