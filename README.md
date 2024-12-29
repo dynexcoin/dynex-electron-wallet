@@ -1,6 +1,6 @@
 # Dynex Electron Wallet
 
-[Dynex Electron GUI Wallet](https://dynexcoin.org) - GUI Stands for Graphical User Interface. It makes it easy for you to use Dynex with a friendly user interface. The Dynex Electron Wallet client allows you to create your wallet, store and send your DNX, view your transactions, stay connected with the Dynex ecosystem. Dynex Electron GUI Wallet is available for Windows, Linux, MacOS.
+[Dynex Electron GUI Wallet](https://dynexcoin.org) - GUI Stands for Graphical User Interface. It makes it easy for you to use Dynex with a friendly user interface. The Dynex Electron Wallet client allows you to create your wallet, store and send your DNX, view your transactions, stay connected with the Dynex ecosystem.
 
 ## Features:
 This wallet contains the basic functions required to manage your Dynex (DNX):
@@ -50,6 +50,13 @@ This wallet contains the basic functions required to manage your Dynex (DNX):
 * ✅ Spanish - ismoyano
 * ✅ Swedish - maximilian
 * ✅ Turkish - giants0808 (PENDING)
+
+### Verified Supported Operating Systems
+* ✅ Windows (10 / 11)
+* Linux
+* MAC
+* Android
+* iOS
 
 ### Notes
 Dynex Electron Wallet relies on `DNX-service` and `DNX-node` to manage wallet container &amp; rpc communication.
