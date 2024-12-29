@@ -337,7 +337,7 @@ function showKeyBindings(){
 		<div class="transaction-panel">
 			<div class="div-title clearfix">
 				<img src="../assets/shortcuts/title.png" />
-				<h2 class="title">${translateString("keybindings_title")}</h2>
+				<h2 class="title mt-1">${translateString("keybindings_title")}</h2>
 				<div class="subtitle">${translateString("keybindings_subtitle")}</div>
 			</div>
 			<table class="custom-table kb-table">
@@ -485,6 +485,21 @@ function formatNumber(number, decimals = 2) {
     var rgx = /(\d+)(\d{3})/;
     while (rgx.test(x1)) { x1 = x1.replace(rgx, '$1' + ',' + '$2'); }
     return x1 + x2;
+}
+function formatHashrate(number) {
+    // Define suffixes in order of magnitude
+    const suffixes = ["H/s", "KH/s", "MH/s", "TH/s", "PH/s"];
+    let tier = 0;
+
+    // Keep dividing the number by 1000 to find the right tier
+    while (number >= 1000 && tier < suffixes.length - 1) {
+        number /= 1000;
+        tier++;
+    }
+    // Format the number to 2 decimal places
+    const formattedNumber = number.toFixed(2);
+    // Return the number with the appropriate suffix
+    return `${formattedNumber} ${suffixes[tier]}`;
 }
 
 function setIconSelected(btnActive) {
@@ -783,6 +798,48 @@ function lookupQnodes(nodeSubGrp) {
 		});
 	}
 }
+function getDnxStatsPoW() {
+	request({
+		uri: 'https://api.market.dynexcoin.org/api/v2/network/stats/status',
+		method: 'GET',
+		json: true,
+		timeout: 3000
+	}).then((res) => {
+		if (!res) return resolve(true);
+		if (!res.error) {
+			log.debug("[dnx-pow]", "load stats");
+			a = document.getElementById('dnx-hashrate');
+			a.innerHTML = formatHashrate(res.hashrate);
+			b = document.getElementById('dnx-diff');
+			b.innerHTML = formatNumber(res.difficulty, 0);
+			c = document.getElementById('dnx-connected-miners');
+			c.innerHTML = formatNumber(res.miners, 0);
+			d = document.getElementById('dnx-connected-gpu');
+			d.innerHTML = formatNumber(res.gpus, 0);
+		}
+	}).catch((err) => {
+		log.debug("[dnx-pow]", "error fetching from api");
+	});		
+}
+function getDnxStatsPoUW() {
+	request({
+		uri: 'https://api.market.dynexcoin.org/api/v2/network/jobs/month_chart',
+		method: 'GET',
+		json: true,
+		timeout: 3000
+	}).then((res) => {
+		if (!res) return resolve(true);
+		if (!res.error) {
+			log.debug("[dnx-pouw]", "load stats");
+			a = document.getElementById('dnx-pouw-jobs-month');
+			a.innerHTML = formatNumber(res.summary.total_jobs_month, 0);
+			b = document.getElementById('dnx-pouw-jobs-total');
+			b.innerHTML = formatNumber(res.summary.total_jobs_year, 0);
+		}
+	}).catch((err) => {
+		log.debug("[dnx-pouw]", "error fetching from api");
+	});	
+}
 function getDnxPrice() {
 	request({
 		uri: 'https://api.market.dynexcoin.org/api/v2/network/currency/rate',
@@ -790,7 +847,6 @@ function getDnxPrice() {
 		json: true,
 		timeout: 3000
 	}).then((res) => {
-		// log.debug(res);
 		if (!res) return resolve(true);
 		if (!res.error) {
 			log.debug("[dnx-price]", "$" + res.current_rate);
@@ -879,6 +935,8 @@ function changeSection(sectionId, isSettingRedir) {
 	if(targetSection === 'section-overview'){
 		setCssWalletOpened();
 		getDnxPrice();
+		getDnxStatsPoW();
+		getDnxStatsPoUW();
 		cswitch.classList.remove('hidden');
 	}
 	// when address book is loaded, redraw the listing
@@ -2790,11 +2848,11 @@ function initHandlers(){
 		let generatedQrCode = document.getElementById('qr-gen-img').getAttribute('src');
 		let dialogTpl = `<div class="transaction-panel">
 			<div class="text-center">
-				<h4>$(translateString("system_wallet_qrcode")):</h4>
+				<h4>${translateString("system_wallet_qrcode")}:</h4>
 				<img src="${generatedQrCode}" width="245" />
 			</div>
 			<div class="div-panel-buttons">
-				<button data-target="#ab-dialog" type="button" class="button-gray dialog-close-default">$(translateString("system_close_button"))</button>
+				<button data-target="#ab-dialog" type="button" class="button-gray dialog-close-default">${translateString("system_close_button")}</button>
 			</div>
 		`;
 		let dialog = document.getElementById('ab-dialog');

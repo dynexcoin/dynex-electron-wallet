@@ -20,7 +20,7 @@ config.walletServiceBinaryFilename = 'DNX-service';
 
 // version of the wallet
 config.electronVersion = "3.1.1";
-config.walletVersion = "1.0.5";
+config.walletVersion = "1.0.6";
 // version on the bundled service (DNX-service)
 config.walletServiceBinaryVersion = "2.2.2-20231220";
 // version on the bundled service (DNX-node)
@@ -56,4 +56,5 @@ config.decimalPlaces = 9;
 // Key to encrypt your address book
 config.addressBookObfuscationKey = '79829ea01ca1b7130833a42de45142bf6c4b7f423fe6fba5';
 // Export the Configuration to the Application
+
 module.exports = config;

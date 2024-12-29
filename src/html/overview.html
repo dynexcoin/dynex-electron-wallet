@@ -21,7 +21,7 @@
 			</div>
 		</div>
 
-		<div class="div-overview-connection">
+		<div class="div-overview-connection mb-3">
 			<div class="overview-connection-info clearfix">
 				<div class="c100" id="circle-progress-percent">
 					<span id="circle-progress-text">0%</span>
@@ -40,21 +40,20 @@
 			</div>
 		</div>
 
-		<div class="div-overview-address">
+		<div class="div-overview-address mb-3">
 			<div class="overview-wallet-address clearfix">
 				<div class="overview-copy-address">
 					<button type="button" id="copy-wallet-address" data-i18n="overview-copy-address">Copy Address</button>
 				</div>
 				<div class="title-with-icon">
-					<img src="../assets/overview/wallet-address-icon.png" />
-					<div class="title-underline" data-i18n="overview-wallet-address">Your Wallet Address</div>
+					<div class="title-underline mt-1" data-i18n="overview-wallet-address">Your Wallet Address</div>
 				</div>
 				<textarea tabindex="-1" data-noclear="1" class="overview-input" id="wallet-address" readonly="readonly" rows="2"></textarea>
 				<span id="form-help-wallet-address" class="form-help"></span>
 			</div>
 			<div class="overview-wallet-qrcode clearfix" id="div-w-qr">
 				<div class="title-with-icon">
-					<img src="../assets/overview/qrcode-icon.png" />
+					<img class="mt-1" src="../assets/overview/qrcode-icon.png" />
 					<div class="title-underline" data-i18n="overview-qr-address">QR Code</div>
 				</div>
 				<div class="text">
@@ -64,10 +63,30 @@
 			</div>
 		</div>
 
-		<div class="div-markets">
-			<div class="img">
-				<img src="../assets/general/markets-icon.png" />
+		<div class="div-markets mb-3">
+			<div class="img"><img class="mt-2" src="../assets/general/pouw-icon.png" /></div>
+			<div class="box">
+				<div class="title" data-i18n="overview-dnx-hashrate">Network Hash Rate</div>
+				<div class="price mb-1" id="dnx-hashrate">0.00 MH/s</div>
+				<div class="title" data-i18n="overview-dnx-diff">Difficulty</div>
+				<div class="price" id="dnx-diff">0</div>				
 			</div>
+			<div class="box">
+				<div class="title" data-i18n="overview-dnx-miners">Connected Miners</div>
+				<div class="price mb-1" id="dnx-connected-miners">0</div>
+				<div class="title" data-i18n="overview-dnx-gpu">GPU Count</div>
+				<div class="price" id="dnx-connected-gpu">0</div>				
+			</div>
+			<div class="box">
+				<div class="title" data-i18n="overview-dnx-pouw-month">PoUW Jobs (This Month)</div>
+				<div class="price mb-1" id="dnx-pouw-jobs-month">0</div>
+				<div class="title" data-i18n="overview-dnx-pouw-total">PoUW Jobs (Total Overall)</div>
+				<div class="price" id="dnx-pouw-jobs-total">0</div>				
+			</div>
+		</div>
+
+		<div class="div-markets">
+			<div class="img mt-1"><img src="../assets/general/markets-icon.png" /></div>
 			<div class="box">
 				<div class="title" data-i18n="overview-dnx-price">Dynex Price</div>
 				<div class="price" id="dnx-price-usd">$ 0.00 USD</div>

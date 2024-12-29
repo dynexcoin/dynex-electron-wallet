@@ -61,6 +61,12 @@
 	"overview-dnx-tradevol": "24 hrs Trading Volume",
 	"overview-dnx-marketcap": "Market Cap",
 	"overview-close-wallet": "Close Wallet",
+	"overview-dnx-hashrate": "Network Hash Rate",
+	"overview-dnx-diff": "Difficulty",
+	"overview-dnx-miners": "Connected Miners",
+	"overview-dnx-gpu": "GPU Count",
+	"overview-dnx-pouw-month": "PoUW Jobs (This Month)",
+	"overview-dnx-pouw-total": "PoUW Jobs (Total Overall)",
 	
 	"send-transfer": "Send / Transfer Dynex",
 	"send-process": "Process a DNX payment",
