@@ -100,13 +100,74 @@ See: https://docs.appimage.org/user-guide/run-appimages.html
 3. Open terminal and Run: `cd /Users/YOURNAME/Dynex-Electron-Wallet.app/Contents/MacOS && ./Dynex-Electron-Wallet`
 
 ### Build From Source
-You need to have `Node.js` and `npm` installed, go to https://nodejs.org and find out how to get it installed on your platform.
 
-Once you have Node+npm installed:
+Building the Dynex Electron Wallet from source requires `Node.js` and `npm`. Follow the steps below to get started:
+
+#### Prerequisites
+1. **Install Node.js and npm**:  
+   Visit [Node.js official website](https://nodejs.org) to download and install the latest stable version of Node.js (ensure the version is 21.0 or later).
+
+2. **Clone the Repository**:  
+   Clone the wallet's source code repository to your local machine.
+   ```bash
+   # Clone the repository
+   git clone https://github.com/dynexcoin/dynex-electron-wallet
+   cd dynex-electron-wallet
+   ```
+
+3. **Install Dependencies**:  
+   Run the following command to install all necessary dependencies.
+   ```bash
+   npm install
+   ```
+
+#### Building the Wallet
+
+##### For Linux
+To build the wallet as an AppImage for Linux:
+```bash
+node_modules/.bin/electron-builder --x64 --linux AppImage \
+  --config.extraResources=dnx/DNX-service \
+  --config.extraResources=dnx/DNX-node \
+  --config.extraResources=dnx/libcurl.so.4 \
+  --config.extraResources=dnx/libboost_filesystem.so.1.74.0 \
+  --config.extraResources=dnx/libboost_program_options.so.1.74.0 \
+  --config.extraResources=dnx/libz.so.1 \
+  --config.extraResources=lang/en.json \
+  --config.extraResources=lang/cn.json \
+  --config.extraResources=lang/de.json \
+  --config.extraResources=lang/es.json \
+  --config.extraResources=lang/gr.json \
+  --config.extraResources=lang/nerd.json \
+  --config.extraResources=lang/nerd.md \
+  --config.extraResources=lang/nl.json \
+  --config.extraResources=lang/pirate.json \
+  --config.extraResources=lang/pl.json \
+  --config.extraResources=lang/ru.json \
+  --config.extraResources=lang/se.json \
+  --config.extraResources=lang/it.json
 ```
-# clone the repo
-$ git clone https://github.com/dynexcoin/dynex-electron-wallet
-$ cd dynex-electron-wallet
 
-# install dependencies
-$ npm install
+##### For Windows
+To build the wallet for Windows, open a Command Prompt as Administrator and run:
+```bash
+node_modules\.bin\electron-builder.cmd --x64 --win \
+  --config.extraResources=dnx/DNX-service.exe \
+  --config.extraResources=dnx/DNX-node.exe \
+  --config.extraResources=lang/en.json \
+  --config.extraResources=lang/cn.json \
+  --config.extraResources=lang/de.json \
+  --config.extraResources=lang/es.json \
+  --config.extraResources=lang/gr.json \
+  --config.extraResources=lang/nerd.json \
+  --config.extraResources=lang/nerd.md \
+  --config.extraResources=lang/nl.json \
+  --config.extraResources=lang/pirate.json \
+  --config.extraResources=lang/pl.json \
+  --config.extraResources=lang/ru.json \
+  --config.extraResources=lang/se.json \
+  --config.extraResources=lang/it.json
+```
+
+And that's it! Once the build process completes, you’ll find the output files in the `dist` directory. You can then distribute or use the built wallet application.
+
