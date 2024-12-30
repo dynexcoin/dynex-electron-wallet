@@ -52,11 +52,22 @@ This wallet contains the basic functions required to manage your Dynex (DNX):
 * ✅ Turkish - giants0808 (PENDING)
 
 ### Verified Supported Operating Systems
-* ✅ Windows (10 / 11)
+* Windows
+  * ✅ Windows 10
+  * ✅ Windows 11
 * Linux
+  * ✅ Ubuntu 22.04 LTS
 * MAC
+  * 14
+  * 15
 * Android
+  * Android 13
+  * Android 14
+  * Android 15
 * iOS
+  * 16
+  * 17
+  * 18
 
 ### Notes
 Dynex Electron Wallet relies on `DNX-service` and `DNX-node` to manage wallet container &amp; rpc communication.
@@ -95,32 +106,7 @@ Once you have Node+npm installed:
 ```
 # clone the repo
 $ git clone https://github.com/dynexcoin/dynex-electron-wallet
-$ cd Dynex-electron-wallet
+$ cd dynex-electron-wallet
 
 # install dependencies
 $ npm install
-
-# create build+dist directory
-$ mkdir -p ./build && mkdir -p ./dist
-
-# copy/symlink icons from assets, required for packaging
-$ cp ./src/assets/icon.* ./build/
-
-# build GNU/Linux package
-$ mkdir -p ./bin/lin
-$ cp /path/to/linux-version-of/DNX-service ./bin/lin/
-$ npm run dist-lin
-
-# build Windows package
-$ mkdir -p ./bin/win
-$ cp /path/to/win-version-of/DNX-service.exe ./bin/win/
-$ [LINUX] npm run dist-win (running from linux)
-$ [WIN] node_modules\.bin\electron-builder --x64 --win -c.extraResources=dnx\DNX-service.exe -c.extraResources=dnx\DNX-node.exe -c.extraResources=dnx\libcurl.dll -c.extraResources=dnx\zlib1.dll -c.extraResources=lang\en.json  -c.extraResources=lang\en.json -c.extraResources=lang\cn.json -c.extraResources=lang\de.json -c.extraResources=lang\es.json -c.extraResources=lang\gr.json -c.extraResources=lang\nerd.json -c.extraResources=lang\nerd.md -c.extraResources=lang\nl.json -c.extraResources=lang\pirate.json -c.extraResources=lang\pl.json -c.extraResources=lang\ru.json -c.extraResources=lang\se.json
-
-# build OSX package
-$ mkdir -p ./bin/osx
-$ cp /path/to/osx-version-of/DNX-service ./bin/osx/
-$ npm run dist-mac
-```
-
-Resulting packages or installer can be found inside `dist/` directory.
