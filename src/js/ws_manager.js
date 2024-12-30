@@ -161,7 +161,7 @@ WalletShellManager.prototype.startNode = function(){
 
     let nodeArgs = this.nodeArgsDefault.concat([
         '--enable-cors', '*',		// Required so that Chromium Framework Security doesnt reject requests
-		'--log-level', 2,			// Log Level = 0 (No Logging, to save on RAM usage)
+		'--log-level', 0,			// Log Level = 0 (No Logging, to save on RAM usage)
 		//'--no-console',			// No output to console, as its embedded
 		'--restricted-rpc',			// RPC only needs to be READ VIEW
     ]);

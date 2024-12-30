@@ -30,7 +30,7 @@ This wallet contains the basic functions required to manage your Dynex (DNX):
   * Provides internal node and wallet services
   * Keyboard shortcuts for ease of use
   * Multi language system (supporting 10+ languages)
-* Dynex Ecosystem Tools
+* Dynex Ecosystem Tools 
   * DHIP (Opt in for Native L1 Chain)
   * Bridge (Ability to bridge L1 DNX to L2 0xDNX)
   * QNODES (Ability to monitor Dynex Quantum Nodes)

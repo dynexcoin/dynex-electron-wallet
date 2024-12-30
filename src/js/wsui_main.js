@@ -1341,7 +1341,7 @@ function handleSettings(){
 			let unableToFind = translateString("settings-js-unabletofind1") + " " + config.walletNodeBinaryFilename + " " + translateString("settings-js-unabletofind2");
 			formMessageSet('settings','error', unableToFind);
 			return false;
-		}		
+		}
 
 		// validate hostname
 		if(!daemonHostValue.length || !Number.isInteger(daemonPortValue)){
