@@ -2441,7 +2441,17 @@ function handleTransactions(){
 		let hash = item.transactionHash.substring(0, 10) + '...' + item.transactionHash.slice(-10);
 		let paymentId = "";
 		let confirmationsIco = "";
-		if (item.confirmations < 9) { confirmationsIco = '<i class="fa fa-spinner fa-spin"></i>'; }
+		if (item.confirmations <= 8) { 
+			confirmationsIco = '<i class="fa fa-spinner fa-spin"></i>'; 
+			// Perform replacements and reassign the modified string to status
+			status = status.replace(
+				translateString("transactions_js_received"),
+				translateString("transactions_js_confirming")
+			).replace(
+				translateString("transactions_js_sent"),
+				translateString("transactions_js_confirming")
+			);
+		}
 		if (item.paymentId != '-') { paymentId = item.paymentId.substring(0, 10) + '...' + item.paymentId.slice(-10); }
 		return `<tr title="${translateString("transactions_js_click_details")}" class="txlist-item">
 			<td class="tx-date">
@@ -2456,7 +2466,7 @@ function handleTransactions(){
 			<td class="txamount">
 				<span class="amount"></span> ${config.assetTicker}
 			</td>
-			<td class="txstatus">${item.confirmations} ${status}</td>
+			<td class="txstatus">${confirmationsIco} ${status}</td>
 		</tr>`
 	};
 	let txListOpts = {
