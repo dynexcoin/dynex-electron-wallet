@@ -570,22 +570,20 @@ WalletShellManager.prototype.createWallet = function(walletFile, password){
     });
 };
 
-WalletShellManager.prototype.importFromKeys = function(walletFile, password, viewKey, spendKey, scanHeight){
+WalletShellManager.prototype.importFromKeys = function(walletFile, password, viewKey, spendKey){
     this.init();
     let wsm = this;
-    return new Promise((resolve, reject) => {
-        scanHeight = scanHeight || 0;
 
+    return new Promise((resolve, reject) => {
         let serviceArgs = wsm.serviceArgsDefault.concat([
             '-g', '-w', walletFile, '-p', password,
-            '--view-key', viewKey, '--spend-key', spendKey,
+            '--view-key', viewKey, 
+			'--spend-key', spendKey,
 			'--daemon-address', '127.0.0.1',
 			'--daemon-port', '18333',			
 			'--log-level', 0, 
 			'--log-file', path.join(remote.app.getPath('temp'), 'ts.log')
         ]);
-
-        if(scanHeight >= 0) serviceArgs = serviceArgs.concat(['--scan-height',scanHeight]);
 
         childProcess.execFile(
             wsm.serviceBin, serviceArgs, (error, stdout, stderr) => {
@@ -606,12 +604,10 @@ WalletShellManager.prototype.importFromKeys = function(walletFile, password, vie
     });
 };
 
-WalletShellManager.prototype.importFromSeed = function(walletFile, password, mnemonicSeed, scanHeight){
+WalletShellManager.prototype.importFromSeed = function(walletFile, password, mnemonicSeed){
     this.init();
     let wsm = this;
     return new Promise((resolve, reject) => {
-        scanHeight = scanHeight || 0;
-
         let serviceArgs = wsm.serviceArgsDefault.concat([
             '-g', '-w', walletFile, '-p', password,
             '--mnemonic-seed', mnemonicSeed,
@@ -620,8 +616,6 @@ WalletShellManager.prototype.importFromSeed = function(walletFile, password, mne
 			'--daemon-port', '18333',			
 			'--log-file', path.join(remote.app.getPath('temp'), 'ts.log')
         ]);
-
-        if(scanHeight >= 0) serviceArgs = serviceArgs.concat(['--scan-height',scanHeight]);
 
         childProcess.execFile(
             wsm.serviceBin, serviceArgs, (error, stdout, stderr) => {

@@ -1607,7 +1607,6 @@ function handleWalletOpen(){
 			tray_close: settings.get('tray_close')
 		};
 		initSettingVal(settingVals);
-		// initNodeCompletion();
 
 		// actually open wallet
 		if(!walletOpenInputPath.value){
@@ -1853,17 +1852,11 @@ function handleWalletImportKeys(){
 		let passwordValue =  importKeyInputPassword.value ? importKeyInputPassword.value.trim() : '';
 		let viewKeyValue = importKeyInputViewKey.value ? importKeyInputViewKey.value.trim() : '';
 		let spendKeyValue = importKeyInputSpendKey.value ? importKeyInputSpendKey.value.trim() : '';
-		let scanHeightValue = importKeyInputScanHeight.value ? parseInt(importKeyInputScanHeight.value,10) : 0;
 		
 		// validate path
 		wsutil.validateWalletPath(filePathValue, DEFAULT_WALLET_PATH).then((finalPath)=>{
 			if(!passwordValue.length){
 				formMessageSet('import','error', translateString("system_wallet_create_passblank"));
-				return;
-			}
-
-			if(scanHeightValue < 0 || scanHeightValue.toPrecision().indexOf('.') !== -1){
-				formMessageSet('import','error', translateString("system_wallet_invalid_scanheight"));
 				return;
 			}
 
@@ -1884,25 +1877,23 @@ function handleWalletImportKeys(){
 			}
 
 			settings.set('recentWalletDir', path.dirname(finalPath));
-
 			// user already confirm to overwrite
-			if(wsutil.isRegularFileAndWritable(finalPath)){
+			if(wsutil.isRegularFileAndWritable(path.dirname(finalPath))){
 				try{
 					// for now, backup instead of delete, just to be safe
 					let ts = new Date().getTime();
 					let backfn = `${finalPath}.bak.${ts}`;
 					fs.renameSync(finalPath, backfn);
 				}catch(err){
-				formMessageSet('import','error', translateString("system_wallet_create_unableoverwrite"));
-				return;
+					formMessageSet('import','error', translateString("system_wallet_create_unableoverwrite"));
+					return;
 				}
 			}
 			wsmanager.importFromKeys(
 				finalPath,// walletfile
 				passwordValue,
 				viewKeyValue,
-				spendKeyValue,
-				scanHeightValue
+				spendKeyValue
 			).then((walletFile) => {
 				settings.set('recentWallet', walletFile);
 				walletOpenInputPath.value = walletFile;
@@ -1927,17 +1918,12 @@ function handleWalletImportSeed(){
 		let filePathValue = importSeedInputPath.value ? importSeedInputPath.value.trim() : '';
 		let passwordValue =  importSeedInputPassword.value ? importSeedInputPassword.value.trim() : '';
 		let seedValue = importSeedInputMnemonic.value ? importSeedInputMnemonic.value.trim() : '';
-		let scanHeightValue = importSeedInputScanHeight.value ? parseInt(importSeedInputScanHeight.value,10) : 0;
+
 		// validate path
 		wsutil.validateWalletPath(filePathValue, DEFAULT_WALLET_PATH).then((finalPath)=>{
 			// validate password
 			if(!passwordValue.length){
 				formMessageSet('import-seed','error', translateString("system_wallet_create_passblank"));
-				return;
-			}
-
-			if(scanHeightValue < 0 || scanHeightValue.toPrecision().indexOf('.') !== -1){
-				formMessageSet('import-seed','error', 'Invalid scan height!');
 				return;
 			}
 
@@ -1965,8 +1951,7 @@ function handleWalletImportSeed(){
 			wsmanager.importFromSeed(
 				finalPath,
 				passwordValue,
-				seedValue,
-				scanHeightValue
+				seedValue
 			).then((walletFile) => {
 				settings.set('recentWallet', walletFile);
 				walletOpenInputPath.value = walletFile;
@@ -2455,6 +2440,8 @@ function handleTransactions(){
 		let status = item.txType == 'in' ? '<span class="rcv">' + translateString("transactions_js_received") + '</span><img src="../assets/transactions/arrow-down-green.png" />' : '<span class="snt">' + translateString("transactions_js_sent") + '</span><img src="../assets/transactions/arrow-up-red.png" />';
 		let hash = item.transactionHash.substring(0, 10) + '...' + item.transactionHash.slice(-10);
 		let paymentId = "";
+		let confirmationsIco = "";
+		if (item.confirmations < 9) { confirmationsIco = '<i class="fa fa-spinner fa-spin"></i>'; }
 		if (item.paymentId != '-') { paymentId = item.paymentId.substring(0, 10) + '...' + item.paymentId.slice(-10); }
 		return `<tr title="${translateString("transactions_js_click_details")}" class="txlist-item">
 			<td class="tx-date">
@@ -2469,7 +2456,7 @@ function handleTransactions(){
 			<td class="txamount">
 				<span class="amount"></span> ${config.assetTicker}
 			</td>
-			<td class="txstatus">${status}</td>
+			<td class="txstatus">${item.confirmations} ${status}</td>
 		</tr>`
 	};
 	let txListOpts = {
@@ -3064,15 +3051,20 @@ function initHandlers(){
 
 		if(dialogType === 'saveFile') {
 			dialogOpts.title = `Select directory to store your ${targetName}, and give it a filename.`;
+			dialogOpts.filters = [
+				{ name: 'Dynex Wallet File', extensions: ['dynex'] }
+			];
 			dialogOpts.buttonLabel = 'OK';
 			
-			remote.dialog.showSaveDialog(dialogOpts, (file) => {
+			remote.dialog.showSaveDialog(dialogOpts, (file) => {			
 				if (file) targetInput.value = file;
 				tbtn.classList.remove('d-opened');
 			});
 		} else{
 			dialogOpts.properties = [dialogType];
-
+			dialogOpts.filters = [
+				{ name: 'Dynex Wallet File', extensions: ['dynex'] }
+			];
 			remote.dialog.showOpenDialog(dialogOpts, (files) => {
 				if (files) targetInput.value = files[0];
 				tbtn.classList.remove('d-opened');
