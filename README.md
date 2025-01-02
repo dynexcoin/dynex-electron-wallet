@@ -196,7 +196,8 @@ node_modules/.bin/electron-builder --x64 --mac \
  --config.extraResources=dnx/libWallet.a \
  --config.extraResources=lang/en.json \
  --config.extraResources=lang/cn.json \
- --config.extraResources=lang/de.json --config.extraResources=lang/es.json \
+ --config.extraResources=lang/de.json \
+ --config.extraResources=lang/es.json \
  --config.extraResources=lang/gr.json \
  --config.extraResources=lang/nerd.json \
  --config.extraResources=lang/nerd.md \
