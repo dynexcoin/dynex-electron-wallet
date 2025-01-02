@@ -171,5 +171,42 @@ node_modules\.bin\electron-builder.cmd --x64 --win \
   --config.extraResources=lang/it.json
 ```
 
+##### For macOS
+To build the wallet for macOS, replace that files in the `resources` and `dnx` with the files in the `mac` folder, then run:
+```bash
+node_modules/.bin/electron-builder --x64 --mac \
+ --config.extraResources=dnx/DNX-service \
+ --config.extraResources=dnx/DNX-node \
+ --config.extraResources=dnx/libBlockchainExplorer.a \
+ --config.extraResources=dnx/libCommon.a \
+ --config.extraResources=dnx/libCrypto.a \
+ --config.extraResources=dnx/libDynexCNCore.a \
+ --config.extraResources=dnx/libHttp.a \
+ --config.extraResources=dnx/libInProcessNode.a \
+ --config.extraResources=dnx/libJsonRpcServer.a \
+ --config.extraResources=dnx/libLogging.a \
+ --config.extraResources=dnx/libMnemonics.a \
+ --config.extraResources=dnx/libNodeRpcProxy.a \
+ --config.extraResources=dnx/libP2P.a \
+ --config.extraResources=dnx/libPaymentGate.a \
+ --config.extraResources=dnx/libRpc.a \
+ --config.extraResources=dnx/libSerialization.a \
+ --config.extraResources=dnx/libSystem.a \
+ --config.extraResources=dnx/libTransfers.a \
+ --config.extraResources=dnx/libWallet.a \
+ --config.extraResources=lang/en.json \
+ --config.extraResources=lang/cn.json \
+ --config.extraResources=lang/de.json --config.extraResources=lang/es.json \
+ --config.extraResources=lang/gr.json \
+ --config.extraResources=lang/nerd.json \
+ --config.extraResources=lang/nerd.md \
+ --config.extraResources=lang/nl.json \
+ --config.extraResources=lang/pirate.json \
+ --config.extraResources=lang/pl.json \
+ --config.extraResources=lang/ru.json \
+ --config.extraResources=lang/se.json \
+ --config.extraResources=lang/it.json
+```
+
 And that's it! Once the build process completes, you’ll find the output files in the `dist` directory. You can then distribute or use the built wallet application.
 
