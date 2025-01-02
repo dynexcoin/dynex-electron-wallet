@@ -20,7 +20,7 @@ config.walletServiceBinaryFilename = 'DNX-service';
 
 // version of the wallet
 config.electronVersion = "3.1.1";
-config.walletVersion = "1.0.9";
+config.walletVersion = "1.0.8b";
 // version on the bundled service (DNX-service)
 config.walletServiceBinaryVersion = "2.2.2-20231220";
 // version on the bundled service (DNX-node)

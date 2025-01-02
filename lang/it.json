@@ -1,7 +1,7 @@
 {
 	"welcome-to": "Benvenuto",	
 	"welcome-dynex-wallet": "Dynex Wallet",	
-	"welcome-create-wallet": "Crea un nuovo portafoglio",
+	"welcome-create-wallet": "Crea un nuovo portafoglio",	\\wallet=portafoglio? same meaning, what did you like to use? I like wallet also if i'm italian
 	"welcome-open-wallet": "Apri il portafoglio",	
 	"welcome-import-key": "Importa chiavi private",	
 	"welcome-import-seed": "Importa frase mnemonica",	
@@ -14,41 +14,41 @@
 	
 	"open-wallet": "Apri il tuo portafoglio Dynex",
 	"open-select-file": "Seleziona i file del portafoglio",
-	"open-wallet-password": "Wallet Password",
+	"open-wallet-password": "Wallet Password",  \\ the meaning is insert the password to access the wallet? In the case put "Inserisci la password del portafoglio"
 	"open-openwallet": "Apri il portafoglio",
 	"open-back-button": "Indietro",
 
 	"import-keys-import": "Importa le chiavi private per recuperare un wallet",
 	"import-keys-location": "Seleziona un percorso dove archiviare i file del portafoglio",
 	"import-keys-password": "Setta una password per aprire questo portafoglio",
-	"import-keys-height": "Scansiona l'altezza",
+	"import-keys-height": "Scansiona l'altezza", \\what do precisely? Maybe i can put somethings better
 	"import-keys-viewkey": "Guarda le parole da importare",
-	"import-keys-spendkey": "Chiave di spesa da importare",
+	"import-keys-spendkey": "Chiave di spesa da importare", \\what do precisely? In which sense?
 	"import-keys-importinfo": "Importa le chiavi private e recupera il portafoglio",
 	"import-keys-back-button": "Indietro",
 	
 	"import-seed-import": "Importa la frase mnemonica e recupera il portafoglio",
 	"import-seed-location": "Seleziona un percorso dove archiviare i file del portafoglio",
-	"import-seed-password": "Setta una password per aprire questo portafoglio",
+	"import-seed-password": "Setta una password per aprire questo portafoglio", //Whch function is set and where is insert?
 	"import-seed-height": "Scansiona l'altezza",
 	"import-seed-phrase": "Importa frase mnemonica",
 	"import-seed-button": "Importa frase mnemonica e recupera il portafoglio",
 	"import-seed-back-button": "Indietro",
 	
-	"navigation-wallet": "Portafoglio",
+	"navigation-wallet": "Portafoglio", \\wallet or portafoglio? same meaning, what did you like to use? I like wallet also if i'm italian
 	"navigation-send": "Invia Dynex",
 	"navigation-transactions": "Transazioni",
-	"navigation-bridge": "Bridge",  
-	"navigation-dhip": "DHIP", 
+	"navigation-bridge": "Bridge",  \\Bridge in italian is Ponte, like ponte di Messina. I like bridge also if i'm italian, is clear. Should Be like in english: Transfer your asset to a different protocol = Trasferisci la tua moneta 	su un protocollo differente
+	"navigation-dhip": "DHIP", \\DHIP=Programma di Incentivazione dei possessori di Dynex
 	"navigation-qnodes": "QNodes",
 	"navigation-addressbook": "Rubrica",
-	"navigation-backup": "Backup", 
-	"navigation-help": "Aiuto",  
+	"navigation-backup": "Backup", \\backup is also a common italian word. What is the meaning? Save somethings? because backup is good
+	"navigation-help": "Aiuto",  \\In italian websites, is also common FAQ=Domande Frequenti 
 	
 	"overview-balance": "Saldo",
 	"overview-available": "Disponibile",
 	"overview-unconfirmed": "Non-Confermato",
-	"overview-fusion-wallet": "Transazioni Fusion Wallet",
+	"overview-fusion-wallet": "Transazioni Fusion Wallet", \\Is not clear for me
 	"overview-fusion-inprogress": "Fusion Wallet in avanzamento",
 	"overview-sync-status": "Stato Sincronizazione Blockhain",
 	"overview-dhip-status": "Stato DHIP",

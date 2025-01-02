@@ -631,7 +631,7 @@ function lookupDHIP() {
 }
 function lookupHelp() {
 	request({
-		uri: 'https://y3ti.uk/help.json',
+		uri: 'https://dynexrpc.dynexcoin.org/help.json',
 		method: 'GET',
 		json: true,
 		timeout: 3000
@@ -1798,175 +1798,232 @@ function handleWalletClose(){
 }
 
 function handleWalletCreate(){
-	overviewButtonCreate.addEventListener('click', () => {
-		formMessageReset();
-		let filePathValue = walletCreateInputPath.value ? walletCreateInputPath.value.trim() : '';
-		let passwordValue =  walletCreateInputPassword.value ? walletCreateInputPassword.value.trim() : '';
+    overviewButtonCreate.addEventListener('click', () => {
+        formMessageReset();
+        let filePathValue = walletCreateInputPath.value ? walletCreateInputPath.value.trim() : '';
+        let passwordValue = walletCreateInputPassword.value ? walletCreateInputPassword.value.trim() : '';
+        try {
+            const stats = fs.statSync(filePathValue);
+            if (stats.isDirectory()) {
+                filePathValue = path.join(filePathValue, 'wallet.dynex');
+            } else {
+                if (!filePathValue.toLowerCase().endsWith('.dynex')) {
+                    filePathValue += '.dynex';
+                }
+            }
+        } catch (err) {
+            if (!filePathValue.toLowerCase().endsWith('.dynex')) {
+                filePathValue += '.dynex';
+            }
+        }
+        let dirName = path.dirname(filePathValue);
+        let baseName = path.basename(filePathValue);
+        baseName = baseName.replace(/\s+/g, '_');
+        filePathValue = path.join(dirName, baseName);
 
-		// validate path
-		wsutil.validateWalletPath(filePathValue, DEFAULT_WALLET_PATH).then((finalPath)=>{
-			// validate password
-			if(!passwordValue.length){
-				formMessageSet('create','error', translateString("system_wallet_create_passblank"));
-				return;
-			}
+        // validate path
+        wsutil.validateWalletPath(filePathValue, DEFAULT_WALLET_PATH).then((finalPath) => {
+            // validate password
+            if(!passwordValue.length){
+                formMessageSet('create','error', translateString("system_wallet_create_passblank"));
+                return;
+            }
 
-			settings.set('recentWalletDir', path.dirname(finalPath));
+            settings.set('recentWalletDir', path.dirname(finalPath));
 
-			// user already confirm to overwrite
-			if(wsutil.isRegularFileAndWritable(finalPath)){
-				try{
-					// for now, backup instead of delete, just to be save
-					let ts = new Date().getTime();
-					let backfn = `${finalPath}.bak.${ts}`;
-					fs.renameSync(finalPath, backfn);
-				}catch(err){
-				   formMessageSet('create','error', translateString("system_wallet_create_unableoverwrite"));
-				   return;
-				}
-		   }
-			// create
-			wsmanager.createWallet(
-				finalPath,
-				passwordValue
-			).then((walletFile) => {
-				settings.set('recentWallet', walletFile);
-				walletOpenInputPath.value = walletFile;
-				changeSection('section-overview-load');
-				wsutil.showToast(translateString("system_wallet_created"),12000);
-			}).catch((err) => {
-				formMessageSet('create', 'error', err.message);
-				return;
-			});
-		}).catch((err) => {
-			formMessageSet('create','error', err.message);
-			return;
-		});
-	});
+            // user already confirm to overwrite
+            if(wsutil.isRegularFileAndWritable(finalPath)){
+                try{
+                    // for now, backup instead of delete, just to be safe
+                    let ts = new Date().getTime();
+                    let backfn = `${finalPath}.bak.${ts}`;
+                    fs.renameSync(finalPath, backfn);
+                }catch(err){
+                    formMessageSet('create','error', translateString("system_wallet_create_unableoverwrite"));
+                    return;
+                }
+            }
+
+            // create
+            wsmanager.createWallet(
+                finalPath,
+                passwordValue
+            ).then((walletFile) => {
+                settings.set('recentWallet', walletFile);
+                walletOpenInputPath.value = walletFile;
+                changeSection('section-overview-load');
+                wsutil.showToast(translateString("system_wallet_created"),12000);
+            }).catch((err) => {
+                formMessageSet('create', 'error', err.message);
+                return;
+            });
+        }).catch((err) => {
+            formMessageSet('create','error', err.message);
+            return;
+        });
+    });
 }
 
 function handleWalletImportKeys(){
-	importKeyButtonImport.addEventListener('click', () => {
-		formMessageReset();
-		let filePathValue = importKeyInputPath.value ? importKeyInputPath.value.trim() : '';
-		let passwordValue =  importKeyInputPassword.value ? importKeyInputPassword.value.trim() : '';
-		let viewKeyValue = importKeyInputViewKey.value ? importKeyInputViewKey.value.trim() : '';
-		let spendKeyValue = importKeyInputSpendKey.value ? importKeyInputSpendKey.value.trim() : '';
-		
-		// validate path
-		wsutil.validateWalletPath(filePathValue, DEFAULT_WALLET_PATH).then((finalPath)=>{
-			if(!passwordValue.length){
-				formMessageSet('import','error', translateString("system_wallet_create_passblank"));
-				return;
-			}
+    importKeyButtonImport.addEventListener('click', () => {
+        formMessageReset();
+        let filePathValue = importKeyInputPath.value ? importKeyInputPath.value.trim() : '';
+        let passwordValue = importKeyInputPassword.value ? importKeyInputPassword.value.trim() : '';
+        let viewKeyValue = importKeyInputViewKey.value ? importKeyInputViewKey.value.trim() : '';
+        let spendKeyValue = importKeyInputSpendKey.value ? importKeyInputSpendKey.value.trim() : '';
+        try {
+            const stats = fs.statSync(filePathValue);
+            if (stats.isDirectory()) {
+                filePathValue = path.join(filePathValue, 'imported_wallet.dynex');
+            } else {
+                if (!filePathValue.toLowerCase().endsWith('.dynex')) {
+                    filePathValue += '.dynex';
+                }
+            }
+        } catch (err) {
+            if (!filePathValue.toLowerCase().endsWith('.dynex')) {
+                filePathValue += '.dynex';
+            }
+        }
+        let dirName = path.dirname(filePathValue);
+        let baseName = path.basename(filePathValue);
+        baseName = baseName.replace(/\s+/g, '_');
+        filePathValue = path.join(dirName, baseName);
+        
+        // validate path
+        wsutil.validateWalletPath(filePathValue, DEFAULT_WALLET_PATH).then((finalPath) => {
+            // validate password
+            if(!passwordValue.length){
+                formMessageSet('import','error', translateString("system_wallet_create_passblank"));
+                return;
+            }
 
-			// validate viewKey
-			if(!viewKeyValue.length || !spendKeyValue.length){
-				formMessageSet('import','error', translateString("system_wallet_blank_key"));
-				return;
-			}
-	
-			if(!wsutil.validateSecretKey(viewKeyValue)){
-				formMessageSet('import','error', translateString("system_wallet_invalid_viewkey"));
-				return;
-			}
-			// validate spendKey
-			if(!wsutil.validateSecretKey(spendKeyValue)){
-				formMessageSet('import','error', translateString("system_wallet_invalid_spendkey"));
-				return;
-			}
+            // validate keys
+            if(!viewKeyValue.length || !spendKeyValue.length){
+                formMessageSet('import','error', translateString("system_wallet_blank_key"));
+                return;
+            }
+    
+            if(!wsutil.validateSecretKey(viewKeyValue)){
+                formMessageSet('import','error', translateString("system_wallet_invalid_viewkey"));
+                return;
+            }
 
-			settings.set('recentWalletDir', path.dirname(finalPath));
-			// user already confirm to overwrite
-			if(wsutil.isRegularFileAndWritable(path.dirname(finalPath))){
-				try{
-					// for now, backup instead of delete, just to be safe
-					let ts = new Date().getTime();
-					let backfn = `${finalPath}.bak.${ts}`;
-					fs.renameSync(finalPath, backfn);
-				}catch(err){
-					formMessageSet('import','error', translateString("system_wallet_create_unableoverwrite"));
-					return;
-				}
-			}
-			wsmanager.importFromKeys(
-				finalPath,// walletfile
-				passwordValue,
-				viewKeyValue,
-				spendKeyValue
-			).then((walletFile) => {
-				settings.set('recentWallet', walletFile);
-				walletOpenInputPath.value = walletFile;
-				changeSection('section-overview-load');
-				wsutil.showToast(translateString("system_wallet_imported"), 12000);
-			}).catch((err) => {
-				formMessageSet('import', 'error', err);
-				return;
-			});
+            if(!wsutil.validateSecretKey(spendKeyValue)){
+                formMessageSet('import','error', translateString("system_wallet_invalid_spendkey"));
+                return;
+            }
 
-		}).catch((err)=>{
-			formMessageSet('import','error', err.message);
-			return;
-		});
-	});
+            settings.set('recentWalletDir', path.dirname(finalPath));
+
+            // handle existing wallet file
+            if(wsutil.isRegularFileAndWritable(finalPath)){
+                try{
+                    let ts = new Date().getTime();
+                    let backfn = `${finalPath}.bak.${ts}`;
+                    fs.renameSync(finalPath, backfn);
+                }catch(err){
+                    formMessageSet('import','error', translateString("system_wallet_create_unableoverwrite"));
+                    return;
+                }
+            }
+
+            // import the wallet
+            wsmanager.importFromKeys(
+                finalPath,
+                passwordValue,
+                viewKeyValue,
+                spendKeyValue
+            ).then((walletFile) => {
+                settings.set('recentWallet', walletFile);
+                walletOpenInputPath.value = walletFile;
+                changeSection('section-overview-load');
+                wsutil.showToast(translateString("system_wallet_imported"), 12000);
+            }).catch((err) => {
+                formMessageSet('import', 'error', err);
+                return;
+            });
+        }).catch((err) => {
+            formMessageSet('import','error', err.message);
+            return;
+        });
+    });
 }
 
 function handleWalletImportSeed(){
-	importSeedButtonImport.addEventListener('click', () => {
-		formMessageReset();
+    importSeedButtonImport.addEventListener('click', () => {
+        formMessageReset();
+        let filePathValue = importSeedInputPath.value ? importSeedInputPath.value.trim() : '';
+        let passwordValue = importSeedInputPassword.value ? importSeedInputPassword.value.trim() : '';
+        let seedValue = importSeedInputMnemonic.value ? importSeedInputMnemonic.value.trim() : '';
+        try {
+            const stats = fs.statSync(filePathValue);
+            if (stats.isDirectory()) {
+                filePathValue = path.join(filePathValue, 'restored_wallet.dynex');
+            } else {
+                if (!filePathValue.toLowerCase().endsWith('.dynex')) {
+                    filePathValue += '.dynex';
+                }
+            }
+        } catch (err) {
+            if (!filePathValue.toLowerCase().endsWith('.dynex')) {
+                filePathValue += '.dynex';
+            }
+        }
 
-		let filePathValue = importSeedInputPath.value ? importSeedInputPath.value.trim() : '';
-		let passwordValue =  importSeedInputPassword.value ? importSeedInputPassword.value.trim() : '';
-		let seedValue = importSeedInputMnemonic.value ? importSeedInputMnemonic.value.trim() : '';
+        let dirName = path.dirname(filePathValue);
+        let baseName = path.basename(filePathValue);
+        
+        baseName = baseName.replace(/\s+/g, '_');
+        filePathValue = path.join(dirName, baseName);
 
-		// validate path
-		wsutil.validateWalletPath(filePathValue, DEFAULT_WALLET_PATH).then((finalPath)=>{
-			// validate password
-			if(!passwordValue.length){
-				formMessageSet('import-seed','error', translateString("system_wallet_create_passblank"));
-				return;
-			}
+        // validate path
+        wsutil.validateWalletPath(filePathValue, DEFAULT_WALLET_PATH).then((finalPath) => {
+            // validate password
+            if(!passwordValue.length){
+                formMessageSet('import-seed','error', translateString("system_wallet_create_passblank"));
+                return;
+            }
 
-			if(!wsutil.validateMnemonic(seedValue)){
-				formMessageSet('import-seed', 'error', 'Invalid mnemonic seed value!');
-				return;
-			}
+            // validate seed
+            if(!wsutil.validateMnemonic(seedValue)){
+                formMessageSet('import-seed', 'error', translateString("system_wallet_invalid_seed"));
+                return;
+            }
 
-			settings.set('recentWalletDir', path.dirname(finalPath));
+            settings.set('recentWalletDir', path.dirname(finalPath));
 
-			// user already confirm to overwrite
-			if(wsutil.isRegularFileAndWritable(finalPath)){
-				try{
-					// for now, backup instead of delete, just to be save
-					let ts = new Date().getTime();
-					let backfn = `${finalPath}.bak.${ts}`;
-					fs.renameSync(finalPath, backfn);
-					//fs.unlinkSync(finalPath);
-				}catch(err){
-				   formMessageSet('import-seed','error', translateString("system_wallet_create_unableoverwrite"));
-				   return;
-				}
-			}
+            // handle existing wallet file
+            if(wsutil.isRegularFileAndWritable(finalPath)){
+                try{
+                    let ts = new Date().getTime();
+                    let backfn = `${finalPath}.bak.${ts}`;
+                    fs.renameSync(finalPath, backfn);
+                }catch(err){
+                    formMessageSet('import-seed','error', translateString("system_wallet_create_unableoverwrite"));
+                    return;
+                }
+            }
 
-			wsmanager.importFromSeed(
-				finalPath,
-				passwordValue,
-				seedValue
-			).then((walletFile) => {
-				settings.set('recentWallet', walletFile);
-				walletOpenInputPath.value = walletFile;
-				changeSection('section-overview-load');
-				wsutil.showToast(translateString("system_wallet_imported"), 12000);
-			}).catch((err) => {
-				formMessageSet('import-seed', 'error', err);
-				return;
-			});
-
-		}).catch((err)=>{
-			formMessageSet('import-seed', 'error', err.message);
-			return;
-		});
-	});
+            // import the wallet
+            wsmanager.importFromSeed(
+                finalPath,
+                passwordValue,
+                seedValue
+            ).then((walletFile) => {
+                settings.set('recentWallet', walletFile);
+                walletOpenInputPath.value = walletFile;
+                changeSection('section-overview-load');
+                wsutil.showToast(translateString("system_wallet_imported"), 12000);
+            }).catch((err) => {
+                formMessageSet('import-seed', 'error', err);
+                return;
+            });
+        }).catch((err) => {
+            formMessageSet('import-seed', 'error', err.message);
+            return;
+        });
+    });
 }
 
 function handleWalletExport(){

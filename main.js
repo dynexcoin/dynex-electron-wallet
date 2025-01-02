@@ -301,29 +301,43 @@ function initSettings(){
 }
 
 const silock = app.requestSingleInstanceLock();
-app.on('second-instance', () => {
-    if (win) {
-        if (!win.isVisible()) win.show();
-        if (win.isMinimized()) win.restore();
-        win.focus();
-    }
-});
-if (!silock) app.quit();
 
-app.on('ready', () => {
-    initSettings();
-
-    if(IS_DEV || IS_DEBUG) log.warn(`Running in ${IS_DEV ? 'dev' : 'debug'} mode`);
-    global.wsession = { debug: IS_DEBUG };
-	
-    createWindow();
-    // try to target center pos of primary display
-    let eScreen = require('electron').screen;
-    let primaryDisp = eScreen.getPrimaryDisplay();
-    let tx = Math.ceil((primaryDisp.workAreaSize.width - DEFAULT_SIZE.width)/2);
-    let ty = Math.ceil((primaryDisp.workAreaSize.height - (DEFAULT_SIZE.height))/2);
-    if(tx > 0 && ty > 0) win.setPosition(parseInt(tx, 10), parseInt(ty,10));
-});
+if (!silock) {
+    app.on('ready', () => {
+        dialog.showMessageBox({
+            type: 'info',
+            title: config.appName,
+            message: `${config.appName} is already running.`,
+            detail: platform === 'darwin' ? 
+                'Only one instance of the wallet can be active at a time.\nCheck your dock or menu bar for the existing window.' :
+                'Only one instance of the wallet can be active at a time.\nThe existing instance has been brought to focus.',
+            buttons: ['OK'],
+            icon: path.join(__dirname,'src/assets/walletshell_icon.png')
+        }).then(() => {
+            app.quit();
+        });
+    });
+    app.quit();
+} else {
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+        if (win) {
+            if (!win.isVisible()) win.show();
+            if (win.isMinimized()) win.restore();
+            win.focus();
+        }
+    });
+    app.on('ready', () => {
+        initSettings();
+        if(IS_DEV || IS_DEBUG) log.warn(`Running in ${IS_DEV ? 'dev' : 'debug'} mode`);
+        global.wsession = { debug: IS_DEBUG };        
+        createWindow();
+        let eScreen = require('electron').screen;
+        let primaryDisp = eScreen.getPrimaryDisplay();
+        let tx = Math.ceil((primaryDisp.workAreaSize.width - DEFAULT_SIZE.width)/2);
+        let ty = Math.ceil((primaryDisp.workAreaSize.height - (DEFAULT_SIZE.height))/2);
+        if(tx > 0 && ty > 0) win.setPosition(parseInt(tx, 10), parseInt(ty,10));
+    });
+}
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {

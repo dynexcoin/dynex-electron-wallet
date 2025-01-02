@@ -3,7 +3,7 @@
   "productName": "Dynex-Electron-Wallet",
   "description": "Dynex GUI Wallet",
   "electron_version": "3.5.3",
-  "version": "1.0.9",
+  "version": "1.0.8b",
   "homepage": "https://dynexcoin.org",
   "repository": "",
   "main": "main.js",
@@ -68,7 +68,8 @@
     "mac": {
       "artifactName": "${productName}-v${version}-${os}-${arch}.${ext}",
       "category": "public.app-category.business",
-      "target": "zip"
+      "target": "zip",
+      "icon": "src/assets/icon.icns"
     }
   },
   "postinstall": "./node_modules/.bin/electron-builder install-app-deps"

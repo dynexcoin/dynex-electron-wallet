@@ -154,6 +154,8 @@ To build the wallet for Windows, open a Command Prompt as Administrator and run:
 node_modules\.bin\electron-builder.cmd --x64 --win \
   --config.extraResources=dnx/DNX-service.exe \
   --config.extraResources=dnx/DNX-node.exe \
+  --config.extraResources=dnx/libcurl.dll \
+  --config.extraResources=dnx/zlib1.dll \
   --config.extraResources=lang/en.json \
   --config.extraResources=lang/cn.json \
   --config.extraResources=lang/de.json \
