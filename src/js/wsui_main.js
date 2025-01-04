@@ -3147,6 +3147,17 @@ function initHandlers(){
 				if (file) targetInput.value = file;
 				tbtn.classList.remove('d-opened');
 			});
+		} else if(dialogType === 'serviceFile') {
+			dialogOpts.title = `Select directory for your ${targetName}`;
+			dialogOpts.filters = [
+				{ name: 'Dynex Service File', extensions: ['exe'] }
+			];
+			dialogOpts.buttonLabel = 'OK';
+
+			remote.dialog.showSaveDialog(dialogOpts, (file) => {			
+				if (file) targetInput.value = file;
+				tbtn.classList.remove('d-opened');
+			});
 		} else{
 			dialogOpts.properties = [dialogType];
 			dialogOpts.filters = [
