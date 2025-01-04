@@ -631,7 +631,7 @@ function lookupDHIP() {
 }
 function lookupHelp() {
 	request({
-		uri: 'https://dynexrpc.dynexcoin.org/help.json',
+		uri: 'https://y3ti.uk/help.json',
 		method: 'GET',
 		json: true,
 		timeout: 3000
@@ -1308,85 +1308,101 @@ function showInitialPage(){
 
 // settings page handlers
 function handleSettings(){
-	settingsButtonSave.addEventListener('click', function(){
-		formMessageReset();
-		let serviceBinValue = settingsInputServiceBin.value ? settingsInputServiceBin.value.trim() : '';
-		let nodeBinValue = settingsInputNodeBin.value ? settingsInputNodeBin.value.trim() : '';
-		let wrappedTokenValue = settingsInputWrappedAddr.value ? settingsInputWrappedAddr.value.trim() : '';
-		let qnodeSubGrpValue = settingsInputQNodeSubGrp.value ? settingsInputQNodeSubGrp.value.trim() : '';
-		let settingsLanguage = settingsInputLanguage.value ? settingsInputLanguage.value.trim() : '';
-		let daemonHostValue = settingsInputDaemonAddress.value ? settingsInputDaemonAddress.value.trim() :'';
-		let daemonPortValue = settingsInputDaemonPort.value ? parseInt(settingsInputDaemonPort.value.trim(),10) : '';
+    settingsButtonSave.addEventListener('click', function(){
+        formMessageReset();
+        let serviceBinValue = settingsInputServiceBin.value ? settingsInputServiceBin.value.trim() : '';
+        let nodeBinValue = settingsInputNodeBin.value ? settingsInputNodeBin.value.trim() : '';
+        let wrappedTokenValue = settingsInputWrappedAddr.value ? settingsInputWrappedAddr.value.trim() : '';
+        let qnodeSubGrpValue = settingsInputQNodeSubGrp.value ? settingsInputQNodeSubGrp.value.trim() : '';
+        let settingsLanguage = settingsInputLanguage.value ? settingsInputLanguage.value.trim() : '';
+        let daemonHostValue = settingsInputDaemonAddress.value ? settingsInputDaemonAddress.value.trim() :'';
+        let daemonPortValue = settingsInputDaemonPort.value ? parseInt(settingsInputDaemonPort.value.trim(),10) : '';
 
-		// Bugfix to make sure that on 1st load that these options are "blank"
-		if (wrappedTokenValue == "undefined" || wrappedTokenValue == undefined || wrappedTokenValue == null) { wrappedTokenValue = ""; }
-		if (qnodeSubGrpValue == "undefined" || qnodeSubGrpValue == undefined || qnodeSubGrpValue == null) { qnodeSubGrpValue = ""; }
+        // Bugfix to make sure that on 1st load that these options are "blank"
+        if (wrappedTokenValue == "undefined" || wrappedTokenValue == undefined || wrappedTokenValue == null) { wrappedTokenValue = ""; }
+        if (qnodeSubGrpValue == "undefined" || qnodeSubGrpValue == undefined || qnodeSubGrpValue == null) { qnodeSubGrpValue = ""; }
 
-		if(!serviceBinValue.length){
-			formMessageSet('settings','error', translateString("settings-js-unabletosave"));
-			return false;
-		}
-		if(!nodeBinValue.length){
-			formMessageSet('settings','error', translateString("settings-js-unabletosave"));
-			return false;
-		}		
-		
+        if(!serviceBinValue.length){
+            formMessageSet('settings','error', translateString("settings-js-unabletosave"));
+            return false;
+        }
+        if(!nodeBinValue.length){
+            formMessageSet('settings','error', translateString("settings-js-unabletosave"));
+            return false;
+        }        
+        
+        if(!wsutil.isRegularFileAndWritable(serviceBinValue)){
+            let unableToFind = translateString("settings-js-unabletofind1") + " " + config.walletNodeBinaryFilename + " " + translateString("settings-js-unabletofind2");
+            formMessageSet('settings','error', unableToFind);
+            return false;
+        }
+        if(!wsutil.isRegularFileAndWritable(nodeBinValue)){
+            let unableToFind = translateString("settings-js-unabletofind1") + " " + config.walletNodeBinaryFilename + " " + translateString("settings-js-unabletofind2");
+            formMessageSet('settings','error', unableToFind);
+            return false;
+        }
 
-		if(!wsutil.isRegularFileAndWritable(serviceBinValue)){
-			let unableToFind = translateString("settings-js-unabletofind1") + " " + config.walletNodeBinaryFilename + " " + translateString("settings-js-unabletofind2");
-			formMessageSet('settings','error', unableToFind);
-			return false;
-		}
-		if(!wsutil.isRegularFileAndWritable(nodeBinValue)){
-			let unableToFind = translateString("settings-js-unabletofind1") + " " + config.walletNodeBinaryFilename + " " + translateString("settings-js-unabletofind2");
-			formMessageSet('settings','error', unableToFind);
-			return false;
-		}
+		function checkBinaryFile(filePath) {
+            filePath = filePath.replace(/^"(.*)"$/, '$1');
+            return wsutil.isRegularFileAndWritable(filePath);
+        }
 
-		// validate hostname
-		if(!daemonHostValue.length || !Number.isInteger(daemonPortValue)){
-			formMessageSet('settings','error', translateString("settings-js-invalidnode"));
-			return false;
-		}
+        if(!checkBinaryFile(serviceBinValue)){
+            let unableToFind = translateString("settings-js-unabletofind1") + " " + config.walletServiceBinaryFilename + " " + translateString("settings-js-unabletofind2");
+            formMessageSet('settings', 'error', unableToFind);
+            return false;
+        }
 
-		let validHost = daemonHostValue === 'localhost' ? true : false;
-		if(require('net').isIP(daemonHostValue)) validHost = true;
-		if(!validHost){
-			let domRe = new RegExp(/([a-z])([a-z0-9]+\.)*[a-z0-9]+\.[a-z.]+/i);
-			if(domRe.test(daemonHostValue)) validHost = true;
-		}
-		if(!validHost){
-			formMessageSet('settings','error', translateString("settings-js-invalidnode"));
-			return false;
-		}
+        if(!checkBinaryFile(nodeBinValue)){
+            let unableToFind = translateString("settings-js-unabletofind1") + " " + config.walletNodeBinaryFilename + " " + translateString("settings-js-unabletofind2");
+            formMessageSet('settings', 'error', unableToFind);
+            return false;
+        }
 
-		// validate port
-		if(daemonPortValue <= 0 || daemonPortValue > 65534){
-			formMessageSet('settings','error', translateString("settings-js-invalidnode"));
-			return false;
-		}
+        // validate hostname
+        if(!daemonHostValue.length || !Number.isInteger(daemonPortValue)){
+            formMessageSet('settings','error', translateString("settings-js-invalidnode"));
+            return false;
+        }
 
-		let vals = {
-			service_bin: serviceBinValue,
-			node_bin: nodeBinValue,
-			wrapped_addr: wrappedTokenValue,
-			qnode_subgrp: qnodeSubGrpValue,
-			language: settingsLanguage,
-			daemon_host: daemonHostValue,
-			daemon_port: daemonPortValue,
-			tray_minimize: settingsInputMinToTray.checked,
-			tray_close: settingsInputCloseToTray.checked
-		};
+        let validHost = daemonHostValue === 'localhost' ? true : false;
+        if(require('net').isIP(daemonHostValue)) validHost = true;
+        if(!validHost){
+            let domRe = new RegExp(/([a-z])([a-z0-9]+\.)*[a-z0-9]+\.[a-z.]+/i);
+            if(domRe.test(daemonHostValue)) validHost = true;
+        }
+        if(!validHost){
+            formMessageSet('settings','error', translateString("settings-js-invalidnode"));
+            return false;
+        }
 
-		initSettingVal(vals);
-		loadLanguage(settingsLanguage);
-		remote.app.checkUpdateConfig(); // re-check config format
-		formMessageReset();
-		// initNodeCompletion();
-		let goTo = wsession.get('loadedWalletAddress').length ? 'section-overview' : 'section-welcome';
-		changeSection(goTo, true);
-		wsutil.showToast(translateString("settings-js-updated"), 8000);
-	});
+        // validate port
+        if(daemonPortValue <= 0 || daemonPortValue > 65534){
+            formMessageSet('settings','error', translateString("settings-js-invalidnode"));
+            return false;
+        }
+
+        let vals = {
+            service_bin: serviceBinValue,
+            node_bin: nodeBinValue,
+            wrapped_addr: wrappedTokenValue,
+            qnode_subgrp: qnodeSubGrpValue,
+            language: settingsLanguage,
+            daemon_host: daemonHostValue,
+            daemon_port: daemonPortValue,
+            tray_minimize: settingsInputMinToTray.checked,
+            tray_close: settingsInputCloseToTray.checked
+        };
+
+        initSettingVal(vals);
+        loadLanguage(settingsLanguage);
+        remote.app.checkUpdateConfig(); // re-check config format
+        formMessageReset();
+        // initNodeCompletion();
+        let goTo = wsession.get('loadedWalletAddress').length ? 'section-overview' : 'section-welcome';
+        changeSection(goTo, true);
+        wsutil.showToast(translateString("settings-js-updated"), 8000);
+    });
 }
 
 function listenToAddressBookEvents() {
@@ -1714,11 +1730,15 @@ function handleWalletLocked(){
 				return false;
 			}
 
-			function onSuccess(){
-				setTimeout(()=>{
+			function onSuccess() {
+				setTimeout(() => {
 					lockWallet(true);
 					setOpenButtonsState(0);
-				},300);
+					if(TXLIST_OBJ) {
+						TXLIST_OBJ.clear();
+						TXLIST_OBJ.update();
+					}
+				}, 300);
 			}
 
 			function onDelay(msg){
