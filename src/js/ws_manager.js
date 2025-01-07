@@ -636,7 +636,7 @@ WalletShellManager.prototype.importFromSeed = function(walletFile, password, mne
     });
 };
 
-WalletShellManager.prototype.getSecretKeys = function(address){
+WalletShellManager.prototype.getSecretKeys = async function(address){
     let wsm = this;
     return new Promise((resolve, reject) => {
         wsm.serviceApi.getBackupKeys({address: address}).then((result) => {

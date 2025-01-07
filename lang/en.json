@@ -309,6 +309,7 @@
     "transactions_js_received": "Received",
     "transactions_js_sent": "Sent",
     "transactions_js_confirmed": "Confirmed",
+    "transactions_js_confirming": "Confirming",
     "transactions_js_click_details": "click for detail",
     "transactions_js_viewin_blockexplorer": "View in block explorer",
     "transactions_js_back": "Back",

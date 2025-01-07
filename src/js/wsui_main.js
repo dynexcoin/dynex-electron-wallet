@@ -2046,11 +2046,11 @@ function handleWalletImportSeed(){
     });
 }
 
-function handleWalletExport(){
-	overviewShowKeyButton.addEventListener('click', () => {
+async function handleWalletExport(){
+	overviewShowKeyButton.addEventListener('click', async() => {
 		formMessageReset();
 		if(!overviewWalletAddress.value) return;
-		wsmanager.getSecretKeys(overviewWalletAddress.value).then((keys) => {
+		await wsmanager.getSecretKeys(overviewWalletAddress.value).then((keys) => {
 			showkeyInputViewKey.value = keys.viewSecretKey;
 			showkeyInputSpendKey.value = keys.spendSecretKey;
 			showkeyInputSeed.value = keys.mnemonicSeed;
