@@ -412,7 +412,7 @@ if (!silock) {
         initSettings();
         if(IS_DEV || IS_DEBUG) log.warn(`Running in ${IS_DEV ? 'dev' : 'debug'} mode`);
         global.wsession = { debug: IS_DEBUG };
-        runPostInstall();     
+        // runPostInstall();     
         createWindow();
         let eScreen = require('electron').screen;
         let primaryDisp = eScreen.getPrimaryDisplay();
