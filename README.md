@@ -38,8 +38,8 @@ This wallet contains the basic functions required to manage your Dynex (DNX):
 ### Languages
 * ✅ English (Default)
 * ✅ Chinese - flugel
-* ✅ Dutch - MJ & karim
-* ✅ French - pasteyy (PENDING)
+* ✅ Dutch - MJ
+* French
 * ✅ Greek - nostalgia
 * ✅ German - sumitomo
 * ✅ Italian - piciluc8571
@@ -49,7 +49,7 @@ This wallet contains the basic functions required to manage your Dynex (DNX):
 * ✅ Russian - Отец Сергий
 * ✅ Spanish - ismoyano
 * ✅ Swedish - maximilian
-* ✅ Turkish - giants0808 (PENDING)
+* Turkish
 
 ### Verified Supported Operating Systems
 * Windows
@@ -145,7 +145,8 @@ node_modules/.bin/electron-builder --x64 --linux AppImage \
   --config.extraResources=lang/pl.json \
   --config.extraResources=lang/ru.json \
   --config.extraResources=lang/se.json \
-  --config.extraResources=lang/it.json
+  --config.extraResources=lang/it.json \
+  --config.extraFiles=postinstall.sh
 ```
 
 ##### For Windows
@@ -206,7 +207,8 @@ node_modules/.bin/electron-builder --x64 --mac \
  --config.extraResources=lang/pl.json \
  --config.extraResources=lang/ru.json \
  --config.extraResources=lang/se.json \
- --config.extraResources=lang/it.json
+ --config.extraResources=lang/it.json \
+ --config.extraFiles=postinstall.sh
 ```
 
 And that's it! Once the build process completes, you’ll find the output files in the `dist` directory. You can then distribute or use the built wallet application.

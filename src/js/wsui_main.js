@@ -2559,15 +2559,42 @@ function handleTransactions(){
 		indexAsync: true
 	};
 	// tx detail
-	async function showTransaction(el){
+	async function showTransaction(el) {
 		let tx = (el.name === "tr" ? el : el.closest('tr'));
 		let txdate = new Date(tx.dataset.timestamp*1000).toUTCString();
 		let txhashUrl = `<a class="external form-bt button-blue" title="${translateString("transactions_js_viewin_blockexplorer")}" href="${config.blockExplorerTransactionUrl.replace('[[TX_HASH]]', tx.dataset.rawhash)}">${translateString("transactions_js_viewin_blockexplorer")}</a>`;
 		let txTypeBtn = tx.dataset.txtype == 'in' ? `<a class="tx-type-btn tx-type-in">${translateString("transactions_js_received")}<img src="../assets/transactions/right-blue-arrow.png" /></a>` : `<a class="tx-type-btn tx-type-out">${translateString("transactions_js_sent")}<img src="../assets/transactions/arrow-up-red.png" /></a>`;
 		let address = tx.dataset.txtype == 'in' ? wsession.get('loadedWalletAddress') : tx.dataset.destinationaddress;
 		var extraDataDecoded = await getNonPrivacyInformation(tx.dataset.rawhash);
-		var confirmationNumber = tx.dataset.confirmations;
-		if (tx.dataset.confirmations > 8) { confirmationNumber = '<span class="cyan">' + translateString("transactions_js_confirmed") + '</span>'; }
+		const getCurrentBlockHeight = async () => {
+			try {
+				const response = await request({
+					uri: 'https://api.market.dynexcoin.org/api/v2/network/info',
+					method: 'GET',
+					json: true,
+					timeout: 3000
+				});
+				return response.block_header.height;
+			} catch (error) {
+				console.error('Error getting current block height:', error);
+				return 0;
+			}
+		};	
+		const calculateConfirmations = async () => {
+			try {
+				const currentHeight = await getCurrentBlockHeight();
+				const txBlockHeight = parseInt(tx.dataset.blockindex);
+				return Math.max(0, (currentHeight - txBlockHeight)- 1);
+			} catch (error) {
+				console.error('Error calculating confirmations:', error);
+				return 0;
+			}
+		};
+		let initialConfirmations = await calculateConfirmations();
+		var confirmationDisplay = initialConfirmations;
+		if (initialConfirmations > 8) {
+			confirmationDisplay = '<span class="cyan">' + translateString("transactions_js_confirmed") + '</span>';
+		}
 		
 		let dialogTpl = `
 				<div class="div-transactions-panel">
@@ -2598,7 +2625,8 @@ function handleTransactions(){
 								</tr>
 								<tr>
 									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" /><span class="opa50">${translateString("transactions_js_confirmations")}</span></th>
-									<td><span class="opa50">${confirmationNumber}</span></td>
+									<td><span class="opa50" id="tx-confirmations">${confirmationDisplay}</span></td>
+
 								</tr>								
 								<tr>
 									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" />${translateString("transactions_js_amount")}</th>
@@ -2616,9 +2644,7 @@ function handleTransactions(){
 									<th scope="col"><img src="../assets/transactions/right-blue-arrow.png" />${translateString("transactions_js_addr_to")}</th>
 									<td data-cplabel="Address" class="tctcl" id="tx_addr_to">									
 			`;	
-							// Dynex Non Privacy Upgrade
 							if (extraDataDecoded['transaction']['address_to'].length > 1) {
-								// Detected Multiple Payments Address_To
 								for (let index = 0; index < extraDataDecoded['transaction']['address_to'].length; ++index) {
 									const elementAddrTo = extraDataDecoded['transaction']['address_to'][index];
 									const elementAmount = hexToBinaryAndDecimal(extraDataDecoded['transaction']['amount'][index]);
@@ -2626,7 +2652,6 @@ function handleTransactions(){
 									dialogTpl += `<div style="float: right; width: 10%; font-size: 13px; vertical-align: middle;">${elementAmount.dnx} ${config.assetTicker}</div>`;
 								}
 							} else {
-								// Detected Only 1 Address_To 
 								dialogTpl += `<span>${extraDataDecoded['transaction']['address_to'][0]}</span>`;
 							}
 			dialogTpl += `			</td>
@@ -2646,10 +2671,29 @@ function handleTransactions(){
 					<div>${txhashUrl}</div>
 				</div>
 			`;
-
 		let dialog = document.getElementById('tx-dialog');
 		wsutil.innerHTML(dialog, dialogTpl);
 		dialog = document.getElementById('tx-dialog');
+		let refreshInterval;
+		if (initialConfirmations <= 8) {
+			refreshInterval = setInterval(async () => {
+				const confirmations = await calculateConfirmations();
+				const confirmationElement = document.getElementById('tx-confirmations');
+				if (!confirmationElement) return;
+	
+				if (confirmations > 8) {
+					confirmationElement.innerHTML = '<span class="cyan">' + translateString("transactions_js_confirmed") + '</span>';
+					clearInterval(refreshInterval);
+				} else {
+					confirmationElement.innerHTML = confirmations.toString();
+				}
+			}, 5000); 
+		}
+		dialog.addEventListener('close', () => {
+			if (refreshInterval) {
+				clearInterval(refreshInterval);
+			}
+		}, { once: true });
 		dialog.showModal();
 	}
 
@@ -2823,6 +2867,7 @@ function handleTransactions(){
 		listTransactions();
 		handleMempool();
 	});
+
 	// listen to tx notify
 	txInputNotify.addEventListener('change', (event)=>{
 		let notify = parseInt(event.target.value, 10) === 1;
